@@ -15,7 +15,6 @@
   "homepage": "https://bitbucket.org/kmalakoff/walk-filtered#readme",
   "dependencies": {
     "async": "^1.5.0",
-    "async-waterfall": "^0.1.5",
     "events": "^1.1.0"
   }
 }
