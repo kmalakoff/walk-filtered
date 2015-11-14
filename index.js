@@ -1,6 +1,6 @@
 import fs from 'fs';
 import {join as pathJoin} from 'path';
-import waterfall from 'async-waterfall';
+import async from 'async';
 import {EventEmitter} from 'events';
 
 function process(path, filter, emitter, callback) {
@@ -10,10 +10,10 @@ function process(path, filter, emitter, callback) {
     if (stat.isDirectory()) {
       emitter.emit('directory', path);
 
-      waterfall([
+      async.waterfall([
         (callback) => fs.readdir(path, callback),
         (names, callback) => callback(null, names.map(name => pathJoin(path, name))),
-        (paths, callback) => { filter ? async.filter(paths, filter, (paths) => callback(null, paths)) : callback(null, paths); },
+        (paths, callback) => async.filter(paths, filter, (paths) => callback(null, paths)),
         (paths, callback) => async.each(paths, (path, callback) => process(path, filter, emitter, callback), callback)
       ], callback)
     }
@@ -26,7 +26,6 @@ function process(path, filter, emitter, callback) {
 
 export default (path, filter, callback) => {
   let emitter = new EventEmitter()
-  if (arguments.length == 2) [filter, callback] = [null, filter];
   process(path, filter, emitter, callback);
   return emitter;
 }
