@@ -8,7 +8,7 @@ function process(path, filter, emitter, callback) {
     if (err) return callback(err);
 
     if (stat.isDirectory()) {
-      emitter.emit('directory', path);
+      emitter.emit('directory', path, stat);
 
       async.waterfall([
         (callback) => fs.readdir(path, callback),
@@ -18,7 +18,7 @@ function process(path, filter, emitter, callback) {
       ], callback)
     }
     else {
-      emitter.emit('file', path);
+      emitter.emit('file', path, stat);
       callback();
     }
   });
