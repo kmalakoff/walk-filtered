@@ -1,31 +1,68 @@
-import fs from 'fs';
-import {join as pathJoin} from 'path';
-import async from 'async';
-import {EventEmitter} from 'events';
+var fs = require('fs');
+var pathJoin = require('path').join;
+var EventEmitter = require('component-emitter');
 
-function process(path, filter, emitter, callback) {
-  fs.stat(path, (err, stat) => {
+// TODO: find a smaller, optimized version of eachSeries
+var async = require('async');
+var each = async.eachSeries; // import each from 'each-series';
+
+function processPreStat(path, options, callback) {
+  var fullPath = path ? pathJoin(options.cwd, path) : options.cwd;
+
+  fs.stat(fullPath, (err, stat) => {
     if (err) return callback(err);
 
-    if (stat.isDirectory()) {
-      emitter.emit('directory', path, stat);
+    if (path && options.filter && options.filter(path, stat)) return callback();
 
-      async.waterfall([
-        (callback) => fs.readdir(path, callback),
-        (names, callback) => callback(null, names.map(name => pathJoin(path, name))),
-        (paths, callback) => async.filter(paths, filter, (paths) => callback(null, paths)),
-        (paths, callback) => async.each(paths, (path, callback) => process(path, filter, emitter, callback), callback)
-      ], callback)
+    if (stat.isDirectory()) {
+      !path || options.emitter.emit('directory', path, stat);
+
+      fs.readdir(fullPath, (err, names) => {
+        if (err) return callback(err);
+
+        var paths = names.map((name) => path ? pathJoin(path, name) : name);
+        each(paths, (path, callback) => processPreStat(path, options, callback), callback);
+      });
     }
     else {
-      emitter.emit('file', path, stat);
+      !path || options.emitter.emit('file', path, stat);
       callback();
     }
   });
 }
 
-export default (path, filter, callback) => {
-  let emitter = new EventEmitter()
-  process(path, filter, emitter, callback);
+function processPostStat(path, options, callback) {
+  var fullPath = path ? pathJoin(options.cwd, path) : options.cwd;
+
+  fs.stat(fullPath, (err, stat) => {
+    if (err) return callback(err);
+
+    if (stat.isDirectory()) {
+      options.emitter.emit('directory', path, stat);
+
+      fs.readdir(fullPath, (err, names) => {
+        if (err) return callback(err);
+
+        var paths = names.map((name) => path ? pathJoin(path, name) : name);
+        if (options.filter) paths = paths.filter(options.filter);
+        if (!paths.length) return callback();
+        each(paths, (path, callback) => processPostStat(path, options, callback), callback);
+      });
+    }
+    else {
+      options.emitter.emit('file', path, stat);
+      callback();
+    }
+  });
+}
+
+module.exports = function(cwd, options, callback) {
+  if (!callback) { callback = options; options = {}; }
+
+  var emitter = new EventEmitter()
+  options = (typeof options == 'function') ? {filter: options} : Object.assign({}, options);
+  Object.assign(options, {cwd, emitter});
+
+  options.preStat ? processPreStat(null, options, callback) : processPostStat(null, options, callback);
   return emitter;
 }
