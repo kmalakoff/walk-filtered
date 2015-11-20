@@ -1,6 +1,6 @@
 var fs = require('fs');
 var pathJoin = require('path').join;
-var EventEmitter = require('component-emitter');
+var EventEmitter = require('events').EventEmitter;
 var assign = require('lodash.assign');
 
 // TODO: find a smaller, optimized version of eachSeries
