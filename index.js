@@ -13,10 +13,10 @@ function processPreStat(path, options, callback) {
   fs.stat(fullPath, function(err, stat) {
     if (err) return callback(err);
 
-    if (path && options.filter && options.filter(path, stat)) return callback();
+    if (path && options.filter && !options.filter(path, stat)) return callback();
 
     if (stat.isDirectory()) {
-      !path || options.emitter.emit('directory', path, stat);
+      options.emitter.emit('directory', path || fullPath, stat);
 
       fs.readdir(fullPath, function(err, names) {
         if (err) return callback(err);
@@ -26,7 +26,7 @@ function processPreStat(path, options, callback) {
       });
     }
     else {
-      !path || options.emitter.emit('file', path, stat);
+      options.emitter.emit('file', path || fullPath, stat);
       callback();
     }
   });
@@ -39,7 +39,7 @@ function processPostStat(path, options, callback) {
     if (err) return callback(err);
 
     if (stat.isDirectory()) {
-      options.emitter.emit('directory', path, stat);
+      options.emitter.emit('directory', path || fullPath, stat);
 
       fs.readdir(fullPath, function(err, names) {
         if (err) return callback(err);
@@ -51,7 +51,7 @@ function processPostStat(path, options, callback) {
       });
     }
     else {
-      options.emitter.emit('file', path, stat);
+      options.emitter.emit('file', path || fullPath, stat);
       callback();
     }
   });
