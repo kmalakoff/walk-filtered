@@ -16,7 +16,7 @@ function processPreStat(path, options, callback) {
     if (path && options.filter && !options.filter(path, stat)) return callback();
 
     if (stat.isDirectory()) {
-      options.emitter.emit('directory', path || fullPath, stat);
+      options.emitter.emit('directory', path, stat);
 
       fs.readdir(fullPath, function(err, names) {
         if (err) return callback(err);
@@ -26,7 +26,7 @@ function processPreStat(path, options, callback) {
       });
     }
     else {
-      options.emitter.emit('file', path || fullPath, stat);
+      options.emitter.emit('file', path, stat);
       callback();
     }
   });
@@ -39,7 +39,7 @@ function processPostStat(path, options, callback) {
     if (err) return callback(err);
 
     if (stat.isDirectory()) {
-      options.emitter.emit('directory', path || fullPath, stat);
+      options.emitter.emit('directory', path, stat);
 
       fs.readdir(fullPath, function(err, names) {
         if (err) return callback(err);
@@ -51,7 +51,7 @@ function processPostStat(path, options, callback) {
       });
     }
     else {
-      options.emitter.emit('file', path || fullPath, stat);
+      options.emitter.emit('file', path, stat);
       callback();
     }
   });
@@ -64,6 +64,6 @@ module.exports = function(cwd, options, callback) {
   options = (typeof options == 'function') ? {filter: options} : assign({}, options);
   assign(options, {cwd, emitter});
 
-  options.preStat ? processPreStat(null, options, callback) : processPostStat(null, options, callback);
+  options.preStat ? processPreStat('', options, callback) : processPostStat('', options, callback);
   return emitter;
 }
