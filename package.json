@@ -8,11 +8,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/kmalakoff/walk-filtered.git"
+    "url": "git@github.com:kmalakoff/walk-filtered.git"
   },
   "author": "",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/kmalakoff/walk-filtered#readme",
+  "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
     "each-series": "^1.0.0",
     "lodash.assign": "^3.2.0"
