@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "each-series": "^1.0.0",
+    "async-each-series": "^1.1.0",
     "lodash.assign": "^3.2.0"
   }
 }
