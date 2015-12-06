@@ -2,10 +2,7 @@ var fs = require('fs');
 var pathJoin = require('path').join;
 var EventEmitter = require('events').EventEmitter;
 var assign = require('lodash.assign');
-
-// TODO: find a smaller, optimized version of eachSeries
-var async = require('async');
-var each = async.eachSeries; // import each from 'each-series';
+var each = require('each-series');
 
 function processPreStat(path, options, callback) {
   var fullPath = path ? pathJoin(options.cwd, path) : options.cwd;
