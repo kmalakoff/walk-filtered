@@ -31,15 +31,20 @@ function process(fullPath, options, callback) {
   });
 }
 
-var DEFAULTS = require('./defaults');
+var DEFAULT_FS = require('graceful-fs');
+var DEFAULT_CONCURRENCY = 50;
+var eachlimit = require('each-limit');
+var limitEachFn = function(limit) {
+  return function(array, fn, callback) { eachlimit(array, limit, fn, callback); };
+}
 
 module.exports = function(cwd, options, callback) {
   if (arguments.length === 2) { callback = options; options = {}; };
 
   options = (typeof options == 'function') ? {filter: options} : assign({}, options);
   options.emitter= new EventEmitter();
-  options.fs = options.fs || DEFAULTS.fs;
-  options.each = options.each || DEFAULTS.each;
+  options.fs = options.fs || DEFAULT_FS;
+  if (!options.each) options.each = limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
 
   options.filter = options.filter || function() { return true; }
   options.stat = options.fs[options.stat || 'stat'].bind(options.fs);
