@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha . test/**/*.test.js",
+    "testDebugger": "iron-node node_modules/.bin/_mocha . test/**/*.test.js",
+    "perf": "node perf/tests.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +18,15 @@
   "dependencies": {
     "async-each-series": "^1.1.0",
     "object-assign": "^4.0.1"
+  },
+  "devDependencies": {
+    "async-each": "^1.0.0",
+    "benchmark": "^1.0.0",
+    "chai": "^3.4.1",
+    "each-limit": "^1.0.0",
+    "graceful-fs": "^4.1.2",
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0"
   }
 }
