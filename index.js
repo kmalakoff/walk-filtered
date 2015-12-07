@@ -14,13 +14,13 @@ function processPreStat(path, options, callback) {
     options.stat(realFullPath, function(err, stat) {
       if (err) return callback(err);
 
-      var relativePath = pathRelative(options.cwd, realFullPath);
+      var relativePath = pathRelative(options.cwd, fullPath);
       if (relativePath && options.filter && !options.filter(relativePath, stat)) return callback();
 
       if (stat.isDirectory()) {
         options.emitter.emit('directory', relativePath, stat);
 
-        fs.readdir(realFullPath, function(err, names) {
+        fs.readdir(fullPath, function(err, names) {
           if (err) return callback(err);
 
           var paths = names.map(function(name) { return relativePath ? pathJoin(relativePath, name) : name; });
