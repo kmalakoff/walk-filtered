@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,15 +16,15 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "async-each-series": "^1.1.0",
+    "each-limit": "^1.0.0",
+    "graceful-fs": "^4.1.2",
     "object-assign": "^4.0.1"
   },
   "devDependencies": {
     "async-each": "^1.0.0",
+    "async-each-series": "^1.1.0",
     "benchmark": "^1.0.0",
     "chai": "^3.4.1",
-    "each-limit": "^1.0.0",
-    "graceful-fs": "^4.1.2",
     "mocha": "^2.3.4",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"

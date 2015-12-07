@@ -1,9 +1,7 @@
-var fs = require('fs');
 var pathJoin = require('path').join;
 var relative = require('path').relative;
-var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
-var eachSeries = require('async-each-series');
+var EventEmitter = require('events').EventEmitter;
 
 function process(fullPath, options, callback) {
   var path = relative(options.cwd, fullPath); // the path to the link, file, or directory
@@ -33,21 +31,24 @@ function process(fullPath, options, callback) {
   });
 }
 
+var DEFAULTS = require('./defaults');
+
 module.exports = function(cwd, options, callback) {
   if (arguments.length === 2) { callback = options; options = {}; };
 
-  var emitter = new EventEmitter();
-  fs.realpath(cwd, function(err, realCWD) {
+  options = (typeof options == 'function') ? {filter: options} : assign({}, options);
+  options.emitter= new EventEmitter();
+  options.fs = options.fs || DEFAULTS.fs;
+  options.each = options.each || DEFAULTS.each;
+
+  options.filter = options.filter || function() { return true; }
+  options.stat = options.fs[options.stat || 'stat'].bind(options.fs);
+
+  options.fs.realpath(cwd, function(err, realCWD) {
     if (err) return emitter.emit('error', err);
 
-    options = (typeof options == 'function') ? {filter: options} : assign({}, options);
-    options.emitter = emitter;
-    options.filter = options.filter || function() { return true; }
-    options.each = options.each || eachSeries;
-    options.fs = options.fs || fs;
-    options.stat = options.fs[options.stat || 'stat'].bind(options.fs);
     options.cwd = realCWD;
     process(cwd, options, callback);
   })
-  return emitter;
+  return options.emitter;
 }
