@@ -1,3 +1,4 @@
+var sysPath = require('path');
 var Benchmark = require('benchmark');
 
 var walk = require('..');
@@ -16,8 +17,9 @@ var parallelLimitOptionsFn = function(fs, limit) {
 }
 
 module.exports = function(dir, callback) {
+  var relativeDir = dir.replace(sysPath.resolve(sysPath.join(__dirname, '..', '..')) + '/', '');
 
-  new Benchmark.Suite('Walk ' + dir)
+  new Benchmark.Suite('Walk ' + relativeDir)
     .add('Serial (fs)', function(deferred) {
       walk(dir, serialOptionsFn(fs), function(err) { err ? deferred.reject() : deferred.resolve();});
     }, {defer: true})
