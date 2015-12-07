@@ -1,78 +1,47 @@
 var fs = require('fs');
 var pathJoin = require('path').join;
-var pathRelative = require('path').relative;
+var relative = require('path').relative;
 var EventEmitter = require('events').EventEmitter;
-var assign = require('lodash.assign');
-var eachSeries = require('async-each-series');
+var assign = require('object-assign');
+var each = require('async-each-series');
 
-function processPreStat(path, options, callback) {
-  var fullPath = path ? pathJoin(options.cwd, path) : options.cwd;
+function process(fullPath, options, callback) {
+  var path = relative(options.cwd, fullPath); // the path to the link, file, or directory
+  if (options.lazyStats && !options.filter(path)) return callback(); // filter before stats
 
-  fs.realpath(fullPath, function(err, realFullPath) {
+  // stat the path to the link, file, or directory
+  options.stat(fullPath, function(err, stat) {
     if (err) return callback(err);
 
-    options.stat(realFullPath, function(err, stat) {
+    if (!options.lazyStats && !options.filter(path, stat)) return callback(); // filter with after and with stats
+
+    // a file or symlink
+    if (!stat.isDirectory()) { options.emitter.emit('file', path, stat); return callback(); }
+
+    // a directory
+    options.emitter.emit('directory', path, stat);
+    fs.realpath(fullPath, function(err, realPath) {
       if (err) return callback(err);
 
-      var relativePath = pathRelative(options.cwd, fullPath);
-      if (relativePath && options.filter && !options.filter(relativePath, stat)) return callback();
+      fs.readdir(realPath, function(err, names) {
+        if (err) return callback(err);
 
-      if (stat.isDirectory()) {
-        options.emitter.emit('directory', relativePath, stat);
-
-        fs.readdir(fullPath, function(err, names) {
-          if (err) return callback(err);
-
-          var paths = names.map(function(name) { return relativePath ? pathJoin(relativePath, name) : name; });
-          eachSeries(paths, function(path, callback) { processPreStat(path, options, callback); }, callback);
-        });
-      }
-      else {
-        options.emitter.emit('file', relativePath, stat);
-        callback();
-      }
+        var fullPaths = names.map(function(name) { return pathJoin(realPath, name); });
+        each(fullPaths, function(fullPath, callback) { process(fullPath, options, callback); }, callback);
+      });
     });
   });
 }
 
-function processPostStat(path, options, callback) {
-  var fullPath = path ? pathJoin(options.cwd, path) : options.cwd;
-
-  options.stat(fullPath, function(err, stat) {
-    if (err) return callback(err);
-
-    if (stat.isDirectory()) {
-      options.emitter.emit('directory', path, stat);
-
-      fs.readdir(fullPath, function(err, names) {
-        if (err) return callback(err);
-
-        var paths = names.map(function(name) { return path ? pathJoin(path, name) : name; });
-        if (options.filter) paths = paths.filter(options.filter);
-        if (!paths.length) return callback();
-        eachSeries(paths, function(path, callback) { processPostStat(path, options, callback); }, callback);
-      });
-    }
-    else {
-      options.emitter.emit('file', path, stat);
-      callback();
-    }
-  });
-}
-
 module.exports = function(cwd, options, callback) {
-  if (!callback) { callback = options; options = {}; }
+  options = (typeof options == 'function') ? {filter: options} : options;
+  if (!options.filter) throw new Error('walk-filtered: missing filter option');
 
   var emitter = new EventEmitter()
-
   fs.realpath(cwd, function(err, realCWD) {
-    if (err) return callback(err);
-
-    options = (typeof options == 'function') ? {filter: options} : assign({}, options);
-    assign(options, {cwd: realCWD, emitter, stat: fs.stat.bind(fs)});
-
-    options.preStat ? processPreStat('', options, callback) : processPostStat('', options, callback);
+    if (err) return emitter.emit('error', err);
+    options = assign({}, options, {cwd: realCWD, emitter, stat: options.lstat ? fs.lstat.bind(fs) : fs.stat.bind(fs)});
+    process(cwd, options, callback);
   })
-
   return emitter;
 }
