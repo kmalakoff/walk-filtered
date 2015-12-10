@@ -1,23 +1,30 @@
 var pathJoin = require('path').join;
 var relative = require('path').relative;
 var assign = require('object-assign');
-var EventEmitter = require('events').EventEmitter;
+var isUndefined = require('lodash.isundefined');
+var isObject = require('lodash.isobject');
+
+var DEFAULT_FS = require('graceful-fs');
+var DEFAULT_CONCURRENCY = Infinity; // TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
+
+// TODO: https://github.com/kmalakoff/readdirp-walk/issues/1
+var eachlimit = require('each-limit');
+function limitEachFn(limit) { return function(array, fn, callback) { eachlimit(array, limit, fn, callback); }; }
 
 function process(fullPath, options, callback) {
   var path = relative(options.cwd, fullPath); // the path to the link, file, or directory
-  if (!options.preStat && !options.filter(path)) return callback(); // filter before stats
+  if (!options.includeStat && !options.filterIter(path)) return callback(); // filter before stats
 
   // stat the path to the link, file, or directory
   options.stat(fullPath, function(err, stat) {
     if (err) return callback(err);
 
-    if (options.preStat && !options.filter(path, stat)) return callback(); // filter with after and with stats
+    if (options.includeStat && !options.filterIter(path, stat)) return callback(); // filter with after and with stats
 
     // a file or symlink
-    if (!stat.isDirectory()) { options.emitter.emit('file', path, stat); return callback(); }
+    if (!stat.isDirectory()) return callback();
 
     // a directory
-    options.emitter.emit('directory', path, stat);
     options.fs.realpath(fullPath, function(err, realPath) {
       if (err) return callback(err);
 
@@ -31,23 +38,14 @@ function process(fullPath, options, callback) {
   });
 }
 
-var DEFAULT_FS = require('graceful-fs');
-var DEFAULT_CONCURRENCY = 50;
-var eachlimit = require('each-limit');
-var limitEachFn = function(limit) {
-  return function(array, fn, callback) { eachlimit(array, limit, fn, callback); };
-}
+module.exports = function(cwd, filter, options, callback) {
+  if (arguments.length === 3) { callback = options; options = {}; }
 
-module.exports = function(cwd, options, callback) {
-  if (arguments.length === 2) { callback = options; options = {}; };
-
-  options = (typeof options == 'function') ? {filter: options} : assign({}, options);
-  options.emitter= new EventEmitter();
+  options = isObject(options) ? assign({}, options) : {includeStat: options};
   options.fs = options.fs || DEFAULT_FS;
-  if (!options.each) options.each = limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
-
-  options.filter = options.filter || function() { return true; }
   options.stat = options.fs[options.stat || 'stat'].bind(options.fs);
+  options.each = options.each || limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
+  options.filterIter = function(path, stat) { var result = filter(path, stat); return isUndefined(result) ? true : result; }
 
   options.fs.realpath(cwd, function(err, realCWD) {
     if (err) return emitter.emit('error', err);
@@ -55,5 +53,4 @@ module.exports = function(cwd, options, callback) {
     options.cwd = realCWD;
     process(cwd, options, callback);
   })
-  return options.emitter;
 }
