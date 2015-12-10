@@ -9,11 +9,11 @@ A simple, performant file system walker to provided fine-grained control over di
 **Everything**
 
 ```
-// do not include stat
+// do not include stats
 walk(rootPath, function(path) { /* do something */ }, done);
 
-// include stat
-walk(rootPath, function(path, stat) { /* do something */ }, true, done);
+// include stats
+walk(rootPath, function(path, stats) { /* do something */ }, true, done);
 ```
 
 **Simple Filtering**
@@ -28,8 +28,8 @@ walk(rootPath, function(path) { /* do something */ return true or false }, done)
 walk(rootPath, function(path) { /* do something */ return true or false }, options, done);
 ```
 
-- bool: includeStat - stat before calling filter and pass to the filter function; for example, if you need to filter both directories and files by knowing their type (default: false). It is *potentially* more performant if you are expecting early exits based on string-only comparisons so enable only if you need it.
+- bool: stats - stats before calling filter and pass to the filter function; for example, if you need to filter both directories and files by knowing their type. This is an early exist optimization. (default: false)
 - function: concurrency - choose maximum number of parallelly-processed files or folders (NOTE: currently this is not a global option, but per folder). Default Infinity.
 - object: fs - choose an fs implementation (default graceful-fs); for example, you can use use fs and concurrency 1
-- string: stat - choose a stat method from fs (default fs.stat)
+- string: stat - choose a stats method from fs; for example, 'lstat' (default 'stat')
 - function: each - choose an each implementation (default async-each-series)

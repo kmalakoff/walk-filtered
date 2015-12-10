@@ -15,7 +15,7 @@ describe("walk everything", function() {
   it("Should find everything with no return", function(callback) {
     var fileSpy = sinon.spy();
 
-    walk(dir, function(path, stat) { fileSpy(); }, function(err) {
+    walk(dir, function(path, stats) { fileSpy(); }, function(err) {
       assert.equal(fileSpy.callCount, 13);
       callback();
     });
@@ -24,7 +24,7 @@ describe("walk everything", function() {
   it("Should find everything with return true", function(callback) {
     var fileSpy = sinon.spy();
 
-    walk(dir, function(path, stat) { fileSpy(); return true; }, function(err) {
+    walk(dir, function(path, stats) { fileSpy(); return true; }, function(err) {
       assert.equal(fileSpy.callCount, 13);
       callback();
     });

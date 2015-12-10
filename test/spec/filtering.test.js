@@ -16,7 +16,7 @@ describe("filtering", function() {
   it("Should filter everything under the root directory", function(callback) {
     var fileSpy = sinon.spy(function fileSpy(){});
 
-    walk(dir, function(path, stat) { fileSpy(); return false; }, function(err) {
+    walk(dir, function(path, stats) { fileSpy(); return false; }, function(err) {
       assert.ok(fileSpy.callCount, 1);
       callback();
     });
@@ -25,16 +25,16 @@ describe("filtering", function() {
   it("Should filter everything under specific directories by relative path", function(callback) {
     var fileSpy = sinon.spy(function fileSpy(){});
 
-    walk(dir, function(path, stat) { fileSpy(); return (path !== 'dir2'); }, true, function(err) {
+    walk(dir, function(path, stats) { fileSpy(); return (path !== 'dir2'); }, true, function(err) {
       assert.ok(fileSpy.callCount, 13 - 2);
       callback();
     });
   });
 
-  it("Should filter everything under specific directories by stat and relative path", function(callback) {
+  it("Should filter everything under specific directories by stats and relative path", function(callback) {
     var fileSpy = sinon.spy(function fileSpy(){});
 
-    walk(dir, function(path, stat) { fileSpy(); return !stat.isDirectory() || path.startsWith('dir3/dir4'); }, true, function(err) {
+    walk(dir, function(path, stats) { fileSpy(); return !stats.isDirectory() || path.startsWith('dir3/dir4'); }, true, function(err) {
       assert.ok(fileSpy.callCount, 13 - 1);
       callback();
     });

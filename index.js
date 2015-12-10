@@ -13,16 +13,15 @@ function limitEachFn(limit) { return function(array, fn, callback) { eachlimit(a
 
 function process(fullPath, options, callback) {
   var path = relative(options.cwd, fullPath); // the path to the link, file, or directory
-  if (!options.includeStat && !options.filterIter(path)) return callback(); // filter before stats
+  if (!options.stats && !options.filterIter(path)) return callback(); // filter before stats
 
-  // stat the path to the link, file, or directory
-  options.stat(fullPath, function(err, stat) {
+  options.stat(fullPath, function(err, stats) {
     if (err) return callback(err);
 
-    if (options.includeStat && !options.filterIter(path, stat)) return callback(); // filter with after and with stats
+    if (options.stats && !options.filterIter(path, stats)) return callback(); // filter with after and with stats
 
     // a file or symlink
-    if (!stat.isDirectory()) return callback();
+    if (!stats.isDirectory()) return callback();
 
     // a directory
     options.fs.realpath(fullPath, function(err, realPath) {
@@ -41,11 +40,11 @@ function process(fullPath, options, callback) {
 module.exports = function(cwd, filter, options, callback) {
   if (arguments.length === 3) { callback = options; options = {}; }
 
-  options = isObject(options) ? assign({}, options) : {includeStat: options};
+  options = isObject(options) ? assign({}, options) : {stats: options};
   options.fs = options.fs || DEFAULT_FS;
   options.stat = options.fs[options.stat || 'stat'].bind(options.fs);
   options.each = options.each || limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
-  options.filterIter = function(path, stat) { var result = filter(path, stat); return isUndefined(result) ? true : result; }
+  options.filterIter = function(path, stats) { var result = filter(path, stats); return isUndefined(result) ? true : result; }
 
   options.fs.realpath(cwd, function(err, realCWD) {
     if (err) return emitter.emit('error', err);
