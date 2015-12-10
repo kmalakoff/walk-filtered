@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,17 @@
     "type": "git",
     "url": "git@github.com:kmalakoff/walk-filtered.git"
   },
-  "author": "",
+  "keywords": [
+    "recursive",
+    "fs",
+    "readdir",
+    "filesystem",
+    "find",
+    "filter",
+    "walk",
+    "walk-filtered"
+  ],
+  "author": "Kevin Malakoff <kmalakoff@gmail.com> (https://github.com/kmalakoff)",
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
