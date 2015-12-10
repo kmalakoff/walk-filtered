@@ -15,7 +15,7 @@ describe("walk everything", function() {
   it("should run with concurrency 1", function(callback) {
     var fileSpy = sinon.spy();
 
-    walk(dir, function(path, stat) { fileSpy(); }, {concurrency: 1}, function(err) {
+    walk(dir, function(path, stats) { fileSpy(); }, {concurrency: 1}, function(err) {
       assert.equal(fileSpy.callCount, 13);
       callback();
     });
@@ -24,7 +24,7 @@ describe("walk everything", function() {
   it("should run with concurrency 50", function(callback) {
     var fileSpy = sinon.spy();
 
-    walk(dir, function(path, stat) { fileSpy(); }, {concurrency: 50}, function(err) {
+    walk(dir, function(path, stats) { fileSpy(); }, {concurrency: 50}, function(err) {
       assert.equal(fileSpy.callCount, 13);
       callback();
     });
@@ -33,7 +33,7 @@ describe("walk everything", function() {
   it("should run with concurrency Infinity", function(callback) {
     var fileSpy = sinon.spy();
 
-    walk(dir, function(path, stat) { fileSpy(); }, {concurrency: Infinity}, function(err) {
+    walk(dir, function(path, stats) { fileSpy(); }, {concurrency: Infinity}, function(err) {
       assert.equal(fileSpy.callCount, 13);
       callback();
     });
