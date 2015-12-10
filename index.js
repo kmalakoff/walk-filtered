@@ -5,9 +5,9 @@ var isUndefined = require('lodash.isundefined');
 var isObject = require('lodash.isobject');
 
 var DEFAULT_FS = require('graceful-fs');
-var DEFAULT_CONCURRENCY = Infinity; // TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
+var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 
-// TODO: https://github.com/kmalakoff/readdirp-walk/issues/1
+// TODO: implement global concurrency https://github.com/kmalakoff/readdirp-walk/issues/1
 var eachlimit = require('each-limit');
 function limitEachFn(limit) { return function(array, fn, callback) { eachlimit(array, limit, fn, callback); }; }
 
