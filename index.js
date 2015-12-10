@@ -5,6 +5,7 @@ var isUndefined = require('lodash.isundefined');
 var isObject = require('lodash.isobject');
 
 var DEFAULT_FS = require('graceful-fs');
+var DEFAULT_STAT = 'lstat';
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 
 // TODO: implement global concurrency https://github.com/kmalakoff/readdirp-walk/issues/1
@@ -42,7 +43,7 @@ module.exports = function(cwd, filter, options, callback) {
 
   options = isObject(options) ? assign({}, options) : {stats: options};
   options.fs = options.fs || DEFAULT_FS;
-  options.stat = options.fs[options.stat || 'stat'].bind(options.fs);
+  options.stat = options.fs[options.stat || DEFAULT_STAT].bind(options.fs);
   options.each = options.each || limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
   options.filterIter = function(path, stats) { var result = filter(path, stats); return isUndefined(result) ? true : result; }
 
