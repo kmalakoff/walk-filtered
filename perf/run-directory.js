@@ -4,6 +4,8 @@ var Benchmark = require('benchmark');
 var walk = require('..');
 var fs = require('fs');
 var gfs = require('graceful-fs');
+var readdirp = require('readdirp');
+var glob = require('glob');
 
 var eachSerial = require('async-each-series');
 var serialOptionsFn = function(fs) { return {fs: fs, each: eachSerial}; }
@@ -53,6 +55,17 @@ module.exports = function(dir, callback) {
     }, {defer: true})
     .add('Parallel limit (gfs, 100)', function(deferred) {
       walk(dir, function() {}, parallelLimitOptionsFn(gfs, 100), function(err) { err ? deferred.reject() : deferred.resolve();});
+    }, {defer: true})
+
+    .add('readdirp', function(deferred) {
+      readdirp({root: dir})
+        .on('error', function() {deferred.reject()})
+        .on('data', Function.prototype)
+        .on('end', function() {deferred.resolve()});
+    }, {defer: true})
+
+    .add('glob', function(deferred) {
+      glob(dir + '/**/*', function(err) { err ? deferred.reject() : deferred.resolve();});
     }, {defer: true})
 
     .on('start', function() { console.log('Comparing ' + this.name); })
