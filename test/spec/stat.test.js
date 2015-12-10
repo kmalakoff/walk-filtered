@@ -1,10 +1,8 @@
-var chai = require('chai');
+var chai = require('chai'); chai.use(require('sinon-chai'));
 var assert = chai.assert;
-var sinon = require('sinon');
-chai.use(require('sinon-chai'));
-var TestUtils = require('../lib/utils');
 
 var walk = require('../..');
+var statsSpys = require('../utils').statsSpys;
 
 describe("stat", function() {
   it("TODO", function(callback) { callback(); });
