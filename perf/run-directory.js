@@ -20,6 +20,10 @@ module.exports = function(dir, callback) {
   var relativeDir = dir.replace(sysPath.resolve(sysPath.join(__dirname, '..', '..')) + '/', '');
 
   new Benchmark.Suite('Walk ' + relativeDir)
+    .add('Default options', function(deferred) {
+      walk(dir, function() {}, function(err) { err ? deferred.reject() : deferred.resolve();});
+    }, {defer: true})
+
     .add('Serial (fs)', function(deferred) {
       walk(dir, function() {}, serialOptionsFn(fs), function(err) { err ? deferred.reject() : deferred.resolve();});
     }, {defer: true})
