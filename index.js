@@ -1,6 +1,6 @@
-var pathJoin = require('path').join;
+var sysPath = require('path');
 var relative = require('path').relative;
-var assign = require('object-assign');
+var assign = require('lodash.assign');
 var isUndefined = require('lodash.isundefined');
 var isObject = require('lodash.isobject');
 
@@ -31,7 +31,7 @@ function process(fullPath, options, callback) {
       options.fs.readdir(realPath, function(err, names) {
         if (err) return callback(err);
 
-        var fullPaths = names.map(function(name) { return pathJoin(realPath, name); });
+        var fullPaths = names.map(function(name) { return sysPath.join(realPath, name); });
         options.each(fullPaths, function(fullPath, callback) { process(fullPath, options, callback); }, callback);
       });
     });
