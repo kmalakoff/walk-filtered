@@ -1,5 +1,4 @@
 var sysPath = require('path');
-var relative = require('path').relative;
 var assign = require('lodash.assign');
 var isUndefined = require('lodash.isundefined');
 var isObject = require('lodash.isobject');
@@ -13,7 +12,7 @@ var eachlimit = require('each-limit');
 function limitEachFn(limit) { return function(array, fn, callback) { eachlimit(array, limit, fn, callback); }; }
 
 function process(fullPath, options, callback) {
-  var path = relative(options.cwd, fullPath); // the path to the link, file, or directory
+  var path = sysPath.relative(options.cwd, fullPath); // the path to the link, file, or directory
   if (!options.stats && !options.filterIter(path)) return callback(); // filter before stats
 
   options.stat(fullPath, function(err, stats) {
