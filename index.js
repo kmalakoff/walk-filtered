@@ -8,8 +8,8 @@ var DEFAULT_STAT = 'lstat';
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 
 // TODO: implement global concurrency https://github.com/kmalakoff/readdirp-walk/issues/1
-var eachlimit = require('each-limit');
-function limitEachFn(limit) { return function(array, fn, callback) { eachlimit(array, limit, fn, callback); }; }
+var asyncEachLimit = require('each-limit');
+function limitEachFn(limit) { return function(array, fn, callback) { asyncEachLimit(array, limit, fn, callback); }; }
 
 function process(fullPath, options, callback) {
   var path = sysPath.relative(options.cwd, fullPath); // the path to the link, file, or directory

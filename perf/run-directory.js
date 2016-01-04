@@ -5,15 +5,15 @@ var walk = require('..');
 var fs = require('fs');
 var gfs = require('graceful-fs');
 
-var eachSerial = require('async-each-series');
-var serialOptionsFn = function(fs) { return {fs: fs, each: eachSerial}; }
+var asyncEach = require('async-each-series');
+var serialOptionsFn = function(fs) { return {fs: fs, each: asyncEach}; }
 
-var eachParallel = require('async-each');
-var paralleOptionsFn = function(fs) { return {fs: fs, each: eachParallel}; }
+var asyncEachParallel = require('async-each');
+var paralleOptionsFn = function(fs) { return {fs: fs, each: asyncEachParallel}; }
 
-var eachlimit = require('each-limit');
+var asyncEachLimit = require('each-limit');
 var parallelLimitOptionsFn = function(fs, limit) {
-  return {fs: fs, each: function(array, fn, callback) { eachlimit(array, limit, fn, callback); }};
+  return {fs: fs, each: function(array, fn, callback) { asyncEachLimit(array, limit, fn, callback); }};
 }
 
 module.exports = function(dir, callback) {
