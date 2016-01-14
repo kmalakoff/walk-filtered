@@ -28,9 +28,9 @@
   "dependencies": {
     "each-limit": "^1.0.0",
     "graceful-fs": "^4.1.2",
-    "lodash.assign": "^3.2.0",
-    "lodash.isobject": "^3.0.2",
-    "lodash.isundefined": "^3.0.1"
+    "lodash.assign": "^4.0.0",
+    "lodash.isobject": "^4.0.0",
+    "lodash.isundefined": "^4.0.0"
   },
   "devDependencies": {
     "async-each": "^1.0.0",
