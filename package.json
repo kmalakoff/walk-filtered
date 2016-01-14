@@ -30,7 +30,7 @@
     "graceful-fs": "^4.1.2",
     "lodash.assign": "^4.0.0",
     "lodash.isobject": "^4.0.0",
-    "lodash.isundefined": "^4.0.0"
+    "lodash.isundefined": "^3.0.1"
   },
   "devDependencies": {
     "async-each": "^1.0.0",
