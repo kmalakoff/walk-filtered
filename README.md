@@ -33,3 +33,4 @@ walk(rootPath, function(path) { /* do something */ return true or false }, optio
 - object: fs - choose an fs implementation (default graceful-fs); for example, you can use use fs and concurrency 1
 - string: stat - choose a stats method from fs; for example, 'stat' (default 'lstat')
 - function: each - choose an each implementation (default async-each-series)
+- bool: async - use an async filter function of the form function(path, stats, callback) with callback being of the form function(err, keep) where keep undefined means continue
