@@ -78,7 +78,7 @@ module.exports = function(cwd, filter, options, callback) {
   options.each = options.each || limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
 
   options.fs.realpath(cwd, function(err, realCWD) {
-    if (err) return emitter.emit('error', err);
+    if (err) return callback(err);
 
     options.cwd = realCWD;
     process(cwd, options, callback);
