@@ -1,9 +1,9 @@
-var chai = require('chai'); chai.use(require('sinon-chai'));
-var assert = chai.assert;
+const chai = require('chai'); chai.use(require('sinon-chai'));
+// const { assert } = chai;
 
-var walk = require('../..');
-var statsSpys = require('../utils').statsSpys;
+// const walk = require('../..');
+// const { statsSpys } = require('../utils');
 
-describe("stat", function() {
-  it("TODO", function(callback) { callback(); });
+describe('stat', () => {
+  it('TODO', (callback) => { callback(); });
 });

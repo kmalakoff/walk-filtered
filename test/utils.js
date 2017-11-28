@@ -1,7 +1,7 @@
-var sinon = require('sinon');
+const sinon = require('sinon');
 
-module.exports.statsSpys = function() {
-  var spys = function(stats, path) {
+module.exports.statsSpys = function statsSpys() {
+  function spys(stats) {
     if (stats.isSymbolicLink()) spys.link(stats);
     else if (stats.isDirectory()) spys.dir(stats);
     else if (stats.isFile()) spys.file(stats);
@@ -11,4 +11,4 @@ module.exports.statsSpys = function() {
   spys.link = sinon.spy();
 
   return spys;
-}
+};
