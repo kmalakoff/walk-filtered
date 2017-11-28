@@ -1,12 +1,13 @@
 {
   "name": "walk-filtered",
-  "version": "0.9.3",
+  "version": "1.0.0",
   "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk",
   "main": "index.js",
   "scripts": {
-    "test": "mocha . test/**/*.test.js",
-    "testDebugger": "iron-node node_modules/.bin/_mocha . test/**/*.test.js",
-    "perf": "node perf/tests.js"
+    "test": "mocha . test/spec/**/*.test.js",
+    "perf": "node test/perf/tests.js",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -35,12 +36,18 @@
   "devDependencies": {
     "async-each": "^1.0.0",
     "async-each-series": "^1.1.0",
-    "benchmark": "^1.0.0",
-    "chai": "^3.4.1",
-    "fs-extra": "^0.26.2",
+    "benchmark": "^2.1.4",
+    "chai": "^4.1.2",
+    "eslint": "^4.12.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.5.1",
+    "fs-extra": "^4.0.2",
     "fs-generate": "^1.0.0",
-    "mocha": "^2.3.4",
-    "sinon": "^1.17.2",
-    "sinon-chai": "^2.8.0"
+    "mocha": "^4.0.1",
+    "sinon": "^4.1.2",
+    "sinon-chai": "^2.8.0",
+    "sleep-promise": "^2.0.0"
   }
 }

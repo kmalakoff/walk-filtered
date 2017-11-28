@@ -22,6 +22,12 @@ walk(rootPath, function(path, stats) { /* do something */ }, true, done);
 walk(rootPath, function(path) { /* do something */ return true or false }, done);
 ```
 
+**Promise Filtering**
+
+```
+walk(rootPath, async function(path) { /* do something */ return true or false }, done);
+```
+
 **Advanced Options**:
 
 ```
