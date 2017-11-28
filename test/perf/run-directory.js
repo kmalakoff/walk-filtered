@@ -54,10 +54,10 @@ module.exports = function run(dir, callback) {
       walk(dir, () => {}, parallelLimitOptionsFn(gfs, 100), (err) => { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
 
-    .on('start', function complete() { console.log(`Comparing ${this.name}`); })
+    .on('start', function start() { console.log(`Comparing ${this.name}`); })
     .on('cycle', (event) => { console.log(String(event.target)); })
     .on('complete', function complete() {
-      console.log(`Fastest is ${this.filter('fastest').pluck('name')}`);
+      console.log(`Fastest is ${this.filter('fastest')[0].name}`);
       if (callback) callback();
     })
     .run({ async: true, maxTime: 1000 });
