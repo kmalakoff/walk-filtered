@@ -1,13 +1,13 @@
-const sysPath = require('path');
-const Benchmark = require('benchmark');
+var sysPath = require('path');
+var Benchmark = require('benchmark');
 
-const walk = require('../..');
-const fs = require('fs');
-const gfs = require('graceful-fs');
+var walk = require('../..');
+var fs = require('fs');
+var gfs = require('graceful-fs');
 
-const asyncEach = require('async-each-series');
-const asyncEachParallel = require('async-each');
-const asyncEachLimit = require('each-limit');
+var asyncEach = require('async-each-series');
+var asyncEachParallel = require('async-each');
+var asyncEachLimit = require('each-limit');
 
 function serialOptionsFn(fs1) { return { fs: fs1, each: asyncEach }; }
 function paralleOptionsFn(fs1) { return { fs: fs1, each: asyncEachParallel }; }
@@ -16,47 +16,47 @@ function parallelLimitOptionsFn(fs1, limit) {
 }
 
 module.exports = function run(dir, callback) {
-  const relativeDir = dir.replace(`${sysPath.resolve(sysPath.join(__dirname, '..', '..'))}/`, '');
+  var relativeDir = dir.replace(`${sysPath.resolve(sysPath.join(__dirname, '..', '..'))}/`, '');
 
   new Benchmark.Suite(`Walk ${relativeDir}`)
-    .add('Default options', (deferred) => {
-      walk(dir, () => {}, (err) => { err ? deferred.reject() : deferred.resolve(); });
+    .add('Default options', function (deferred) {
+      walk(dir, function () {}, function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
 
-    .add('Serial (fs)', (deferred) => {
-      walk(dir, () => {}, serialOptionsFn(fs), (err) => { err ? deferred.reject() : deferred.resolve(); });
+    .add('Serial (fs)', function (deferred) {
+      walk(dir, function () {}, serialOptionsFn(fs), function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
 
-    .add('Parallel (fs)', (deferred) => {
-      walk(dir, () => {}, paralleOptionsFn(fs), (err) => { err ? deferred.reject() : deferred.resolve(); });
+    .add('Parallel (fs)', function (deferred) {
+      walk(dir, function () {}, paralleOptionsFn(fs), function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
-    .add('Parallel (gfs)', (deferred) => {
-      walk(dir, () => {}, paralleOptionsFn(gfs), (err) => { err ? deferred.reject() : deferred.resolve(); });
-    }, { defer: true })
-
-    .add('Parallel limit (fs, 10)', (deferred) => {
-      walk(dir, () => {}, parallelLimitOptionsFn(fs, 10), (err) => { err ? deferred.reject() : deferred.resolve(); });
-    }, { defer: true })
-    .add('Parallel limit (fs, 50)', (deferred) => {
-      walk(dir, () => {}, parallelLimitOptionsFn(fs, 50), (err) => { err ? deferred.reject() : deferred.resolve(); });
-    }, { defer: true })
-    .add('Parallel limit (fs, 100)', (deferred) => {
-      walk(dir, () => {}, parallelLimitOptionsFn(fs, 100), (err) => { err ? deferred.reject() : deferred.resolve(); });
+    .add('Parallel (gfs)', function (deferred) {
+      walk(dir, function () {}, paralleOptionsFn(gfs), function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
 
-    .add('Parallel limit (gfs, 10)', (deferred) => {
-      walk(dir, () => {}, parallelLimitOptionsFn(gfs, 10), (err) => { err ? deferred.reject() : deferred.resolve(); });
+    .add('Parallel limit (fs, 10)', function (deferred) {
+      walk(dir, function () {}, parallelLimitOptionsFn(fs, 10), function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
-    .add('Parallel limit (gfs, 50)', (deferred) => {
-      walk(dir, () => {}, parallelLimitOptionsFn(gfs, 50), (err) => { err ? deferred.reject() : deferred.resolve(); });
+    .add('Parallel limit (fs, 50)', function (deferred) {
+      walk(dir, function () {}, parallelLimitOptionsFn(fs, 50), function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
-    .add('Parallel limit (gfs, 100)', (deferred) => {
-      walk(dir, () => {}, parallelLimitOptionsFn(gfs, 100), (err) => { err ? deferred.reject() : deferred.resolve(); });
+    .add('Parallel limit (fs, 100)', function (deferred) {
+      walk(dir, function () {}, parallelLimitOptionsFn(fs, 100), function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
 
-    .on('start', function start() { console.log(`Comparing ${this.name}`); })
-    .on('cycle', (event) => { console.log(String(event.target)); })
-    .on('complete', function complete() {
+    .add('Parallel limit (gfs, 10)', function (deferred) {
+      walk(dir, function () {}, parallelLimitOptionsFn(gfs, 10), function (err) { err ? deferred.reject() : deferred.resolve(); });
+    }, { defer: true })
+    .add('Parallel limit (gfs, 50)', function (deferred) {
+      walk(dir, function () {}, parallelLimitOptionsFn(gfs, 50), function (err) { err ? deferred.reject() : deferred.resolve(); });
+    }, { defer: true })
+    .add('Parallel limit (gfs, 100)', function (deferred) {
+      walk(dir, function () {}, parallelLimitOptionsFn(gfs, 100), function (err) { err ? deferred.reject() : deferred.resolve(); });
+    }, { defer: true })
+
+    .on('start', function () { console.log(`Comparing ${this.name}`); })
+    .on('cycle', function (event) { console.log(String(event.target)); })
+    .on('complete', function () {
       console.log(`Fastest is ${this.filter('fastest')[0].name}`);
       if (callback) callback();
     })
