@@ -1,16 +1,16 @@
-const chai = require('chai'); chai.use(require('sinon-chai'));
+var chai = require('chai'); chai.use(require('sinon-chai'));
 
-const { assert } = chai;
-const sinon = require('sinon');
-const generate = require('fs-generate');
-const fs = require('fs-extra');
-const sysPath = require('path');
+var assert = chai.assert;
+var sinon = require('sinon');
+var generate = require('fs-generate');
+var fs = require('fs-extra');
+var sysPath = require('path');
 
-const walk = require('../..');
-const { statsSpys } = require('../utils');
+var walk = require('../..');
+var statsSpys = require('../utils').statsSpys;
 
-const DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
-const STRUCTURE = {
+var DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
+var STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -22,78 +22,78 @@ const STRUCTURE = {
   'dir3/link2': '~dir2/file1',
 };
 
-describe('stats', () => {
-  beforeEach((callback) => { fs.remove(DIR, () => { generate(DIR, STRUCTURE, callback); }); });
-  after((callback) => { fs.remove(DIR, callback); });
+describe('stats', function () {
+  beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+  after(function (callback) { fs.remove(DIR, callback); });
 
-  it('should be default false', (callback) => {
-    const statsSpy = sinon.spy();
+  it('should be default false', function (callback) {
+    var statsSpy = sinon.spy();
 
-    walk(DIR, (path, stats) => { statsSpy(stats); }, () => {
+    walk(DIR, function (path, stats) { statsSpy(stats); }, function () {
       assert.ok(statsSpy.callCount, 13);
-      statsSpy.args.forEach((args) => { assert.isUndefined(args[0]); });
+      statsSpy.args.forEach(function (args) { assert.isUndefined(args[0]); });
       callback();
     });
   });
 
-  it('false (argument) should not return a stats', (callback) => {
-    const statsSpy = sinon.spy();
+  it('false (argument) should not return a stats', function (callback) {
+    var statsSpy = sinon.spy();
 
-    walk(DIR, (path, stats) => { statsSpy(stats); }, false, () => {
+    walk(DIR, function (path, stats) { statsSpy(stats); }, false, function () {
       assert.ok(statsSpy.callCount, 13);
-      statsSpy.args.forEach((args) => { assert.isUndefined(args[0]); });
+      statsSpy.args.forEach(function (args) { assert.isUndefined(args[0]); });
       callback();
     });
   });
 
-  it('false (option) should not return a stats', (callback) => {
-    const statsSpy = sinon.spy();
+  it('false (option) should not return a stats', function (callback) {
+    var statsSpy = sinon.spy();
 
-    walk(DIR, (path, stats) => { statsSpy(stats); }, { stats: false }, () => {
+    walk(DIR, function (path, stats) { statsSpy(stats); }, { stats: false }, function () {
       assert.ok(statsSpy.callCount, 13);
-      statsSpy.args.forEach((args) => { assert.isUndefined(args[0]); });
+      statsSpy.args.forEach(function (args) { assert.isUndefined(args[0]); });
       callback();
     });
   });
 
-  it('false (argument) should not return a stats', (callback) => {
-    const spys = statsSpys();
-    const statsSpy = sinon.spy();
+  it('false (argument) should not return a stats', function (callback) {
+    var spys = statsSpys();
+    var statsSpy = sinon.spy();
 
-    walk(DIR, (path, stats) => { spys(stats, path); statsSpy(stats); }, true, () => {
+    walk(DIR, function (path, stats) { spys(stats, path); statsSpy(stats); }, true, function () {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
       assert.ok(statsSpy.callCount, 13);
-      statsSpy.args.forEach((args) => { assert.isDefined(args[0]); });
+      statsSpy.args.forEach(function (args) { assert.isDefined(args[0]); });
       callback();
     });
   });
 
-  it('false (option) should not return a stats', (callback) => {
-    const spys = statsSpys();
-    const statsSpy = sinon.spy();
+  it('false (option) should not return a stats', function (callback) {
+    var spys = statsSpys();
+    var statsSpy = sinon.spy();
 
-    walk(DIR, (path, stats) => { spys(stats, path); statsSpy(stats); }, { stats: true }, () => {
+    walk(DIR, function (path, stats) { spys(stats, path); statsSpy(stats); }, { stats: true }, function () {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
       assert.ok(statsSpy.callCount, 13);
-      statsSpy.args.forEach((args) => { assert.isDefined(args[0]); });
+      statsSpy.args.forEach(function (args) { assert.isDefined(args[0]); });
       callback();
     });
   });
 
-  it('should be able to use stats to filter symlinks', (callback) => {
-    const spys = statsSpys();
-    const statsSpy = sinon.spy();
+  it('should be able to use stats to filter symlinks', function (callback) {
+    var spys = statsSpys();
+    var statsSpy = sinon.spy();
 
-    walk(DIR, (path, stats) => { if (!stats.isSymbolicLink()) spys(stats, path); statsSpy(stats); }, true, () => {
+    walk(DIR, function (path, stats) { if (!stats.isSymbolicLink()) spys(stats, path); statsSpy(stats); }, true, function () {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 0);
       assert.ok(statsSpy.callCount, 13 - 2);
-      statsSpy.args.forEach((args) => { assert.isDefined(args[0]); });
+      statsSpy.args.forEach(function (args) { assert.isDefined(args[0]); });
       callback();
     });
   });

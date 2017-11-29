@@ -1,16 +1,15 @@
-const chai = require('chai'); chai.use(require('sinon-chai'));
+var chai = require('chai'); chai.use(require('sinon-chai'));
 
-const { assert } = chai;
-const sinon = require('sinon');
-const generate = require('fs-generate');
-const fs = require('fs-extra');
-const sysPath = require('path');
-const sleep = require('sleep-promise');
+var assert = chai.assert;
+var sinon = require('sinon');
+var generate = require('fs-generate');
+var fs = require('fs-extra');
+var sysPath = require('path');
 
-const walk = require('../..');
+var walk = require('../..');
 
-const DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
-const STRUCTURE = {
+var DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
+var STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -22,96 +21,100 @@ const STRUCTURE = {
   'dir3/link2': '~dir2/file1',
 };
 
-describe('concurrency', () => {
-  after((callback) => { fs.remove(DIR, callback); });
+function sleep(timeout) {
+  return new Promise(function (resolve) { setTimeout(resolve, timeout); });
+}
 
-  describe('sync', () => {
-    beforeEach((callback) => { fs.remove(DIR, () => { generate(DIR, STRUCTURE, callback); }); });
+describe('concurrency', function () {
+  after(function (callback) { fs.remove(DIR, callback); });
 
-    it('should run with concurrency 1', (callback) => {
-      const filterSpy = sinon.spy();
+  describe('sync', function () {
+    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
-      walk(DIR, () => { filterSpy(); }, { concurrency: 1 }, (err) => {
+    it('should run with concurrency 1', function (callback) {
+      var filterSpy = sinon.spy();
+
+      walk(DIR, function () { filterSpy(); }, { concurrency: 1 }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
       });
     });
 
-    it('should run with concurrency 50', (callback) => {
-      const filterSpy = sinon.spy();
+    it('should run with concurrency 50', function (callback) {
+      var filterSpy = sinon.spy();
 
-      walk(DIR, () => { filterSpy(); }, { concurrency: 50 }, (err) => {
+      walk(DIR, function () { filterSpy(); }, { concurrency: 50 }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
       });
     });
 
-    it('should run with concurrency Infinity', (callback) => {
-      const filterSpy = sinon.spy();
+    it('should run with concurrency Infinity', function (callback) {
+      var filterSpy = sinon.spy();
 
-      walk(DIR, () => { filterSpy(); }, { concurrency: Infinity }, (err) => {
-        assert.ok(filterSpy.callCount, 13);
-        callback(err);
-      });
-    });
-  });
-
-  describe('async', () => {
-    beforeEach((callback) => { fs.remove(DIR, () => { generate(DIR, STRUCTURE, callback); }); });
-
-    it('should run with concurrency 1', (callback) => {
-      const filterSpy = sinon.spy();
-
-      walk(DIR, (path, callback2) => { filterSpy(); callback2(); }, { concurrency: 1, async: true }, (err) => {
-        assert.ok(filterSpy.callCount, 13);
-        callback(err);
-      });
-    });
-
-    it('should run with concurrency 50', (callback) => {
-      const filterSpy = sinon.spy();
-
-      walk(DIR, (path, callback2) => { filterSpy(); callback2(); }, { concurrency: 50, async: true }, (err) => {
-        assert.ok(filterSpy.callCount, 13);
-        callback(err);
-      });
-    });
-
-    it('should run with concurrency Infinity', (callback) => {
-      const filterSpy = sinon.spy();
-
-      walk(DIR, (path, callback2) => { filterSpy(); callback2(); }, { concurrency: Infinity, async: true }, (err) => {
+      walk(DIR, function () { filterSpy(); }, { concurrency: Infinity }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
       });
     });
   });
 
-  describe('promise', () => {
-    beforeEach((callback) => { fs.remove(DIR, () => { generate(DIR, STRUCTURE, callback); }); });
+  describe('async', function () {
+    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
-    it('should run with concurrency 1', (callback) => {
-      const filterSpy = sinon.spy();
+    it('should run with concurrency 1', function (callback) {
+      var filterSpy = sinon.spy();
 
-      walk(DIR, async () => { filterSpy(); await sleep(50); }, { concurrency: 1 }, (err) => {
+      walk(DIR, function (path, callback2) { filterSpy(); callback2(); }, { concurrency: 1, async: true }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
       });
     });
 
-    it('should run with concurrency 50', (callback) => {
-      const filterSpy = sinon.spy();
+    it('should run with concurrency 50', function (callback) {
+      var filterSpy = sinon.spy();
 
-      walk(DIR, async () => { filterSpy(); await sleep(50); }, { concurrency: 50 }, (err) => {
+      walk(DIR, function (path, callback2) { filterSpy(); callback2(); }, { concurrency: 50, async: true }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
       });
     });
 
-    it('should run with concurrency Infinity', (callback) => {
-      const filterSpy = sinon.spy();
+    it('should run with concurrency Infinity', function (callback) {
+      var filterSpy = sinon.spy();
 
-      walk(DIR, async () => { filterSpy(); await sleep(50); }, { concurrency: Infinity }, () => {
+      walk(DIR, function (path, callback2) { filterSpy(); callback2(); }, { concurrency: Infinity, async: true }, function (err) {
+        assert.ok(filterSpy.callCount, 13);
+        callback(err);
+      });
+    });
+  });
+
+  describe('promise', function () {
+    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+
+    it('should run with concurrency 1', function (callback) {
+      var filterSpy = sinon.spy();
+
+      walk(DIR, function () { filterSpy(); return sleep(50); }, { concurrency: 1 }, function (err) {
+        assert.ok(filterSpy.callCount, 13);
+        callback(err);
+      });
+    });
+
+    it('should run with concurrency 50', function (callback) {
+      var filterSpy = sinon.spy();
+
+      walk(DIR, function () { filterSpy(); return sleep(50); }, { concurrency: 50 }, function (err) {
+        assert.ok(filterSpy.callCount, 13);
+        callback(err);
+      });
+    });
+
+    it('should run with concurrency Infinity', function (callback) {
+      var filterSpy = sinon.spy();
+
+      walk(DIR, function () { filterSpy(); return sleep(50); }, { concurrency: Infinity }, function () {
         assert.ok(filterSpy.callCount, 13);
         callback();
       });

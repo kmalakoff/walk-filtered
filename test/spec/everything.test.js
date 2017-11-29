@@ -1,15 +1,15 @@
-const chai = require('chai'); chai.use(require('sinon-chai'));
+var chai = require('chai'); chai.use(require('sinon-chai'));
 
-const { assert } = chai;
-const generate = require('fs-generate');
-const fs = require('fs-extra');
-const sysPath = require('path');
+var assert = chai.assert;
+var generate = require('fs-generate');
+var fs = require('fs-extra');
+var sysPath = require('path');
 
-const walk = require('../..');
-const { statsSpys } = require('../utils');
+var walk = require('../..');
+var statsSpys = require('../utils').statsSpys;
 
-const DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
-const STRUCTURE = {
+var DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
+var STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -21,14 +21,14 @@ const STRUCTURE = {
   'dir3/link2': '~dir2/file1',
 };
 
-describe('walk everything', () => {
-  beforeEach((callback) => { fs.remove(DIR, () => { generate(DIR, STRUCTURE, callback); }); });
-  after((callback) => { fs.remove(DIR, callback); });
+describe('walk everything', function () {
+  beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+  after(function (callback) { fs.remove(DIR, callback); });
 
-  it('Should find everything with no return', (callback) => {
-    const spys = statsSpys();
+  it('Should find everything with no return', function (callback) {
+    var spys = statsSpys();
 
-    walk(DIR, (path, stats) => { spys(stats, path); }, true, () => {
+    walk(DIR, function (path, stats) { spys(stats, path); }, true, function () {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
@@ -36,10 +36,10 @@ describe('walk everything', () => {
     });
   });
 
-  it('Should find everything with return true', (callback) => {
-    const spys = statsSpys();
+  it('Should find everything with return true', function (callback) {
+    var spys = statsSpys();
 
-    walk(DIR, (path, stats) => { spys(stats, path); return true; }, true, () => {
+    walk(DIR, function (path, stats) { spys(stats, path); return true; }, true, function () {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
