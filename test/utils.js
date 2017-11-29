@@ -1,4 +1,4 @@
-const sinon = require('sinon');
+var sinon = require('sinon');
 
 module.exports.statsSpys = function statsSpys() {
   function spys(stats) {

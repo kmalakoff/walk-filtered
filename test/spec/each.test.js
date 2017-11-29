@@ -1,10 +1,10 @@
-const chai = require('chai'); chai.use(require('sinon-chai'));
+var chai = require('chai'); chai.use(require('sinon-chai'));
 
-// const assert = chai.assert;
+// var assert = chai.assert;
 
-// const walk = require('../..');
-// const statsSpys = require('../utils').statsSpys;
+// var walk = require('../..');
+// var statsSpys = require('../utils').statsSpys;
 
-describe('each', () => {
-  it('TODO', (callback) => { callback(); });
+describe('each', function () {
+  it('TODO', function (callback) { callback(); });
 });

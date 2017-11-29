@@ -9,5 +9,9 @@ module.exports = {
       'no-console': 'off',
       'no-unused-expressions': 'off',
       'consistent-return': 'off',
+      'func-names': 'off',
+      'prefer-arrow-callback': 'off',
+      'vars-on-top': 'off',
+      'prefer-destructuring': 'off',
     }
   };
