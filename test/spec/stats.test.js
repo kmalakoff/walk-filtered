@@ -3,7 +3,7 @@ var chai = require('chai'); chai.use(require('sinon-chai'));
 var assert = chai.assert;
 var sinon = require('sinon');
 var generate = require('fs-generate');
-var fs = require('fs-extra');
+var rimraf = require('rimraf');
 var sysPath = require('path');
 
 var walk = require('../..');
@@ -23,8 +23,8 @@ var STRUCTURE = {
 };
 
 describe('stats', function () {
-  beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
-  after(function (callback) { fs.remove(DIR, callback); });
+  beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+  after(function (callback) { rimraf(DIR, callback); });
 
   it('should be default false', function (callback) {
     var statsSpy = sinon.spy();

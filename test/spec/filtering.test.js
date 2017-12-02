@@ -3,7 +3,7 @@ var chai = require('chai'); chai.use(require('sinon-chai'));
 var assert = chai.assert;
 var sinon = require('sinon');
 var generate = require('fs-generate');
-var fs = require('fs-extra');
+var rimraf = require('rimraf');
 var sysPath = require('path');
 var BPromise = require('bluebird');
 
@@ -28,10 +28,10 @@ function sleep(timeout) {
 }
 
 describe('filtering', function () {
-  after(function (callback) { fs.remove(DIR, callback); });
+  after(function (callback) { rimraf(DIR, callback); });
 
   describe('sync', function () {
-    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+    beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
@@ -62,7 +62,7 @@ describe('filtering', function () {
   });
 
   describe('async', function () {
-    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+    beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
@@ -95,7 +95,7 @@ describe('filtering', function () {
   });
 
   describe('promise', function () {
-    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+    beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
