@@ -67,7 +67,9 @@ describe('filtering', function () {
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
 
-      walk(DIR, function (path, callback2) { filterSpy(); callback2(null, false); }, { async: true }, function () {
+      walk(DIR, function (path, callback2) {
+        filterSpy(); setTimeout(function () { callback2(null, false); }, 100);
+      }, { stats: false, async: true }, function () {
         assert.ok(filterSpy.callCount, 1);
         callback();
       });
@@ -76,7 +78,9 @@ describe('filtering', function () {
     it('Should filter everything under specific directories by relative path', function (callback) {
       var filterSpy = sinon.spy();
 
-      walk(DIR, function (path, stats, callback2) { filterSpy(); callback2(null, (path !== 'dir2')); }, { stats: true, async: true }, function () {
+      walk(DIR, function (path, callback2) {
+        filterSpy(); setTimeout(function () { callback2(null, (path !== 'dir2')); }, 100);
+      }, { async: true, stats: false }, function () {
         assert.ok(filterSpy.callCount, 13 - 2);
         callback();
       });
@@ -86,7 +90,7 @@ describe('filtering', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path, stats) {
-        filterSpy(); callback(null, !stats.isDirectory() || startsWith(path, 'dir3/dir4'));
+        filterSpy(); setTimeout(function () { callback(null, !stats.isDirectory() || startsWith(path, 'dir3/dir4')); }, 100);
       }, { stats: true, async: true }, function () {
         assert.ok(filterSpy.callCount, 13 - 1);
         callback();
@@ -100,7 +104,7 @@ describe('filtering', function () {
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
 
-      walk(DIR, function () { filterSpy(); return sleep(200).then(function () { return false; }); }, function () {
+      walk(DIR, function () { filterSpy(); return sleep(100).then(function () { return false; }); }, function () {
         assert.ok(filterSpy.callCount, 1);
         callback();
       });
@@ -110,7 +114,7 @@ describe('filtering', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path) {
-        filterSpy(); return sleep(200).then(function () { return path !== 'dir2'; });
+        filterSpy(); return sleep(100).then(function () { return path !== 'dir2'; });
       }, { stats: true }, function () {
         assert.ok(filterSpy.callCount, 13 - 2);
         callback();
@@ -121,7 +125,7 @@ describe('filtering', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path, stats) {
-        filterSpy(); return sleep(200).then(function () { return !stats.isDirectory() || startsWith(path, 'dir3/dir4'); });
+        filterSpy(); return sleep(100).then(function () { return !stats.isDirectory() || startsWith(path, 'dir3/dir4'); });
       }, { stats: true }, function () {
         assert.ok(filterSpy.callCount, 13 - 1);
         callback();

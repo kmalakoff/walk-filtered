@@ -1,10 +1,10 @@
+var fs = require('fs');
 var sysPath = require('path');
 var assign = require('lodash.assign');
 var isUndefined = require('lodash.isundefined');
 var isObject = require('lodash.isobject');
 
-var DEFAULT_FS = require('graceful-fs');
-
+var DEFAULT_FS = fs;
 var DEFAULT_STAT = 'lstat';
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 var DEFAULT_STATS = false;
