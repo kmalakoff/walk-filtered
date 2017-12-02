@@ -25,7 +25,7 @@ function sleep(timeout) {
   return new BPromise(function (resolve) { setTimeout(resolve, timeout); });
 }
 
-describe.only('errors', function () {
+describe('errors', function () {
   after(function (callback) { rimraf(DIR, callback); });
 
   describe('sync', function () {
@@ -55,7 +55,7 @@ describe.only('errors', function () {
   describe('promise', function () {
     beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
-    it('should run with concurrency 1', function (callback) {
+    it('should propagate errors', function (callback) {
       walk(DIR, function () { sleep(100); throw new Error('Failed'); }, function (err) {
         assert.ok(!!err);
         callback();
