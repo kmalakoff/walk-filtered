@@ -5,6 +5,7 @@ var sinon = require('sinon');
 var generate = require('fs-generate');
 var fs = require('fs-extra');
 var sysPath = require('path');
+var BPromise = require('bluebird');
 
 var walk = require('../..');
 
@@ -22,7 +23,7 @@ var STRUCTURE = {
 };
 
 function sleep(timeout) {
-  return new Promise(function (resolve) { setTimeout(resolve, timeout); });
+  return new BPromise(function (resolve) { setTimeout(resolve, timeout); });
 }
 
 describe('concurrency', function () {

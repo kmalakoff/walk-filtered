@@ -5,6 +5,7 @@ var sinon = require('sinon');
 var generate = require('fs-generate');
 var fs = require('fs-extra');
 var sysPath = require('path');
+var BPromise = require('bluebird');
 
 var walk = require('../..');
 
@@ -23,7 +24,7 @@ var STRUCTURE = {
 
 function startsWith(string, start) { return (string.substring(0, start.length) === start); }
 function sleep(timeout) {
-  return new Promise(function (resolve) { setTimeout(resolve, timeout); });
+  return new BPromise(function (resolve) { setTimeout(resolve, timeout); });
 }
 
 describe('filtering', function () {
