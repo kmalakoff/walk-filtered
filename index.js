@@ -28,12 +28,14 @@ function processKeep(keep, callback, stats) {
 }
 
 function processPath(fullPath, options, callback) {
-  options.processFilter(fullPath, options, function (err, keep, stats) {
-    if (err || !keep || !stats.isDirectory()) return callback();
+  try {
+    options.processFilter(fullPath, options, function (err, keep, stats) {
+      if (err || !keep || !stats.isDirectory()) return callback();
 
-    // a directory, file or symlink
-    processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
-  });
+      // a directory, file or symlink
+      processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
+    });
+  } catch (err) { callback(err); }
 }
 
 function processDirectory(fullPath, options, callback) {
