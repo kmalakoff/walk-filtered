@@ -13,5 +13,6 @@ module.exports = {
       'prefer-arrow-callback': 'off',
       'vars-on-top': 'off',
       'prefer-destructuring': 'off',
+      'prefer-template': 'off'
     }
   };
