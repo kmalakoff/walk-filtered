@@ -7,6 +7,7 @@ var DEFAULT_FS = require('graceful-fs');
 
 var DEFAULT_STAT = 'lstat';
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
+var DEFAULT_STATS = false;
 
 function isPromise(obj) { return !!obj && (typeof obj === 'object') && (typeof obj.then === 'function'); }
 
@@ -82,6 +83,7 @@ module.exports = function (cwd, filter, options, callback) {
 
   /* eslint-disable */
   options = isObject(options) ? assign({}, options) : { stats: options };
+  options.stats = isUndefined(options.stats) ? DEFAULT_STATS : options.stats;
   options.filter = filter;
   options.fs = options.fs || DEFAULT_FS;
   options.stat = options.fs[options.stat || DEFAULT_STAT].bind(options.fs);

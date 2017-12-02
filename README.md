@@ -1,9 +1,9 @@
 walk-filtered
 ------------
 
-A simple, performant file system walker to provided fine-grained control over directories and files to walk.
+A simple, performant file system walker to provided fine-grained control over directories and files to walk. Supports Node 0.10 and above.
 
-*Note:* This API is very robust for a variety of use cases as it passes the [chokidar](https://github.com/paulmillr/chokidar) and [readdirp](https://github.com/thlorenz/readdirp) test suites. Also, it does not accumulate results in memory by using an event emitter API to notify you of results.
+*Note:* This API is very robust for a variety of use cases as it passes the [chokidar](https://github.com/paulmillr/chokidar) and [readdirp](https://github.com/thlorenz/readdirp) test suites plus it does not accumulate results in memory.
 
 
 **Everything**
