@@ -100,7 +100,7 @@ describe('filtering', function () {
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
 
-      walk(DIR, function () { filterSpy(); return sleep(50).then(function () { return false; }); }, function () {
+      walk(DIR, function () { filterSpy(); return sleep(200).then(function () { return false; }); }, function () {
         assert.ok(filterSpy.callCount, 1);
         callback();
       });
@@ -110,7 +110,7 @@ describe('filtering', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path) {
-        filterSpy(); return sleep(50).then(function () { return path !== 'dir2'; });
+        filterSpy(); return sleep(200).then(function () { return path !== 'dir2'; });
       }, { stats: true }, function () {
         assert.ok(filterSpy.callCount, 13 - 2);
         callback();
@@ -121,7 +121,7 @@ describe('filtering', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path, stats) {
-        filterSpy(); return sleep(50).then(function () { return !stats.isDirectory() || startsWith(path, 'dir3/dir4'); });
+        filterSpy(); return sleep(200).then(function () { return !stats.isDirectory() || startsWith(path, 'dir3/dir4'); });
       }, { stats: true }, function () {
         assert.ok(filterSpy.callCount, 13 - 1);
         callback();

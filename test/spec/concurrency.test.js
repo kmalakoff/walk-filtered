@@ -97,7 +97,7 @@ describe('concurrency', function () {
     it('should run with concurrency 1', function (callback) {
       var filterSpy = sinon.spy();
 
-      walk(DIR, function () { filterSpy(); return sleep(50); }, { concurrency: 1 }, function (err) {
+      walk(DIR, function () { filterSpy(); return sleep(200); }, { concurrency: 1 }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
       });
@@ -106,7 +106,7 @@ describe('concurrency', function () {
     it('should run with concurrency 50', function (callback) {
       var filterSpy = sinon.spy();
 
-      walk(DIR, function () { filterSpy(); return sleep(50); }, { concurrency: 50 }, function (err) {
+      walk(DIR, function () { filterSpy(); return sleep(200); }, { concurrency: 50 }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
       });
@@ -115,7 +115,7 @@ describe('concurrency', function () {
     it('should run with concurrency Infinity', function (callback) {
       var filterSpy = sinon.spy();
 
-      walk(DIR, function () { filterSpy(); return sleep(50); }, { concurrency: Infinity }, function () {
+      walk(DIR, function () { filterSpy(); return sleep(200); }, { concurrency: Infinity }, function () {
         assert.ok(filterSpy.callCount, 13);
         callback();
       });
