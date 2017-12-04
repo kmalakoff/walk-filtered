@@ -56,7 +56,7 @@ describe('errors', function () {
     beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
     it('should propagate errors', function (callback) {
-      walk(DIR, function () { sleep(100); throw new Error('Failed'); }, function (err) {
+      walk(DIR, function () { return sleep(100).then(function () { throw new Error('Failed'); }); }, function (err) {
         assert.ok(!!err);
         callback();
       });
