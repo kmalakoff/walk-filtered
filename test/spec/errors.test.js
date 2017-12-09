@@ -4,7 +4,7 @@ var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
-var BPromise = require('bluebird');
+var Promise = require('pinkie-promise');
 
 var walk = require('../..');
 
@@ -21,9 +21,7 @@ var STRUCTURE = {
   'dir3/link2': '~dir2/file1',
 };
 
-function sleep(timeout) {
-  return new BPromise(function (resolve) { setTimeout(resolve, timeout); });
-}
+function sleep(timeout) { return new Promise(function (resolve) { setTimeout(resolve, timeout); }); }
 
 describe('errors', function () {
   after(function (callback) { rimraf(DIR, callback); });
