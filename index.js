@@ -1,22 +1,22 @@
 var fs = require('fs');
 var sysPath = require('path');
+var Promise = require('pinkie-promise');
+var asyncEachLimit = require('each-limit'); // TODO: implement global concurrency https://github.com/kmalakoff/readdirp-walk/issues/1
+
 var assign = require('lodash.assign');
-var isUndefined = require('lodash.isundefined');
 var isObject = require('lodash.isobject');
+
+function isPromise(obj) { return !!obj && (typeof obj === 'object') && (typeof obj.then === 'function'); }
 
 var DEFAULT_FS = fs;
 var DEFAULT_STAT = 'lstat';
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 var DEFAULT_STATS = false;
 
-function isPromise(obj) { return !!obj && (typeof obj === 'object') && (typeof obj.then === 'function'); }
-
-// TODO: implement global concurrency https://github.com/kmalakoff/readdirp-walk/issues/1
-var asyncEachLimit = require('each-limit');
-
 function limitEachFn(limit) { return function (array, fn, callback) { asyncEachLimit(array, limit, fn, callback); }; }
 
-function getResult(result) { return isUndefined(result) ? true : result; }
+function getResult(result) { return result === undefined ? true : result; }
+
 function processKeep(keep, callback, stats) {
   if (isPromise(keep)) {
     keep
@@ -81,12 +81,24 @@ function processFilterStats(fullPath, options, callback) {
   });
 }
 
-module.exports = function (cwd, filter, options, callback) {
-  if (arguments.length === 3) { callback = options; options = {}; } // eslint-disable-line no-param-reassign
+function walkFiltered(cwd, options) {
+  return new Promise(function (resolve, reject) {
+    options.fs.realpath(cwd, function (err, realCWD) {
+      if (err) return reject(err);
 
+      options.cwd = realCWD; // eslint-disable-line no-param-reassign
+      processPath(cwd, options, function (err2, result) { err2 ? reject(err2) : resolve(result); });
+    });
+  });
+}
+
+
+module.exports = function (cwd, filter, options, callback) {
   /* eslint-disable */
+  if ((arguments.length === 3) && (typeof options === 'function')) { callback = options; options = {}; }
+  
   options = isObject(options) ? assign({}, options) : { stats: options };
-  options.stats = isUndefined(options.stats) ? DEFAULT_STATS : options.stats;
+  options.stats = options.stats === undefined ? DEFAULT_STATS : options.stats;
   options.filter = filter;
   options.fs = options.fs || DEFAULT_FS;
   options.stat = options.fs[options.stat || DEFAULT_STAT].bind(options.fs);
@@ -94,10 +106,8 @@ module.exports = function (cwd, filter, options, callback) {
   options.processFilter = options.stats ? processFilterStats : processFilterLazyStats;
   /* eslint-enable */
 
-  options.fs.realpath(cwd, function (err, realCWD) {
-    if (err) return callback(err);
-
-    options.cwd = realCWD; // eslint-disable-line no-param-reassign
-    processPath(cwd, options, callback);
-  });
+  // provide either promsie or callback support
+  var promise = walkFiltered(cwd, options);
+  if (typeof callback !== 'function') return promise;
+  promise.then(function (result) { callback(null, result); }, callback);
 };

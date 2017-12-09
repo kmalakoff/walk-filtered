@@ -25,7 +25,7 @@ walk(rootPath, function(path) { /* do something */ return true or false }, done)
 **Promise Filtering**
 
 ```
-walk(rootPath, async function(path) { /* do something */ return true or false }, done);
+await walk(rootPath, async (path) => { /* do something */ return true or false });
 ```
 
 **Advanced Options**:
