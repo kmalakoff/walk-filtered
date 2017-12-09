@@ -5,7 +5,7 @@ var sinon = require('sinon');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
-var BPromise = require('bluebird');
+var Promise = require('pinkie-promise');
 
 var walk = require('../..');
 
@@ -23,9 +23,7 @@ var STRUCTURE = {
 };
 
 function startsWith(string, start) { return (string.substring(0, start.length) === start); }
-function sleep(timeout) {
-  return new BPromise(function (resolve) { setTimeout(resolve, timeout); });
-}
+function sleep(timeout) { return new Promise(function (resolve) { setTimeout(resolve, timeout); }); }
 
 describe('filtering', function () {
   after(function (callback) { rimraf(DIR, callback); });

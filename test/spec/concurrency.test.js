@@ -5,7 +5,7 @@ var sinon = require('sinon');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
-var BPromise = require('bluebird');
+var Promise = require('pinkie-promise');
 
 var walk = require('../..');
 
@@ -22,9 +22,7 @@ var STRUCTURE = {
   'dir3/link2': '~dir2/file1',
 };
 
-function sleep(timeout) {
-  return new BPromise(function (resolve) { setTimeout(resolve, timeout); });
-}
+function sleep(timeout) { return new Promise(function (resolve) { setTimeout(resolve, timeout); }); }
 
 describe('concurrency', function () {
   after(function (callback) { rimraf(DIR, callback); });
@@ -67,7 +65,7 @@ describe('concurrency', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path, callback2) {
-        filterSpy(); setTimeout(function () { callback2(); }, 100);
+        filterSpy(); setTimeout(callback2, 100);
       }, { async: true, concurrency: 1, stats: false }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
@@ -78,7 +76,7 @@ describe('concurrency', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path, callback2) {
-        filterSpy(); setTimeout(function () { callback2(); }, 100);
+        filterSpy(); setTimeout(callback2, 100);
       }, { async: true, concurrency: 5, stats: false }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
@@ -89,7 +87,7 @@ describe('concurrency', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path, callback2) {
-        filterSpy(); setTimeout(function () { callback2(); }, 100);
+        filterSpy(); setTimeout(callback2, 100);
       }, { async: true, concurrency: Infinity, stats: false }, function (err) {
         assert.ok(filterSpy.callCount, 13);
         callback(err);
