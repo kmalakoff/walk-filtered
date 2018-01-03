@@ -16,7 +16,16 @@
     "type": "git",
     "url": "git@github.com:kmalakoff/walk-filtered.git"
   },
-  "keywords": ["recursive", "fs", "readdir", "filesystem", "find", "filter", "walk", "walk-filtered"],
+  "keywords": [
+    "recursive",
+    "fs",
+    "readdir",
+    "filesystem",
+    "find",
+    "filter",
+    "walk",
+    "walk-filtered"
+  ],
   "author": "Kevin Malakoff <kmalakoff@gmail.com> (https://github.com/kmalakoff)",
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",

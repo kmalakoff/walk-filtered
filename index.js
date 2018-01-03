@@ -10,7 +10,6 @@ function isPromise(obj) {
 }
 
 var DEFAULT_FS = fs;
-var DEFAULT_STAT = 'lstat';
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 
 function limitEachFn(limit) {
@@ -23,28 +22,28 @@ function getResult(result) {
   return result === undefined ? true : result;
 }
 
-function processKeep(keep, callback, stats) {
+function processKeep(keep, callback) {
   if (isPromise(keep)) {
     keep
       .then(function(resolvedKeep) {
         setTimeout(function() {
-          callback(null, getResult(resolvedKeep), stats);
+          callback(null, getResult(resolvedKeep));
         });
       })
       .catch(function(err2) {
         callback(err2);
       });
   } else {
-    callback(null, getResult(keep), stats);
+    callback(null, getResult(keep));
   }
 }
 
 function processPath(fullPath, options, callback) {
   try {
-    processFilter(fullPath, options, function(err, keep, stats) {
+    processFilter(fullPath, options, function(err, keep) {
       if (err) return callback(err);
 
-      if (!keep || !stats.isDirectory()) return callback(); // do not keep processing
+      if (!keep) return callback(); // do not keep processing
       processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
     });
   } catch (err) {
@@ -57,7 +56,7 @@ function processDirectory(fullPath, options, callback) {
     if (err) return callback(err);
 
     options.fs.readdir(realPath, function(err2, names) {
-      if (err2) return callback(err2);
+      if (err2) return callback(err2.code === 'ENOTDIR' ? null : err2);
 
       var fullPaths = names.map(function(name) {
         return sysPath.join(realPath, name);
@@ -80,9 +79,7 @@ function processFilter(fullPath, options, callback) {
     if (err) return callback(err);
 
     if (!getResult(result)) return callback(null, false); // do not keep processing
-    options.stat(fullPath, function(err2, stats) {
-      err2 ? callback(err2) : callback(null, true, stats);
-    });
+    callback(null, true);
   };
 
   // filter
@@ -112,7 +109,6 @@ module.exports = function(cwd, filter, options, callback) {
   options = assign({}, options);
   options.filter = filter;
   options.fs = options.fs || DEFAULT_FS;
-  options.stat = options.fs[options.stat || DEFAULT_STAT].bind(options.fs);
   options.each = options.each || limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
   /* eslint-enable */
 
