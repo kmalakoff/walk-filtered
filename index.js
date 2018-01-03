@@ -4,7 +4,6 @@ var Promise = require('pinkie-promise');
 var asyncEachLimit = require('each-limit'); // TODO: implement global concurrency https://github.com/kmalakoff/readdirp-walk/issues/1
 
 var assign = require('lodash.assign');
-var isObject = require('lodash.isobject');
 
 function isPromise(obj) {
   return !!obj && typeof obj === 'object' && typeof obj.then === 'function';
@@ -13,7 +12,6 @@ function isPromise(obj) {
 var DEFAULT_FS = fs;
 var DEFAULT_STAT = 'lstat';
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
-var DEFAULT_STATS = false;
 
 function limitEachFn(limit) {
   return function(array, fn, callback) {
@@ -43,7 +41,7 @@ function processKeep(keep, callback, stats) {
 
 function processPath(fullPath, options, callback) {
   try {
-    options.processFilter(fullPath, options, function(err, keep, stats) {
+    processFilter(fullPath, options, function(err, keep, stats) {
       if (err) return callback(err);
 
       if (!keep || !stats.isDirectory()) return callback(); // do not keep processing
@@ -75,8 +73,7 @@ function processDirectory(fullPath, options, callback) {
   });
 }
 
-// early exit optimization: filter without stats
-function processFilterLazyStats(fullPath, options, callback) {
+function processFilter(fullPath, options, callback) {
   var path = sysPath.relative(options.cwd, fullPath); // the path to the link, file, or directory
 
   var callbackWrapper = function(err, result) {
@@ -90,21 +87,6 @@ function processFilterLazyStats(fullPath, options, callback) {
 
   // filter
   options.async ? options.filter(path, callbackWrapper) : processKeep(options.filter(path), callbackWrapper);
-}
-
-// full processing: filter with stats
-function processFilterStats(fullPath, options, callback) {
-  var path = sysPath.relative(options.cwd, fullPath); // the path to the link, file, or directory
-
-  options.stat(fullPath, function(err, stats) {
-    if (err) return callback(err);
-
-    // filter
-    if (!options.async) return processKeep(options.filter(path, stats), callback, stats);
-    options.filter(path, stats, function(err2, result) {
-      err2 ? callback(err2) : callback(null, getResult(result), stats);
-    });
-  });
 }
 
 function walkFiltered(cwd, options) {
@@ -127,13 +109,11 @@ module.exports = function(cwd, filter, options, callback) {
     options = {};
   }
 
-  options = isObject(options) ? assign({}, options) : { stats: options };
-  options.stats = options.stats === undefined ? DEFAULT_STATS : options.stats;
+  options = assign({}, options);
   options.filter = filter;
   options.fs = options.fs || DEFAULT_FS;
   options.stat = options.fs[options.stat || DEFAULT_STAT].bind(options.fs);
   options.each = options.each || limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
-  options.processFilter = options.stats ? processFilterStats : processFilterLazyStats;
   /* eslint-enable */
 
   // provide either promsie or callback support

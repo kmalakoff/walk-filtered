@@ -6,6 +6,7 @@ var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
+var fs = require('fs');
 
 var walk = require('../..');
 var statsSpys = require('../utils').statsSpys;
@@ -42,8 +43,8 @@ describe('promise', function() {
   it('should be default false', function(callback) {
     var statsSpy = sinon.spy();
 
-    walk(DIR, function(path, stats) {
-      statsSpy(stats);
+    walk(DIR, function(path) {
+      statsSpy();
     }).then(function() {
       assert.ok(statsSpy.callCount, 13);
       statsSpy.args.forEach(function(args) {
@@ -56,13 +57,10 @@ describe('promise', function() {
   it('Should find everything with no return', function(callback) {
     var spys = statsSpys();
 
-    walk(
-      DIR,
-      function(path, stats) {
-        spys(stats, path);
-      },
-      true
-    ).then(function() {
+    walk(DIR, function(path) {
+      var stats = fs.lstatSync(sysPath.join(DIR, path));
+      spys(stats, path);
+    }).then(function() {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
@@ -73,14 +71,11 @@ describe('promise', function() {
   it('Should find everything with return true', function(callback) {
     var spys = statsSpys();
 
-    walk(
-      DIR,
-      function(path, stats) {
-        spys(stats, path);
-        return true;
-      },
-      true
-    ).then(function() {
+    walk(DIR, function(path) {
+      var stats = fs.lstatSync(sysPath.join(DIR, path));
+      spys(stats, path);
+      return true;
+    }).then(function() {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
