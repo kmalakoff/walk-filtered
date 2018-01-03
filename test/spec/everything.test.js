@@ -1,4 +1,5 @@
-var chai = require('chai'); chai.use(require('sinon-chai'));
+var chai = require('chai');
+chai.use(require('sinon-chai'));
 
 var assert = chai.assert;
 var generate = require('fs-generate');
@@ -18,32 +19,53 @@ var STRUCTURE = {
   'dir3/dir4/file1': 'e',
   'dir3/dir4/dir5': null,
   link1: '~dir3/dir4/file1',
-  'dir3/link2': '~dir2/file1',
+  'dir3/link2': '~dir2/file1'
 };
 
-describe('walk everything', function () {
-  beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
-  after(function (callback) { rimraf(DIR, callback); });
-
-  it('Should find everything with no return', function (callback) {
-    var spys = statsSpys();
-
-    walk(DIR, function (path, stats) { spys(stats, path); }, true, function () {
-      assert.equal(spys.dir.callCount, 6);
-      assert.equal(spys.file.callCount, 5);
-      assert.equal(spys.link.callCount, 2);
-      callback();
+describe('walk everything', function() {
+  beforeEach(function(callback) {
+    rimraf(DIR, function() {
+      generate(DIR, STRUCTURE, callback);
     });
   });
+  after(function(callback) {
+    rimraf(DIR, callback);
+  });
 
-  it('Should find everything with return true', function (callback) {
+  it('Should find everything with no return', function(callback) {
     var spys = statsSpys();
 
-    walk(DIR, function (path, stats) { spys(stats, path); return true; }, true, function () {
-      assert.equal(spys.dir.callCount, 6);
-      assert.equal(spys.file.callCount, 5);
-      assert.equal(spys.link.callCount, 2);
-      callback();
-    });
+    walk(
+      DIR,
+      function(path, stats) {
+        spys(stats, path);
+      },
+      true,
+      function() {
+        assert.equal(spys.dir.callCount, 6);
+        assert.equal(spys.file.callCount, 5);
+        assert.equal(spys.link.callCount, 2);
+        callback();
+      }
+    );
+  });
+
+  it('Should find everything with return true', function(callback) {
+    var spys = statsSpys();
+
+    walk(
+      DIR,
+      function(path, stats) {
+        spys(stats, path);
+        return true;
+      },
+      true,
+      function() {
+        assert.equal(spys.dir.callCount, 6);
+        assert.equal(spys.file.callCount, 5);
+        assert.equal(spys.link.callCount, 2);
+        callback();
+      }
+    );
   });
 });
