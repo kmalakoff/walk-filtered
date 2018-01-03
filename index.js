@@ -44,7 +44,25 @@ function processPath(fullPath, options, callback) {
       if (err) return callback(err);
 
       if (!keep) return callback(); // do not keep processing
-      processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
+      fs.lstat(fullPath, function(err2, stat2) {
+        if (err2) return callback(err2);
+
+        if (stat2.isSymbolicLink()) {
+          fs.stat(fullPath, function(err3, stat3) {
+            if (err3) return callback(err3);
+
+            if (stat3.isDirectory()) {
+              processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
+            } else {
+              callback();
+            }
+          });
+        } else if (stat2.isDirectory()) {
+          processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
+        } else {
+          callback();
+        }
+      });
     });
   } catch (err) {
     callback(err);
