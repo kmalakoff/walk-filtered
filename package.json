@@ -16,23 +16,13 @@
     "type": "git",
     "url": "git@github.com:kmalakoff/walk-filtered.git"
   },
-  "keywords": [
-    "recursive",
-    "fs",
-    "readdir",
-    "filesystem",
-    "find",
-    "filter",
-    "walk",
-    "walk-filtered"
-  ],
+  "keywords": ["recursive", "fs", "readdir", "filesystem", "find", "filter", "walk", "walk-filtered"],
   "author": "Kevin Malakoff <kmalakoff@gmail.com> (https://github.com/kmalakoff)",
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
     "each-limit": "^1.0.0",
     "lodash.assign": "^4.0.0",
-    "lodash.isobject": "^3.0.2",
     "pinkie-promise": "^2.0.1"
   },
   "devDependencies": {

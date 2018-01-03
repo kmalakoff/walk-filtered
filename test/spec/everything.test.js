@@ -5,6 +5,7 @@ var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
+var fs = require('fs');
 
 var walk = require('../..');
 var statsSpys = require('../utils').statsSpys;
@@ -37,10 +38,10 @@ describe('walk everything', function() {
 
     walk(
       DIR,
-      function(path, stats) {
+      function(path) {
+        var stats = fs.lstatSync(sysPath.join(DIR, path));
         spys(stats, path);
       },
-      true,
       function() {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 5);
@@ -55,11 +56,11 @@ describe('walk everything', function() {
 
     walk(
       DIR,
-      function(path, stats) {
+      function(path) {
+        var stats = fs.lstatSync(sysPath.join(DIR, path));
         spys(stats, path);
         return true;
       },
-      true,
       function() {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 5);
