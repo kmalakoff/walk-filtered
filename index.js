@@ -6,22 +6,36 @@ var asyncEachLimit = require('each-limit'); // TODO: implement global concurrenc
 var assign = require('lodash.assign');
 var isObject = require('lodash.isobject');
 
-function isPromise(obj) { return !!obj && (typeof obj === 'object') && (typeof obj.then === 'function'); }
+function isPromise(obj) {
+  return !!obj && typeof obj === 'object' && typeof obj.then === 'function';
+}
 
 var DEFAULT_FS = fs;
 var DEFAULT_STAT = 'lstat';
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 var DEFAULT_STATS = false;
 
-function limitEachFn(limit) { return function (array, fn, callback) { asyncEachLimit(array, limit, fn, callback); }; }
+function limitEachFn(limit) {
+  return function(array, fn, callback) {
+    asyncEachLimit(array, limit, fn, callback);
+  };
+}
 
-function getResult(result) { return result === undefined ? true : result; }
+function getResult(result) {
+  return result === undefined ? true : result;
+}
 
 function processKeep(keep, callback, stats) {
   if (isPromise(keep)) {
     keep
-      .then(function (resolvedKeep) { setTimeout(function () { callback(null, getResult(resolvedKeep), stats); }); })
-      .catch(function (err2) { callback(err2); });
+      .then(function(resolvedKeep) {
+        setTimeout(function() {
+          callback(null, getResult(resolvedKeep), stats);
+        });
+      })
+      .catch(function(err2) {
+        callback(err2);
+      });
   } else {
     callback(null, getResult(keep), stats);
   }
@@ -29,26 +43,34 @@ function processKeep(keep, callback, stats) {
 
 function processPath(fullPath, options, callback) {
   try {
-    options.processFilter(fullPath, options, function (err, keep, stats) {
+    options.processFilter(fullPath, options, function(err, keep, stats) {
       if (err) return callback(err);
 
       if (!keep || !stats.isDirectory()) return callback(); // do not keep processing
       processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
     });
-  } catch (err) { callback(err); }
+  } catch (err) {
+    callback(err);
+  }
 }
 
 function processDirectory(fullPath, options, callback) {
-  options.fs.realpath(fullPath, function (err, realPath) {
+  options.fs.realpath(fullPath, function(err, realPath) {
     if (err) return callback(err);
 
-    options.fs.readdir(realPath, function (err2, names) {
+    options.fs.readdir(realPath, function(err2, names) {
       if (err2) return callback(err2);
 
-      var fullPaths = names.map(function (name) { return sysPath.join(realPath, name); });
-      options.each(fullPaths, function (fullPath2, callback2) {
-        processPath(fullPath2, options, callback2);
-      }, callback);
+      var fullPaths = names.map(function(name) {
+        return sysPath.join(realPath, name);
+      });
+      options.each(
+        fullPaths,
+        function(fullPath2, callback2) {
+          processPath(fullPath2, options, callback2);
+        },
+        callback
+      );
     });
   });
 }
@@ -57,11 +79,13 @@ function processDirectory(fullPath, options, callback) {
 function processFilterLazyStats(fullPath, options, callback) {
   var path = sysPath.relative(options.cwd, fullPath); // the path to the link, file, or directory
 
-  var callbackWrapper = function (err, result) {
+  var callbackWrapper = function(err, result) {
     if (err) return callback(err);
 
     if (!getResult(result)) return callback(null, false); // do not keep processing
-    options.stat(fullPath, function (err2, stats) { err2 ? callback(err2) : callback(null, true, stats); });
+    options.stat(fullPath, function(err2, stats) {
+      err2 ? callback(err2) : callback(null, true, stats);
+    });
   };
 
   // filter
@@ -72,31 +96,37 @@ function processFilterLazyStats(fullPath, options, callback) {
 function processFilterStats(fullPath, options, callback) {
   var path = sysPath.relative(options.cwd, fullPath); // the path to the link, file, or directory
 
-  options.stat(fullPath, function (err, stats) {
+  options.stat(fullPath, function(err, stats) {
     if (err) return callback(err);
 
     // filter
     if (!options.async) return processKeep(options.filter(path, stats), callback, stats);
-    options.filter(path, stats, function (err2, result) { err2 ? callback(err2) : callback(null, getResult(result), stats); });
-  });
-}
-
-function walkFiltered(cwd, options) {
-  return new Promise(function (resolve, reject) {
-    options.fs.realpath(cwd, function (err, realCWD) {
-      if (err) return reject(err);
-
-      options.cwd = realCWD; // eslint-disable-line no-param-reassign
-      processPath(cwd, options, function (err2, result) { err2 ? reject(err2) : resolve(result); });
+    options.filter(path, stats, function(err2, result) {
+      err2 ? callback(err2) : callback(null, getResult(result), stats);
     });
   });
 }
 
+function walkFiltered(cwd, options) {
+  return new Promise(function(resolve, reject) {
+    options.fs.realpath(cwd, function(err, realCWD) {
+      if (err) return reject(err);
 
-module.exports = function (cwd, filter, options, callback) {
+      options.cwd = realCWD; // eslint-disable-line no-param-reassign
+      processPath(cwd, options, function(err2, result) {
+        err2 ? reject(err2) : resolve(result);
+      });
+    });
+  });
+}
+
+module.exports = function(cwd, filter, options, callback) {
   /* eslint-disable */
-  if ((arguments.length === 3) && (typeof options === 'function')) { callback = options; options = {}; }
-  
+  if (arguments.length === 3 && typeof options === 'function') {
+    callback = options;
+    options = {};
+  }
+
   options = isObject(options) ? assign({}, options) : { stats: options };
   options.stats = options.stats === undefined ? DEFAULT_STATS : options.stats;
   options.filter = filter;
@@ -109,5 +139,7 @@ module.exports = function (cwd, filter, options, callback) {
   // provide either promsie or callback support
   var promise = walkFiltered(cwd, options);
   if (typeof callback !== 'function') return promise;
-  promise.then(function (result) { callback(null, result); }, callback);
+  promise.then(function(result) {
+    callback(null, result);
+  }, callback);
 };

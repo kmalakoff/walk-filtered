@@ -10,7 +10,7 @@
     "test": "mocha . test/spec/**/*.test.js",
     "perf": "node test/perf/tests.js",
     "lint": "eslint .",
-    "lint-fix": "eslint . --fix"
+    "format": "prettier --write '**/*.js'"
   },
   "repository": {
     "type": "git",
@@ -38,16 +38,20 @@
   "devDependencies": {
     "async-each": "^1.0.0",
     "async-each-series": "^1.1.0",
+    "babel-eslint": "^8.1.2",
     "benchmark": "^2.1.4",
     "chai": "^4.1.2",
-    "eslint": "^4.12.0",
-    "eslint-config-airbnb": "^16.1.0",
+    "eslint": "^4.14.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
     "fs-generate": "^1.1.0",
     "graceful-fs": "^3.0.11",
     "mocha": "^3.5.3",
+    "prettier": "^1.9.2",
     "rimraf": "^2.6.2",
     "sinon": "^3.3.0",
     "sinon-chai": "^2.14.0"
