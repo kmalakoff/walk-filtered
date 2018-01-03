@@ -74,7 +74,7 @@ function processDirectory(fullPath, options, callback) {
     if (err) return callback(err);
 
     options.fs.readdir(realPath, function(err2, names) {
-      if (err2) return callback(err2.code === 'ENOTDIR' ? null : err2);
+      if (err2) return callback(err2);
 
       var fullPaths = names.map(function(name) {
         return sysPath.join(realPath, name);
