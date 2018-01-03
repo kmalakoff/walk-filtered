@@ -6,6 +6,7 @@ var sinon = require('sinon');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
+var fs = require('fs');
 var Promise = require('pinkie-promise');
 
 var walk = require('../..');
@@ -145,13 +146,14 @@ describe('filtering', function() {
 
       walk(
         DIR,
-        function(path, stats) {
+        function(path) {
           filterSpy();
           setTimeout(function() {
+            var stats = fs.lstatSync(sysPath.join(DIR, path));
             callback(null, !stats.isDirectory() || startsWith(path, 'dir3/dir4'));
           }, 100);
         },
-        { stats: true, async: true },
+        { async: true },
         function() {
           assert.ok(filterSpy.callCount, 13 - 1);
           callback();
