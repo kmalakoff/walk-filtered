@@ -38,9 +38,9 @@ function processKeep(keep, callback) {
   }
 }
 
-function processPath(realPath, name, options, callback) {
+function processPath(paths, options, callback) {
   try {
-    const fullPath = sysPath.join(realPath, name);
+    var fullPath = paths.join(sysPath.sep);
     processFilter(fullPath, options, function (err, keep) {
       if (err) return callback(err);
 
@@ -53,13 +53,13 @@ function processPath(realPath, name, options, callback) {
             if (err3) return callback(err3);
 
             if (stat3.isDirectory()) {
-              processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
+              processDirectory(paths, options, callback); // eslint-disable-line no-use-before-define
             } else {
               callback();
             }
           });
         } else if (stat2.isDirectory()) {
-          processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
+          processDirectory(paths, options, callback); // eslint-disable-line no-use-before-define
         } else {
           callback();
         }
@@ -70,17 +70,19 @@ function processPath(realPath, name, options, callback) {
   }
 }
 
-function processDirectory(fullPath, options, callback) {
+function processDirectory(paths, options, callback) {
+  var fullPath = paths.join(sysPath.sep);
   options.fs.realpath(fullPath, function (err, realPath) {
     if (err) return callback(err);
 
     options.fs.readdir(realPath, function (err2, names) {
       if (err2) return callback(err2);
 
+      var nextPaths = fullPath === realPath ? paths : realPath.split(sysPath.sep);
       options.each(
         names,
         function (name, callback2) {
-          processPath(realPath, name, options, callback2);
+          processPath(nextPaths.concat([name]), options, callback2);
         },
         callback
       );
@@ -102,13 +104,13 @@ function processFilter(fullPath, options, callback) {
   options.async ? options.filter(path, callbackWrapper) : processKeep(options.filter(path), callbackWrapper);
 }
 
-function walkFiltered(cwd, options) {
+function walkFiltered(paths, options) {
   return new Promise(function (resolve, reject) {
-    options.fs.realpath(cwd, function (err, realCWD) {
+    options.fs.realpath(paths.join(sysPath.sep), function (err, realCWD) {
       if (err) return reject(err);
 
       options.cwd = realCWD; // eslint-disable-line no-param-reassign
-      processPath(cwd, '', options, function (err2, result) {
+      processPath(paths, options, function (err2, result) {
         err2 ? reject(err2) : resolve(result);
       });
     });
@@ -128,8 +130,9 @@ module.exports = function (cwd, filter, options, callback) {
   options.each = options.each || limitEachFn(options.concurrency || DEFAULT_CONCURRENCY);
   /* eslint-enable */
 
-  // provide either promsie or callback support
-  var promise = walkFiltered(cwd, options);
+  // provide either promise or callback support
+  var paths = cwd.split(sysPath.sep);
+  var promise = walkFiltered(paths, options);
   if (typeof callback !== 'function') return promise;
   promise.then(function (result) {
     callback(null, result);
