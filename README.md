@@ -24,7 +24,6 @@ walk(rootPath, function(path) { /* do something */ return true or false }, done)
 
 **Options**:
 
-* number: concurrency - choose maximum number of parallelly-processed files or folders (NOTE: currently this is not a global option, but per folder). (default: 50 from performance testing).
-* object: fs - choose an fs implementation; for example, you can use use graceful-fs and concurrency 1. (default: fs)
-* function: each - choose an each implementation (default: async-each-series)
-* bool: async - use an async filter function of the form function(path, stats, callback) with callback being of the form function(err, keep) where keep undefined means continue. `If you use promises, this is unnecessary`. (default: false)
+- number: concurrency - choose maximum number of parallelly-processed files or folders (NOTE: currently this is not a global option, but per folder). (default: 50 from performance testing).
+- object: fs - choose an fs implementation; for example, you can use use graceful-fs and concurrency 1. (default: fs)
+- bool: async - use an async filter function of the form function(path, stats, callback) with callback being of the form function(err, keep) where keep undefined means continue. `If you use promises, this is unnecessary`. (default: false)
