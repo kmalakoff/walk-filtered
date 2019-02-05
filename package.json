@@ -30,29 +30,26 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "each-limit": "^1.0.0",
     "lodash.assign": "^4.0.0",
     "pinkie-promise": "^2.0.1"
   },
   "devDependencies": {
-    "async-each": "^1.0.0",
-    "async-each-series": "^1.1.0",
-    "babel-eslint": "^8.1.2",
+    "babel-eslint": "^10.0.1",
     "benchmark": "^2.1.4",
     "chai": "^4.1.2",
-    "eslint": "^4.14.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-config-standard": "^11.0.0-beta.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
+    "eslint": "^5.13.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "fs-generate": "^1.1.0",
-    "graceful-fs": "^3.0.11",
+    "graceful-fs": "^4.1.15",
     "mocha": "^5.2.0",
-    "prettier": "^1.9.2",
+    "prettier": "^1.16.4",
     "rimraf": "^2.6.2",
-    "sinon": "^7.2.2",
-    "sinon-chai": "^2.14.0"
+    "sinon": "^7.2.3",
+    "sinon-chai": "^3.3.0"
   }
 }
