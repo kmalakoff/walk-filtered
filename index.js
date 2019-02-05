@@ -1,5 +1,5 @@
 var fs = require('fs');
-var sysPath = require('path');
+var path = require('path');
 var Promise = require('pinkie-promise');
 var assign = require('lodash.assign');
 
@@ -12,7 +12,7 @@ var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github
 
 function processPath(paths, options, callback) {
   try {
-    var fullPath = paths.join(sysPath.sep);
+    var fullPath = paths.join(path.sep);
     processFilter(fullPath, options, function(err, keep) {
       if (err) return callback(err);
 
@@ -43,28 +43,26 @@ function processPath(paths, options, callback) {
     callback(err);
   }
 }
-function processDirectoryNames(paths, names, options, callback) {
+function processNextDirectoryName(paths, names, options, callback) {
   if (names.length <= 0) return callback();
+  var name = names.pop();
   options.queue.defer(function(callback) {
-    processPath(paths.concat([names.pop()]), options, callback);
+    processNextDirectoryName(paths, names, options, callback);
   });
-  options.queue.defer(function(callback) {
-    processDirectoryNames(paths, names, options, callback);
-  });
-  callback();
+  processPath(paths.concat([name]), options, callback);
 }
 
 function processDirectory(paths, options, callback) {
-  var fullPath = paths.join(sysPath.sep);
+  var fullPath = paths.join(path.sep);
   options.fs.realpath(fullPath, function(err, realPath) {
     if (err) return callback(err);
 
     options.fs.readdir(realPath, function(err2, names) {
       if (err2) return callback(err2);
 
-      var nextPaths = fullPath === realPath ? paths : realPath.split(sysPath.sep);
+      var nextPaths = fullPath === realPath ? paths : realPath.split(path.sep);
       options.queue.defer(function(callback) {
-        processDirectoryNames(nextPaths, names, options, callback);
+        processNextDirectoryName(nextPaths, names, options, callback);
       });
       callback();
     });
@@ -72,7 +70,7 @@ function processDirectory(paths, options, callback) {
 }
 
 function processFilter(fullPath, options, callback) {
-  var path = sysPath.relative(options.cwd, fullPath); // the path to the link, file, or directory
+  var relativePath = path.relative(options.cwd, fullPath); // the path to the link, file, or directory
 
   var callbackWrapper = function(err, result) {
     if (err) return callback(err);
@@ -82,17 +80,16 @@ function processFilter(fullPath, options, callback) {
   };
 
   // filter
-  options.async ? options.filter(path, callbackWrapper) : getKeep(options.filter(path), callbackWrapper);
+  options.async ? options.filter(relativePath, callbackWrapper) : getKeep(options.filter(relativePath), callbackWrapper);
 }
 
 function startProcessing(cwd, options, callback) {
-  var paths = [cwd];
-  options.fs.realpath(paths.join(sysPath.sep), function(err, realCWD) {
+  options.fs.realpath(cwd, function(err, realCWD) {
     if (err) return callback(err);
 
     options.cwd = realCWD; // eslint-disable-line no-param-reassign
     options.queue.defer(function(callback) {
-      processPath(paths, options, callback);
+      processPath([cwd], options, callback);
     });
     callback();
   });
