@@ -2,8 +2,8 @@ var fs = require('fs');
 var path = require('path');
 var Promise = require('pinkie-promise');
 var assign = require('lodash.assign');
+var Queue = require('queue-cb');
 
-var Queue = require('./lib/queue');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 
