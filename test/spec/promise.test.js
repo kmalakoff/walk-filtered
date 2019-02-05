@@ -31,6 +31,8 @@ function sleep(timeout) {
 }
 
 describe('promise', function() {
+  if (typeof Promise === 'undefined') return; // no promise support
+
   beforeEach(function(callback) {
     rimraf(DIR, function() {
       generate(DIR, STRUCTURE, callback);

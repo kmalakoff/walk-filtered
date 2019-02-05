@@ -7,7 +7,6 @@ var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
 var fs = require('fs');
-var Promise = require('pinkie-promise');
 
 var walk = require('../..');
 
@@ -163,6 +162,8 @@ describe('filtering', function() {
   });
 
   describe('promise', function() {
+    if (typeof Promise === 'undefined') return; // no promise support
+
     beforeEach(function(callback) {
       rimraf(DIR, function() {
         generate(DIR, STRUCTURE, callback);

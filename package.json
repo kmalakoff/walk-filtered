@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk. Supports Node 0.10 and above.",
   "main": "index.js",
   "engines": {
@@ -30,8 +30,6 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "lodash.assign": "^4.0.0",
-    "pinkie-promise": "^2.0.1",
     "queue-cb": "^1.0.0"
   },
   "devDependencies": {
