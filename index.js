@@ -1,13 +1,10 @@
 var fs = require('fs');
 var path = require('path');
-var Promise = require('pinkie-promise');
-var assign = require('lodash.assign');
 var Queue = require('queue-cb');
 
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 
-var DEFAULT_FS = fs;
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 
 function processPath(paths, options, callback) {
@@ -95,27 +92,27 @@ function startProcessing(cwd, options, callback) {
   });
 }
 
-module.exports = function(cwd, filter, options, callback) {
+module.exports = function(cwd, filter, inputOptions, callback) {
   /* eslint-disable */
-  if (arguments.length === 3 && typeof options === 'function') {
-    callback = options;
-    options = {};
+  if (arguments.length === 3 && typeof inputOptions === 'function') {
+    callback = inputOptions;
+    inputOptions = {};
   }
-
-  options = assign({}, options);
-  options.filter = filter;
-  options.fs = options.fs || DEFAULT_FS;
+  inputOptions = inputOptions || {};
   /* eslint-enable */
 
-  options.queue = new Queue(options.concurrency || DEFAULT_CONCURRENCY);
-  options.queue.defer(function(callback) {
+  var queue = new Queue(inputOptions.concurrency || DEFAULT_CONCURRENCY);
+  var options = { filter: filter, queue: queue, async: inputOptions.async, fs: inputOptions.fs || fs };
+
+  // resolve the cwd and start processing
+  queue.defer(function(callback) {
     startProcessing(cwd, options, callback);
   });
 
   // choose between promise and callback API
-  if (typeof callback === 'function') return options.queue.await(callback);
+  if (typeof callback === 'function') return queue.await(callback);
   return new Promise(function(resolve, reject) {
-    options.queue.await(function(err, result) {
+    queue.await(function(err, result) {
       err ? reject(err) : resolve(result);
     });
   });

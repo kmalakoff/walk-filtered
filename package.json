@@ -30,8 +30,6 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "lodash.assign": "^4.0.0",
-    "pinkie-promise": "^2.0.1",
     "queue-cb": "^1.0.0"
   },
   "devDependencies": {
