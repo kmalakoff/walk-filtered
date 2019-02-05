@@ -5,7 +5,6 @@ var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
-var Promise = require('pinkie-promise');
 
 var walk = require('../..');
 
@@ -79,6 +78,8 @@ describe('errors', function() {
   });
 
   describe('promise', function() {
+    if (typeof Promise === 'undefined') return; // no promise support
+
     beforeEach(function(callback) {
       rimraf(DIR, function() {
         generate(DIR, STRUCTURE, callback);
