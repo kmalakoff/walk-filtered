@@ -37,9 +37,7 @@ function processPath(paths, options, callback) {
       if (!keep) return callback(); // do not keep processing
 
       getRealStat(fullPath, function(err, stat) {
-        if (err) return callback(err);
-
-        if (stat.isDirectory()) options.queue.defer(processDirectory.bind(null, paths, options));
+        if (!err && stat.isDirectory()) options.queue.defer(processDirectory.bind(null, paths, options));
         callback();
       });
     });
