@@ -7,14 +7,6 @@ var getKeep = require('./lib/getKeep');
 
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
 
-function getRealStat(fullPath, callback) {
-  fs.lstat(fullPath, function(err, stat) {
-    if (err) return callback(err);
-
-    !stat.isSymbolicLink() ? callback(null, stat) : fs.stat(fullPath, callback);
-  });
-}
-
 function processFilter(fullPath, stat, options, callback) {
   var relativePath = path.relative(options.realCWD, fullPath); // the path to the link, file, or directory
 
@@ -35,7 +27,7 @@ function processFilter(fullPath, stat, options, callback) {
 
 function processPath(paths, options, callback) {
   var fullPath = paths.join(path.sep);
-  getRealStat(fullPath, function(err, stat) {
+  fs.lstat(fullPath, function(err, stat) {
     if (err || !stat) return callback(); // skip missing
 
     processFilter(fullPath, stat, options, function(err, keep) {
