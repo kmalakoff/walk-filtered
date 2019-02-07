@@ -107,7 +107,7 @@ describe('filtering', function() {
 
       walk(
         DIR,
-        function(path, callback2) {
+        function(path, stat, callback2) {
           filterSpy();
           setTimeout(function() {
             callback2(null, false);
@@ -126,13 +126,13 @@ describe('filtering', function() {
 
       walk(
         DIR,
-        function(path, callback2) {
+        function(path, stat, callback2) {
           filterSpy();
           setTimeout(function() {
             callback2(null, path !== 'dir2');
           }, 100);
         },
-        { async: true, stats: false },
+        { async: true },
         function() {
           assert.ok(filterSpy.callCount, 13 - 2);
           callback();

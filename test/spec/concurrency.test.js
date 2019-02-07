@@ -101,11 +101,11 @@ describe('concurrency', function() {
 
       walk(
         DIR,
-        function(path, callback2) {
+        function(path, stat, callback2) {
           filterSpy();
           setTimeout(callback2, 100);
         },
-        { async: true, concurrency: 1, stats: false },
+        { async: true, concurrency: 1 },
         function(err) {
           assert.ok(filterSpy.callCount, 13);
           callback(err);
@@ -118,11 +118,11 @@ describe('concurrency', function() {
 
       walk(
         DIR,
-        function(path, callback2) {
+        function(path, stat, callback2) {
           filterSpy();
           setTimeout(callback2, 100);
         },
-        { async: true, concurrency: 5, stats: false },
+        { async: true, concurrency: 5 },
         function(err) {
           assert.ok(filterSpy.callCount, 13);
           callback(err);
@@ -135,11 +135,11 @@ describe('concurrency', function() {
 
       walk(
         DIR,
-        function(path, callback2) {
+        function(path, stat, callback2) {
           filterSpy();
           setTimeout(callback2, 100);
         },
-        { async: true, concurrency: Infinity, stats: false },
+        { async: true, concurrency: Infinity },
         function(err) {
           assert.ok(filterSpy.callCount, 13);
           callback(err);
