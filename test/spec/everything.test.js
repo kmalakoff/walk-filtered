@@ -69,7 +69,7 @@ describe('walk everything', function() {
       }
     );
   });
-  it.only('Should handle a delete', function(callback) {
+  it('Should handle a delete', function(callback) {
     var spys = statsSpys();
 
     walk(
@@ -85,7 +85,7 @@ describe('walk everything', function() {
       function() {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 4);
-        assert.equal(spys.link.callCount, 1);
+        assert.equal(spys.link.callCount, 2);
         callback();
       }
     );
