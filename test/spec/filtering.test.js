@@ -113,7 +113,7 @@ describe('filtering', function() {
             callback2(null, false);
           }, 100);
         },
-        { stats: false, async: true },
+        { async: true },
         function() {
           assert.ok(filterSpy.callCount, 1);
           callback();
@@ -199,7 +199,6 @@ describe('filtering', function() {
             return path !== 'dir2';
           });
         },
-        { stats: true },
         function() {
           assert.ok(filterSpy.callCount, 13 - 2);
           callback();
@@ -218,7 +217,6 @@ describe('filtering', function() {
             return !stats.isDirectory() || startsWith(path, 'dir3/dir4');
           });
         },
-        { stats: true },
         function() {
           assert.ok(filterSpy.callCount, 13 - 1);
           callback();
