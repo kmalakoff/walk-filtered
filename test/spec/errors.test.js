@@ -63,12 +63,12 @@ describe('errors', function() {
     it('should propagate errors', function(callback) {
       walk(
         DIR,
-        function(path, callback2) {
+        function(path, stat, callback2) {
           setTimeout(function() {
             callback2(new Error('Failed'));
           }, 100);
         },
-        { async: true, stats: false },
+        { async: true },
         function(err) {
           assert.ok(!!err);
           callback();

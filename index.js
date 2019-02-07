@@ -15,7 +15,7 @@ function getRealStat(fullPath, callback) {
   });
 }
 
-function processFilter(fullPath, options, callback) {
+function processFilter(fullPath, stat, options, callback) {
   var relativePath = path.relative(options.realCWD, fullPath); // the path to the link, file, or directory
 
   var callbackWrapper = function(err, result) {
@@ -25,25 +25,27 @@ function processFilter(fullPath, options, callback) {
     callback(null, true);
   };
 
-  // filter
-  options.async ? options.filter(relativePath, callbackWrapper) : getKeep(options.filter(relativePath), callbackWrapper);
-}
-
-function processPath(paths, options, callback) {
   try {
-    var fullPath = paths.join(path.sep);
-    processFilter(fullPath, options, function(err, keep) {
-      if (err) return callback(err);
-      if (!keep) return callback(); // do not keep processing
-
-      getRealStat(fullPath, function(err, stat) {
-        if (!err && stat.isDirectory()) options.queue.defer(processDirectory.bind(null, paths, options));
-        callback();
-      });
-    });
+    // filter
+    options.async ? options.filter(relativePath, stat, callbackWrapper) : getKeep(options.filter(relativePath, stat), callbackWrapper);
   } catch (err) {
     callback(err);
   }
+}
+
+function processPath(paths, options, callback) {
+  var fullPath = paths.join(path.sep);
+  getRealStat(fullPath, function(err, stat) {
+    if (err || !stat) return callback(); // skip missing
+
+    processFilter(fullPath, stat, options, function(err, keep) {
+      if (err) return callback(err);
+
+      if (!keep) return callback(); // do not keep processing
+      if (stat.isDirectory()) options.queue.defer(processDirectory.bind(null, paths, options));
+      callback();
+    });
+  });
 }
 function processNextDirectoryName(paths, names, options, callback) {
   if (names.length <= 0) return callback();
