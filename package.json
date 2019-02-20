@@ -7,7 +7,15 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha . test/spec/**/*.test.js",
+    "test-main": "mocha . test/spec/**/*.test.js",
+    "test-0.10": "nave use 0.10 npm run test-main",
+    "test-0.12": "nave use 0.12 npm run test-main",
+    "test-4": "nave use 4 npm run test-main",
+    "test-6": "nave use 6 npm run test-main",
+    "test-8": "nave use 8 npm run test-main",
+    "test-10": "nave use 10 npm run test-main",
+    "test-all": "npm run test-main && npm run test-0.10 && npm run test-0.12 && npm run test-4 && npm run test-6 && npm run test-8 && npm run test-10",
+    "test": "npm run test-main",
     "perf": "node test/perf/tests.js",
     "lint": "eslint .",
     "format": "prettier --write '**/*.js'"
@@ -43,13 +51,13 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "fs-extra": "^7.0.1",
     "fs-generate": "^1.1.0",
     "graceful-fs": "^4.1.15",
-    "mocha": "^5.2.0",
+    "mocha": "^2.5.3",
+    "nave": "^2.2.3",
     "prettier": "^1.16.4",
-    "rimraf": "^2.6.2",
-    "sinon": "^7.2.3",
+    "rimraf": "^2.6.3",
+    "sinon": "^2.4.1",
     "sinon-chai": "^3.3.0"
   }
 }
