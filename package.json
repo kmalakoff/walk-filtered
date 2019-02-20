@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk. Supports Node 0.10 and above.",
   "main": "index.js",
   "engines": {
@@ -53,11 +53,11 @@
     "eslint-plugin-standard": "^4.0.0",
     "fs-generate": "^1.1.0",
     "graceful-fs": "^4.1.15",
-    "mocha": "^2.5.3",
+    "mocha": "^3.5.3",
     "nave": "^2.2.3",
     "prettier": "^1.16.4",
     "rimraf": "^2.6.3",
-    "sinon": "^2.4.1",
+    "sinon": "^3.3.0",
     "sinon-chai": "^3.3.0"
   }
 }
