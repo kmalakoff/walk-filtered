@@ -6,7 +6,6 @@ var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
 var fs = require('fs');
-var rimraf = require('rimraf');
 
 var walk = require('../..');
 var statsSpys = require('../utils').statsSpys;
