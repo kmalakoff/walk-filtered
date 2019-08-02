@@ -53,7 +53,11 @@ function processDirectory(paths, options, callback) {
     if (err) return callback(err);
 
     options.fs.readdir(realPath, function(err2, names) {
-      if (err2) return callback(err2);
+      if (err2) {
+        if (err2.code !== 'EPERM') return callback(err2);
+        console.log(err2.message); // skip non-permitted
+        return callback();
+      }
 
       var nextPaths = fullPath === realPath ? paths : [realPath];
       options.queue.defer(processNextDirectoryName.bind(null, nextPaths, names.reverse(), options));
