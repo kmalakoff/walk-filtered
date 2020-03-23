@@ -38,6 +38,7 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
+    "lodash.isarray": "^4.0.0",
     "queue-cb": "^1.0.0"
   },
   "devDependencies": {

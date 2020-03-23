@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var Queue = require('queue-cb');
 
+var flatDeepJoin = require('./lib/flatDeepJoin');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 
@@ -27,7 +28,7 @@ function processFilter(fullPath, stat, options, callback) {
 }
 
 function processPath(paths, options, callback) {
-  var fullPath = paths.join(path.sep);
+  var fullPath = flatDeepJoin(paths, path.sep);
   fs[options.stat](fullPath, function(err, stat) {
     if (err || !stat) return callback(); // skip missing
 
@@ -44,11 +45,11 @@ function processNextDirectoryName(paths, names, options, callback) {
   if (names.length <= 0) return callback();
   var name = names.pop();
   options.queue.defer(processNextDirectoryName.bind(null, paths, names, options));
-  processPath(paths.concat([name]), options, callback);
+  processPath([paths, name], options, callback);
 }
 
 function processDirectory(paths, options, callback) {
-  var fullPath = paths.join(path.sep);
+  var fullPath = flatDeepJoin(paths, path.sep);
   options.fs.realpath(fullPath, function(err, realPath) {
     if (err) return callback(err);
 
