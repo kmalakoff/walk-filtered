@@ -1,14 +1,30 @@
 #!/usr/bin/env node
 
+var walk = require('..');
+var memory = require('memory');
+var userHome = require('user-home');
+var log = require('single-line-log').stdout;
+var util = require('util');
+
+var writeSnapshot = util.promisify(require('heapdump').writeSnapshot);
+
+async function writeStats() {
+  var mb = memory();
+  log('Memory usage: ', mb);
+  await writeSnapshot();
+}
+
 (async () => {
-  var walk = require('..');
-  var memory = require('memory');
-  var userHome = require('user-home');
-  var log = require('single-line-log').stdout;
   var counter = 0;
 
-  await walk(userHome, rel => {
-    var mb = memory();
-    if ((counter++ % 1000 === 1)) log('Memory usage: ', mb);
-  });
+  await writeStats();
+  walk(
+    userHome,
+    async rel => {
+      if (counter++ % 10000 === 0) {
+        await writeStats();
+      }
+    },
+    writeStats
+  );
 })();
