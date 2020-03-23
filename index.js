@@ -11,6 +11,7 @@ var DEFAULT_STAT = 'lstat';
 
 function processFilter(fullPath, stat, options, callback) {
   var relativePath = path.relative(options.realCWD, fullPath); // the path to the link, file, or directory
+  fullPath = null; // CLEAR REFERNECE
 
   var callbackWrapper = function(err, result) {
     if (err) return callback(err);
@@ -36,6 +37,7 @@ function processPath(paths, options, callback) {
       if (err) return callback(err);
 
       if (!keep) return callback(); // do not keep processing
+      fullPath = null; // CLEAR REFERNECE
       if (stat.isDirectory()) options.queue.defer(processDirectory.bind(null, paths, options));
       callback();
     });
@@ -61,6 +63,7 @@ function processDirectory(paths, options, callback) {
       }
 
       var nextPaths = fullPath === realPath ? paths : [realPath];
+      fullPath = realPath = null; // CLEAR REFERNECE
       options.queue.defer(processNextDirectoryName.bind(null, nextPaths, names.reverse(), options));
       callback();
     });
