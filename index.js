@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var Queue = require('queue-cb');
 
-var joinDeep = require('reduce-deep').joinDeep;
+var joinDeep = require('join-deep');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 
@@ -15,7 +15,7 @@ function processFilter(fullPath, stat, options, callback) {
   var relativePath = path.relative(options.realCWD, fullPath); // the path to the link, file, or directory
   fullPath = null; // CLEAR REFERNECE
 
-  var callbackWrapper = function(err, result) {
+  var callbackWrapper = function (err, result) {
     if (err) return callback(err);
 
     if (!getResult(result)) return callback(null, false); // do not keep processing
@@ -32,15 +32,15 @@ function processFilter(fullPath, stat, options, callback) {
 
 function processPath(paths, options, callback) {
   var fullPath = joinDeep(paths, path.sep);
-  fs[options.stat](fullPath, function(err, stat) {
+  fs[options.stat](fullPath, function (err, stat) {
     if (err || !stat) return callback(); // skip missing
 
-    processFilter(fullPath, stat, options, function(err, keep) {
+    processFilter(fullPath, stat, options, function (err, keep) {
       if (err) return callback(err);
 
       if (!keep) return callback(); // do not keep processing
       fullPath = null; // CLEAR REFERNECE
-      defer(function() {
+      defer(function () {
         if (stat.isDirectory()) options.queue.defer(processDirectory.bind(null, paths, options));
         callback();
       });
@@ -51,7 +51,7 @@ function processNextDirectoryName(paths, names, options, callback) {
   if (names.length <= 0) return callback();
   var name = names.pop();
 
-  defer(function() {
+  defer(function () {
     options.queue.defer(processNextDirectoryName.bind(null, paths, names, options));
     processPath([paths, name], options, callback);
   });
@@ -59,10 +59,10 @@ function processNextDirectoryName(paths, names, options, callback) {
 
 function processDirectory(paths, options, callback) {
   var fullPath = joinDeep(paths, path.sep);
-  options.fs.realpath(fullPath, function(err, realPath) {
+  options.fs.realpath(fullPath, function (err, realPath) {
     if (err) return callback(err);
 
-    options.fs.readdir(realPath, function(err2, names) {
+    options.fs.readdir(realPath, function (err2, names) {
       if (err2) {
         if (err2.code !== 'EPERM') return callback(err2);
         // console.log(err2.message); // skip non-permitted
@@ -71,7 +71,7 @@ function processDirectory(paths, options, callback) {
 
       var nextPaths = fullPath === realPath ? paths : [realPath];
       fullPath = realPath = null; // CLEAR REFERNECE
-      defer(function() {
+      defer(function () {
         options.queue.defer(processNextDirectoryName.bind(null, nextPaths, names.reverse(), options));
         callback();
       });
@@ -79,7 +79,7 @@ function processDirectory(paths, options, callback) {
   });
 }
 
-module.exports = function(cwd, filter, inputOptions, callback) {
+module.exports = function (cwd, filter, inputOptions, callback) {
   /* eslint-disable */
   if (arguments.length === 3 && typeof inputOptions === 'function') {
     callback = inputOptions;
@@ -92,12 +92,12 @@ module.exports = function(cwd, filter, inputOptions, callback) {
   var options = { filter: filter, queue: queue, async: inputOptions.async, fs: inputOptions.fs || fs, stat: inputOptions.stat || DEFAULT_STAT };
 
   // resolve the realCWD and start processing
-  queue.defer(function(callback) {
-    options.fs.realpath(cwd, function(err, realCWD) {
+  queue.defer(function (callback) {
+    options.fs.realpath(cwd, function (err, realCWD) {
       if (err) return callback(err);
 
       options.realCWD = realCWD; // eslint-disable-line no-param-reassign
-      defer(function() {
+      defer(function () {
         queue.defer(processPath.bind(null, [cwd], options));
         callback();
       });
@@ -106,8 +106,8 @@ module.exports = function(cwd, filter, inputOptions, callback) {
 
   // choose between promise and callback API
   if (typeof callback === 'function') return queue.await(callback);
-  return new Promise(function(resolve, reject) {
-    queue.await(function(err, result) {
+  return new Promise(function (resolve, reject) {
+    queue.await(function (err, result) {
       err ? reject(err) : resolve(result);
     });
   });
