@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 
 var walk = require('..');
-var memory = require('memory');
 var userHome = require('user-home');
-var log = require('single-line-log').stdout;
-var util = require('util');
+// var util = require('util');
 
-var writeSnapshot = util.promisify(require('heapdump').writeSnapshot);
+// var writeSnapshot = util.promisify(require('heapdump').writeSnapshot);
+
+var CHECK_SIZE = 10000;
 
 async function writeStats() {
-  var mb = memory();
-  log('Memory usage: ', mb);
-  await writeSnapshot();
+  const used = process.memoryUsage();
+  for (let key in used) {
+    console.log(`${key} ${Math.round((used[key] / 1024 / 1024) * 100) / 100} MB`);
+  }
+  console.log('----------------');
+  // await writeSnapshot();
 }
 
 (async () => {
@@ -21,7 +24,7 @@ async function writeStats() {
   walk(
     userHome,
     async rel => {
-      if (counter++ % 10000 === 0) {
+      if (counter++ % CHECK_SIZE === 0) {
         await writeStats();
       }
     },
