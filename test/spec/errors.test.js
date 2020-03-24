@@ -18,34 +18,34 @@ var STRUCTURE = {
   'dir3/dir4/file1': 'e',
   'dir3/dir4/dir5': null,
   link1: '~dir3/dir4/file1',
-  'dir3/link2': '~dir2/file1'
+  'dir3/link2': '~dir2/file1',
 };
 
 function sleep(timeout) {
-  return new Promise(function(resolve) {
+  return new Promise(function (resolve) {
     setTimeout(resolve, timeout);
   });
 }
 
-describe('errors', function() {
-  after(function(callback) {
+describe('errors', function () {
+  after(function (callback) {
     rimraf(DIR, callback);
   });
 
-  describe('sync', function() {
-    beforeEach(function(callback) {
-      rimraf(DIR, function() {
+  describe('sync', function () {
+    beforeEach(function (callback) {
+      rimraf(DIR, function () {
         generate(DIR, STRUCTURE, callback);
       });
     });
 
-    it('should propagate errors', function(callback) {
+    it('should propagate errors', function (callback) {
       walk(
         DIR,
-        function() {
+        function () {
           throw new Error('Failed');
         },
-        function(err) {
+        function (err) {
           assert.ok(!!err);
           callback();
         }
@@ -53,23 +53,23 @@ describe('errors', function() {
     });
   });
 
-  describe('async', function() {
-    beforeEach(function(callback) {
-      rimraf(DIR, function() {
+  describe('async', function () {
+    beforeEach(function (callback) {
+      rimraf(DIR, function () {
         generate(DIR, STRUCTURE, callback);
       });
     });
 
-    it('should propagate errors', function(callback) {
+    it('should propagate errors', function (callback) {
       walk(
         DIR,
-        function(path, stat, callback2) {
-          setTimeout(function() {
+        function (path, stat, callback2) {
+          setTimeout(function () {
             callback2(new Error('Failed'));
           }, 100);
         },
         { async: true },
-        function(err) {
+        function (err) {
           assert.ok(!!err);
           callback();
         }
@@ -77,24 +77,24 @@ describe('errors', function() {
     });
   });
 
-  describe('promise', function() {
+  describe('promise', function () {
     if (typeof Promise === 'undefined') return; // no promise support
 
-    beforeEach(function(callback) {
-      rimraf(DIR, function() {
+    beforeEach(function (callback) {
+      rimraf(DIR, function () {
         generate(DIR, STRUCTURE, callback);
       });
     });
 
-    it('should propagate errors', function(callback) {
+    it('should propagate errors', function (callback) {
       walk(
         DIR,
-        function() {
-          return sleep(100).then(function() {
+        function () {
+          return sleep(100).then(function () {
             throw new Error('Failed');
           });
         },
-        function(err) {
+        function (err) {
           assert.ok(!!err);
           callback();
         }
