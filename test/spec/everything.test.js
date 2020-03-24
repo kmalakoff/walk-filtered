@@ -20,29 +20,29 @@ var STRUCTURE = {
   'dir3/dir4/file1': 'e',
   'dir3/dir4/dir5': null,
   link1: '~dir3/dir4/file1',
-  'dir3/link2': '~dir2/file1'
+  'dir3/link2': '~dir2/file1',
 };
 
-describe('walk everything', function() {
-  beforeEach(function(callback) {
-    rimraf(DIR, function() {
+describe('walk everything', function () {
+  beforeEach(function (callback) {
+    rimraf(DIR, function () {
       generate(DIR, STRUCTURE, callback);
     });
   });
-  after(function(callback) {
+  after(function (callback) {
     rimraf(DIR, callback);
   });
 
-  it('Should find everything with no return', function(callback) {
+  it('Should find everything with no return', function (callback) {
     var spys = statsSpys();
 
     walk(
       DIR,
-      function(path) {
+      function (path) {
         var stats = fs.lstatSync(sysPath.join(DIR, path));
         spys(stats, path);
       },
-      function() {
+      function () {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 5);
         assert.equal(spys.link.callCount, 2);
@@ -51,17 +51,17 @@ describe('walk everything', function() {
     );
   });
 
-  it('Should find everything with return true', function(callback) {
+  it('Should find everything with return true', function (callback) {
     var spys = statsSpys();
 
     walk(
       DIR,
-      function(path) {
+      function (path) {
         var stats = fs.lstatSync(sysPath.join(DIR, path));
         spys(stats, path);
         return true;
       },
-      function() {
+      function () {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 5);
         assert.equal(spys.link.callCount, 2);
@@ -69,12 +69,12 @@ describe('walk everything', function() {
       }
     );
   });
-  it('Should handle a delete', function(callback) {
+  it('Should handle a delete', function (callback) {
     var spys = statsSpys();
 
     walk(
       DIR,
-      function(path) {
+      function (path) {
         var stats = fs.lstatSync(sysPath.join(DIR, path));
         spys(stats, path);
 
@@ -82,7 +82,7 @@ describe('walk everything', function() {
         return true;
       },
       { concurrency: 1 },
-      function() {
+      function () {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 4);
         assert.equal(spys.link.callCount, 2);
