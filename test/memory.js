@@ -23,7 +23,7 @@ async function writeStats() {
   await writeStats();
   walk(
     userHome,
-    async rel => {
+    async (rel) => {
       if (counter++ % CHECK_SIZE === 0) {
         await writeStats();
       }
