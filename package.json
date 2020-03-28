@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk. Supports Node 0.10 and above.",
   "main": "index.js",
   "engines": {
@@ -38,7 +38,7 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "join-deep": "^1.0.0",
+    "join-deep": "^1.1.0",
     "queue-cb": "^1.0.1"
   },
   "devDependencies": {
@@ -49,7 +49,7 @@
     "eslint-config-prettier": "^6.10.1",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "fs-generate": "^1.3.0",
