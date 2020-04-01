@@ -1,12 +1,13 @@
 var fs = require('fs');
 var path = require('path');
 var Queue = require('queue-cb');
+var Stack = require('stack-lifo');
 
 var joinDeep = require('join-deep');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 
-var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
+var DEFAULT_CONCURRENCY = 100; // default concurrency
 var DEFAULT_STAT = 'lstat';
 
 var defer = process.nextTick;
@@ -41,18 +42,22 @@ function processPath(paths, options, callback) {
       if (!keep) return callback(); // do not keep processing
       fullPath = null; // CLEAR REFERNECE
       defer(function () {
-        if (stat.isDirectory()) options.queue.defer(processDirectory.bind(null, paths, options));
+        if (stat.isDirectory()) {
+          options.stack.push(processDirectory.bind(null, paths, options));
+          options.queue.defer(options.processNext);
+        }
         callback();
       });
     });
   });
 }
-function processNextDirectoryName(paths, names, options, callback) {
-  if (names.length <= 0) return callback();
-  var name = names.pop();
+function processNextDirectoryName(paths, names, index, options, callback) {
+  if (index >= names.length) return callback();
+  var name = names[index++];
 
   defer(function () {
-    options.queue.defer(processNextDirectoryName.bind(null, paths, names, options));
+    options.stack.push(processNextDirectoryName.bind(null, paths, names, index, options));
+    options.queue.defer(options.processNext);
     processPath([paths, name], options, callback);
   });
 }
@@ -71,10 +76,9 @@ function processDirectory(paths, options, callback) {
 
       var nextPaths = fullPath === realPath ? paths : [realPath];
       fullPath = realPath = null; // CLEAR REFERNECE
-      defer(function () {
-        options.queue.defer(processNextDirectoryName.bind(null, nextPaths, names.reverse(), options));
-        callback();
-      });
+      options.stack.push(processNextDirectoryName.bind(null, nextPaths, names, 0, options));
+      options.queue.defer(options.processNext);
+      callback();
     });
   });
 }
@@ -89,7 +93,21 @@ module.exports = function (cwd, filter, inputOptions, callback) {
   /* eslint-enable */
 
   var queue = new Queue(inputOptions.concurrency || DEFAULT_CONCURRENCY);
-  var options = { filter: filter, queue: queue, async: inputOptions.async, fs: inputOptions.fs || fs, stat: inputOptions.stat || DEFAULT_STAT };
+  var stack = new Stack();
+  var processNext = function (callback) {
+    if (stack.isEmpty()) return callback();
+    var next = stack.pop();
+    next(callback);
+  };
+  var options = {
+    filter: filter,
+    queue: queue,
+    stack: stack,
+    processNext: processNext,
+    async: inputOptions.async,
+    fs: inputOptions.fs || fs,
+    stat: inputOptions.stat || DEFAULT_STAT,
+  };
 
   // resolve the realCWD and start processing
   queue.defer(function (callback) {
@@ -98,7 +116,8 @@ module.exports = function (cwd, filter, inputOptions, callback) {
 
       options.realCWD = realCWD; // eslint-disable-line no-param-reassign
       defer(function () {
-        queue.defer(processPath.bind(null, [cwd], options));
+        options.stack.push(processPath.bind(null, [cwd], options));
+        options.queue.defer(options.processNext);
         callback();
       });
     });
