@@ -14,7 +14,6 @@ var defer = process.nextTick;
 
 function processFilter(fullPath, stat, options, callback) {
   var relativePath = path.relative(options.realCWD, fullPath); // the path to the link, file, or directory
-  fullPath = null; // CLEAR REFERNECE
 
   var callbackWrapper = function (err, result) {
     if (err) return callback(err);
@@ -40,14 +39,11 @@ function processPath(paths, options, callback) {
       if (err) return callback(err);
 
       if (!keep) return callback(); // do not keep processing
-      fullPath = null; // CLEAR REFERNECE
-      defer(function () {
-        if (stat.isDirectory()) {
-          options.stack.push(processDirectory.bind(null, paths, options));
-          options.queue.defer(options.processNext);
-        }
-        callback();
-      });
+      if (stat.isDirectory()) {
+        options.stack.push(processDirectory.bind(null, paths, options));
+        options.queue.defer(options.processNext);
+      }
+      defer(callback);
     });
   });
 }
@@ -55,11 +51,9 @@ function processNextDirectoryName(paths, names, index, options, callback) {
   if (index >= names.length) return callback();
   var name = names[index++];
 
-  defer(function () {
-    options.stack.push(processNextDirectoryName.bind(null, paths, names, index, options));
-    options.queue.defer(options.processNext);
-    processPath([paths, name], options, callback);
-  });
+  options.stack.push(processNextDirectoryName.bind(null, paths, names, index, options));
+  options.queue.defer(options.processNext);
+  processPath([paths, name], options, callback);
 }
 
 function processDirectory(paths, options, callback) {
@@ -75,10 +69,9 @@ function processDirectory(paths, options, callback) {
       }
 
       var nextPaths = fullPath === realPath ? paths : [realPath];
-      fullPath = realPath = null; // CLEAR REFERNECE
       options.stack.push(processNextDirectoryName.bind(null, nextPaths, names, 0, options));
       options.queue.defer(options.processNext);
-      callback();
+      defer(callback);
     });
   });
 }
@@ -115,11 +108,9 @@ module.exports = function (cwd, filter, inputOptions, callback) {
       if (err) return callback(err);
 
       options.realCWD = realCWD; // eslint-disable-line no-param-reassign
-      defer(function () {
-        options.stack.push(processPath.bind(null, [cwd], options));
-        options.queue.defer(options.processNext);
-        callback();
-      });
+      options.stack.push(processPath.bind(null, [cwd], options));
+      options.queue.defer(options.processNext);
+      defer(callback);
     });
   });
 
