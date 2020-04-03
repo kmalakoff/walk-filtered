@@ -51,8 +51,10 @@ function processNextDirectoryName(paths, names, index, options, callback) {
   var name = names[index++];
 
   options.stack.push(processNextDirectoryName.bind(null, paths, names, index, options));
+  options.stack.push(processPath.bind(null, [paths, name], options));
   options.queue.defer(options.processNext);
-  processPath([paths, name], options, callback);
+  options.queue.defer(options.processNext);
+  callback();
 }
 
 function processDirectory(paths, options, callback) {
@@ -67,9 +69,7 @@ function processDirectory(paths, options, callback) {
       }
 
       var nextPaths = fullPath === realPath ? paths : [realPath];
-      options.stack.push(processNextDirectoryName.bind(null, nextPaths, names, 0, options));
-      options.queue.defer(options.processNext);
-      callback();
+      processNextDirectoryName(nextPaths, names, 0, options, callback);
     });
   });
 }
