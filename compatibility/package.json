@@ -1,5 +1,6 @@
 {
   "name": "walk-filtered-compatibility-tests",
+  "private": true,
   "version": "0.0.0",
   "description": "Tests",
   "repository": {
