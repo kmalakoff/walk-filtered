@@ -1,0 +1,22 @@
+{
+  "name": "walk-filtered-performance-tests",
+  "version": "0.0.0",
+  "description": "Tests",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kmalakoff/walk-filtered.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "benchmark": "node --expose-gc benchmark/index.js",
+    "memory": "node --expose-gc memory/index.js",
+    "test": "npm run benchmark && npm run memory"
+  },
+  "dependencies": {
+    "benchmark": "^2.1.4",
+    "fs-extra": "^9.0.0",
+    "graceful-fs": "^4.2.3",
+    "walk-filtered-1.13.0": "npm:walk-filtered@^1.13.0",
+    "walk-filtered-1.17.0": "npm:walk-filtered@^1.17.0"
+  }
+}
