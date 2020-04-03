@@ -9,6 +9,7 @@ var getKeep = require('./lib/getKeep');
 
 var DEFAULT_CONCURRENCY = 4096; // default concurrency
 var DEFAULT_STAT = 'lstat';
+var ACCEPTABLE_ERRORS = ['ENOENT', 'EPERM', 'EACCES', 'ELOOP'];
 
 function processFilter(fullPath, stat, options, callback) {
   var relativePath = path.relative(options.realCWD, fullPath); // the path to the link, file, or directory
@@ -61,8 +62,7 @@ function processDirectory(paths, options, callback) {
 
     options.fs.readdir(realPath, function (err2, names) {
       if (err2) {
-        if (err2.code !== 'EPERM') return callback(err2);
-        // console.log(err2.message); // skip non-permitted
+        if (!~ACCEPTABLE_ERRORS.indexOf(err2.code)) return callback(err2);
         return callback();
       }
 
