@@ -1,4 +1,8 @@
 module.exports = [
+  // {
+  //   version: 'latest',
+  //   walk: require('..'),
+  // },
   {
     version: 'latest',
     walk: require('..'),

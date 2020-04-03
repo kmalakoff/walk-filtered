@@ -8,9 +8,9 @@ const FILE_SYSTEMS = [
 
 const TESTS = [];
 for (const fileSystem of FILE_SYSTEMS) {
-  TESTS.push({ name: `Options (${fileSystem.name})`, options: { fs: fileSystem.fs } });
+  TESTS.push({ name: `${fileSystem.name}`, options: { fs: fileSystem.fs } });
   for (const concurrency of CONCURRENCIES) {
-    TESTS.push({ name: `Options (${fileSystem.name}, ${concurrency})`, options: { fs: fileSystem.fs, concurrency: concurrency } });
+    TESTS.push({ name: `${fileSystem.name}, ${concurrency}`, options: { fs: fileSystem.fs, concurrency: concurrency } });
   }
 }
 
@@ -51,8 +51,9 @@ module.exports = async function run({ walk, version }, dir) {
       reject();
     });
     suite.on('complete', function () {
+      var fastest = this.filter('fastest')[0];
       console.log('----------------\n');
-      console.log('Fastest is ' + this.filter('fastest')[0].name);
+      console.log('Fastest is ' + fastest.name + ' x ' + fastest.hz.toFixed(2) + ' ops/sec');
       console.log('****************\n');
       resolve();
     });
