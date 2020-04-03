@@ -7,10 +7,8 @@ var joinDeep = require('join-deep');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 
-var DEFAULT_CONCURRENCY = 100; // default concurrency
+var DEFAULT_CONCURRENCY = 4096; // default concurrency
 var DEFAULT_STAT = 'lstat';
-
-var defer = process.nextTick;
 
 function processFilter(fullPath, stat, options, callback) {
   var relativePath = path.relative(options.realCWD, fullPath); // the path to the link, file, or directory
@@ -43,7 +41,7 @@ function processPath(paths, options, callback) {
         options.stack.push(processDirectory.bind(null, paths, options));
         options.queue.defer(options.processNext);
       }
-      defer(callback);
+      callback();
     });
   });
 }
@@ -71,7 +69,7 @@ function processDirectory(paths, options, callback) {
       var nextPaths = fullPath === realPath ? paths : [realPath];
       options.stack.push(processNextDirectoryName.bind(null, nextPaths, names, 0, options));
       options.queue.defer(options.processNext);
-      defer(callback);
+      callback();
     });
   });
 }
@@ -110,7 +108,7 @@ module.exports = function (cwd, filter, inputOptions, callback) {
       options.realCWD = realCWD; // eslint-disable-line no-param-reassign
       options.stack.push(processPath.bind(null, [cwd], options));
       options.queue.defer(options.processNext);
-      defer(callback);
+      callback();
     });
   });
 
