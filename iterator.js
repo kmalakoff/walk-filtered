@@ -1,11 +1,13 @@
 var path = require('path');
 var Queue = require('queue-cb');
+const Readable = require('readable-stream');
 
 var Iterator = require('./lib/Iterator');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 
-var DEFAULT_CONCURRENCY = 4096; // default concurrency
+var DEFAULT_CONCURRENCY = 4096;
+var MAXIMUM_CONCURRENCY = 4 * 4096;
 
 function processFilter(relativePath, stat, filter, async, callback) {
   var callbackWrapper = function (err, result) {
@@ -19,24 +21,50 @@ function processFilter(relativePath, stat, filter, async, callback) {
   }
 }
 
-function processMore(options) {
-  var queue = options.queue;
-  var iterator = options.iterator;
-  var concurrency = options.concurrency; // TODO: add a maximum batch size
+class WalkStream extends Readable {
+  constructor(options, iterator) {
+    var highWaterMark = options.concurrency || DEFAULT_CONCURRENCY;
+    if (highWaterMark > MAXIMUM_CONCURRENCY) highWaterMark = MAXIMUM_CONCURRENCY;
 
-  if (concurrency > 100) concurrency = 100;
-
-  while (!options.done && options.count < concurrency) {
-    options.count++;
-    queue.defer(function (callback) {
-      iterator.next(function (err, result) {
-        options.count--;
-        if (err) return callback(err);
-        options.done = result.done;
-        if (!options.done) processMore(options);
-        return callback();
-      });
+    super({
+      objectMode: true,
+      autoDestroy: true,
+      highWaterMark: highWaterMark,
     });
+    this.iterator = iterator;
+  }
+
+  _read(batch) {
+    if (this.reading) return;
+    this.reading = true;
+
+    var self = this;
+    var queue = new Queue(batch); 
+    var done = false;
+    while (!done && !this.destroyed && batch > 0) {
+      batch--;
+      queue.defer(function(callback) {
+        if (self.destroyed || done) return callback();
+        self.iterator.next(function (err, result) {
+          if (self.destroyed) return callback();;
+          if (err) {
+            return self.destroy(err);
+            callback(err);
+          }
+          if (result.done) {
+            if (!done) {
+              done = true;
+              self.push(null);
+            }
+          }
+          else self.push(true)
+          callback();
+        });
+      })
+    }
+    queue.await(function() {
+      self.reading = false;
+    })
   }
 }
 
@@ -48,26 +76,31 @@ module.exports = function (cwd, filter, options, callback) {
   }
   options = options || {};
 
-  var queue = new Queue();
-  var iterator = new Iterator(
-    cwd,
-    Object.assign({}, options, {
-      filter: function (relativePath, stat, callback) {
-        processFilter(relativePath, stat, filter, options.async, callback);
-      },
-      async: true,
-    })
-  );
-  var concurrency = options.concurrency || DEFAULT_CONCURRENCY;
-  var count = 0;
-
-  processMore({ cwd: cwd, filter: filter, queue: queue, iterator: iterator, concurrency: concurrency, async: options.async, count: count });
+  var iteratorOptions = {
+    fs: options.fs,
+    stat: options.stat,
+    async: true,
+    filter: function (relativePath, stat, callback) {
+      processFilter(relativePath, stat, filter, options.async, callback);
+    },
+  };
+  var iterator = new Iterator(cwd, iteratorOptions);
+  var stream = new WalkStream(options, iterator);
 
   // choose between promise and callback API
-  if (typeof callback === 'function') return queue.await(callback);
-  return new Promise(function (resolve, reject) {
-    queue.await(function (err, result) {
-      err ? reject(err) : resolve(result);
+  if (typeof callback === 'function') {
+    stream
+      .on('data', function () {})
+      .on('end', function () {
+        callback();
+      })
+      .on('error', callback);
+  } else {
+    return new Promise(function (resolve, reject) {
+      stream
+        .on('data', function () {})
+        .on('end', resolve)
+        .on('error', reject);
     });
-  });
+  }
 };
