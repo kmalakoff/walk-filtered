@@ -32,7 +32,6 @@
     "fifo": "^2.3.0",
     "join-deep": "^1.2.0",
     "queue-cb": "^1.1.0",
-    "readable-stream": "^3.6.0",
     "stack-lifo": "^0.1.6"
   },
   "devDependencies": {
