@@ -1,10 +1,10 @@
 var path = require('path');
-var Queue = require('queue-cb');
 
 var Iterator = require('./lib/Iterator');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 var fillQueue = require('./lib/fillQueue');
+// var fillStream = require('./lib/fillStream');
 
 var DEFAULT_CONCURRENCY = 4096;
 
@@ -37,16 +37,6 @@ module.exports = function (cwd, filter, options, callback) {
     },
   };
   var iterator = new Iterator(cwd, iteratorOptions);
-
-  var concurrency = options.concurrency || DEFAULT_CONCURRENCY; 
-  var queue = new Queue(concurrency);
-  fillQueue(queue, iterator);
-
-  // choose between promise and callback API
-  if (typeof callback === 'function') return queue.await(callback);
-  return new Promise(function (resolve, reject) {
-    queue.await(function (err, result) {
-      err ? reject(err) : resolve(result);
-    });
-  });
+  return fillQueue(iterator, options.concurrency || DEFAULT_CONCURRENCY, callback);
+  // return fillStream(iterator, options.concurrency || DEFAULT_CONCURRENCY, callback);
 };
