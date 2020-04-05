@@ -3,7 +3,7 @@ var path = require('path');
 var Iterator = require('./lib/Iterator');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
-var throttleIterator = require('./lib/throttleIterator');
+var maximizeIterator = require('./lib/maximizeIterator');
 
 var DEFAULT_CONCURRENCY = 4096;
 
@@ -38,12 +38,15 @@ module.exports = function (cwd, filter, options, callback) {
   var iterator = new Iterator(cwd, iteratorOptions);
 
   // choose between promise and callback API
-  if (typeof callback === 'function') {
-    throttleIterator(iterator, options.concurrency || DEFAULT_CONCURRENCY, callback);
-  }
+  if (typeof callback === 'function') return maximizeIterator(iterator, options.concurrency || DEFAULT_CONCURRENCY, function() {}, callback);
   return new Promise(function (resolve, reject) {
-    throttleIterator(iterator, options.concurrency || DEFAULT_CONCURRENCY, function (err, result) {
-      err ? reject(err) : resolve(result);
-    });
+    maximizeIterator(
+      iterator,
+      options.concurrency || DEFAULT_CONCURRENCY,
+      function() {},
+      function (err, result) {
+        err ? reject(err) : resolve(result);
+      }
+    );
   });
 };
