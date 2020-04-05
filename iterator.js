@@ -3,8 +3,7 @@ var path = require('path');
 var Iterator = require('./lib/Iterator');
 var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
-var fillQueue = require('./lib/fillQueue');
-// var fillStream = require('./lib/fillStream');
+var throttleIterator = require('./lib/throttleIterator');
 
 var DEFAULT_CONCURRENCY = 4096;
 
@@ -37,6 +36,14 @@ module.exports = function (cwd, filter, options, callback) {
     },
   };
   var iterator = new Iterator(cwd, iteratorOptions);
-  return fillQueue(iterator, options.concurrency || DEFAULT_CONCURRENCY, callback);
-  // return fillStream(iterator, options.concurrency || DEFAULT_CONCURRENCY, callback);
+
+  // choose between promise and callback API
+  if (typeof callback === 'function') {
+    throttleIterator(iterator, options.concurrency || DEFAULT_CONCURRENCY, callback);
+  }
+  return new Promise(function (resolve, reject) {
+    throttleIterator(iterator, options.concurrency || DEFAULT_CONCURRENCY, function (err, result) {
+      err ? reject(err) : resolve(result);
+    });
+  });
 };
