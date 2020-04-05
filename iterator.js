@@ -23,26 +23,18 @@ function processMore(options) {
   var queue = options.queue;
   var iterator = options.iterator;
   var concurrency = options.concurrency; // TODO: add a maximum batch size
-  var filter = options.filter;
 
   if (concurrency > 100) concurrency = 100;
 
   while (!options.done && options.count < concurrency) {
     options.count++;
     queue.defer(function (callback) {
-      iterator.next(function (relativePath, stat, callback2) {
-        if (relativePath === null) { // done
-          options.count--;
-          options.done = true;
-          return callback();
-        }
-
-        processFilter(relativePath, stat, filter, options.async, function (err, value) {
-          options.count--;
-          callback2(null, value);
-          if (!options.done) processMore(options);
-          callback(err);
-        });
+      iterator.next(function (err, result) {
+        options.count--;
+        if (err) return callback(err);
+        options.done = result.done;
+        if (!options.done) processMore(options);
+        return callback();
       });
     });
   }
@@ -57,7 +49,15 @@ module.exports = function (cwd, filter, options, callback) {
   options = options || {};
 
   var queue = new Queue();
-  var iterator = new Iterator(cwd, Object.assign({}, options, {async: true}));
+  var iterator = new Iterator(
+    cwd,
+    Object.assign({}, options, {
+      filter: function (relativePath, stat, callback) {
+        processFilter(relativePath, stat, filter, options.async, callback);
+      },
+      async: true,
+    })
+  );
   var concurrency = options.concurrency || DEFAULT_CONCURRENCY;
   var count = 0;
 
