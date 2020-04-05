@@ -1,0 +1,68 @@
+****************
+
+Running: Queue Fill
+----------------
+Comparing Walk /Users/kevin/Dev/walk-filtered/performance/benchmark/data
+fs x 7.81 ops/sec ±10.01% (42 runs sampled)
+fs, 1 x 4.81 ops/sec ±3.65% (27 runs sampled)
+fs, 25 x 10.89 ops/sec ±2.62% (52 runs sampled)
+fs, 100 x 11.20 ops/sec ±3.82% (54 runs sampled)
+fs, 400 x 10.30 ops/sec ±3.61% (50 runs sampled)
+fs, 1600 x 9.26 ops/sec ±5.70% (47 runs sampled)
+fs, 6400 x 8.76 ops/sec ±6.64% (44 runs sampled)
+fs, Infinity x 8.59 ops/sec ±4.57% (43 runs sampled)
+----------------
+
+Fastest is fs, 100 x 11.20 ops/sec
+****************
+
+Running: Stream Fill
+----------------
+Comparing Walk /Users/kevin/Dev/walk-filtered/performance/benchmark/data
+fs x 4.34 ops/sec ±8.22% (26 runs sampled)
+fs, 1 x 4.63 ops/sec ±2.65% (26 runs sampled)
+fs, 25 x 9.42 ops/sec ±3.98% (47 runs sampled)
+fs, 100 x 8.49 ops/sec ±2.57% (43 runs sampled)
+fs, 400 x 7.54 ops/sec ±1.68% (39 runs sampled)
+fs, 1600 x 5.48 ops/sec ±0.91% (30 runs sampled)
+fs, 6400 x 4.77 ops/sec ±1.72% (27 runs sampled)
+fs, Infinity x 4.70 ops/sec ±2.17% (27 runs sampled)
+----------------
+
+Fastest is fs, 25 x 9.42 ops/sec
+
+****************
+
+Running: 0.13.0
+----------------
+Comparing Walk /Users/kevin/Dev/walk-filtered/performance/benchmark/data
+fs x 9.23 ops/sec ±5.35% (47 runs sampled)
+fs, 1 x 4.78 ops/sec ±1.66% (27 runs sampled)
+fs, 25 x 9.90 ops/sec ±2.71% (48 runs sampled)
+fs, 100 x 9.60 ops/sec ±5.98% (46 runs sampled)
+fs, 400 x 9.55 ops/sec ±4.88% (49 runs sampled)
+fs, 1600 x 9.69 ops/sec ±3.84% (48 runs sampled)
+fs, 6400 x 9.67 ops/sec ±4.10% (47 runs sampled)
+fs, Infinity x 9.26 ops/sec ±5.17% (46 runs sampled)
+----------------
+
+Fastest is fs, 25 x 9.90 ops/sec
+****************
+
+****************
+
+Running: 0.22.0
+----------------
+Comparing Walk /Users/kevin/Dev/walk-filtered/performance/benchmark/data
+fs x 9.33 ops/sec ±5.12% (48 runs sampled)
+fs, 1 x 4.77 ops/sec ±1.25% (27 runs sampled)
+fs, 25 x 8.24 ops/sec ±5.87% (42 runs sampled)
+fs, 100 x 10.03 ops/sec ±3.80% (49 runs sampled)
+fs, 400 x 9.59 ops/sec ±5.19% (47 runs sampled)
+fs, 1600 x 8.97 ops/sec ±5.00% (45 runs sampled)
+fs, 6400 x 8.82 ops/sec ±4.15% (45 runs sampled)
+fs, Infinity x 8.99 ops/sec ±4.14% (45 runs sampled)
+----------------
+
+Fastest is fs, 100 x 10.03 ops/sec
+****************
