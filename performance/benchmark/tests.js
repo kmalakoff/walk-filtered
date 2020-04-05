@@ -3,7 +3,7 @@ var Benchmark = require('benchmark');
 const CONCURRENCIES = [1, 25, 100, 400, 1600, 6400, Infinity];
 const FILE_SYSTEMS = [
   { name: 'fs', fs: require('fs') },
-  { name: 'gfs', fs: require('graceful-fs') },
+  // { name: 'gfs', fs: require('graceful-fs') },
 ];
 
 const TESTS = [];
