@@ -5,12 +5,12 @@ var assert = chai.assert;
 var sinon = require('sinon');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
-var sysPath = require('path');
+var path = require('path');
 var fs = require('fs');
 
 var walk = require('../..');
 
-var DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
+var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -33,18 +33,18 @@ function sleep(timeout) {
 }
 
 describe('filtering', function () {
-  after(function (callback) {
-    rimraf(DIR, callback);
+  after(function (done) {
+    rimraf(DIR, done);
   });
 
   describe('sync', function () {
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('Should filter everything under the root directory', function (callback) {
+    it('Should filter everything under the root directory', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
@@ -55,107 +55,107 @@ describe('filtering', function () {
         },
         function () {
           assert.ok(filterSpy.callCount, 1);
-          callback();
+          done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by relative path', function (callback) {
+    it('Should filter everything under specific directories by relative path', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path) {
+        function (entry) {
           filterSpy();
-          return path !== 'dir2';
+          return entry.path !== 'dir2';
         },
         true,
         function () {
           assert.ok(filterSpy.callCount, 13 - 2);
-          callback();
+          done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by stats and relative path', function (callback) {
+    it('Should filter everything under specific directories by stats and relative path', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path, stats) {
+        function (entry) {
           filterSpy();
-          return !stats.isDirectory() || startsWith(path, 'dir3/dir4');
+          return !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4');
         },
         true,
         function () {
           assert.ok(filterSpy.callCount, 13 - 1);
-          callback();
+          done();
         }
       );
     });
   });
 
   describe('async', function () {
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('Should filter everything under the root directory', function (callback) {
+    it('Should filter everything under the root directory', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path, stat, callback2) {
+        function (entry, callback) {
           filterSpy();
           setTimeout(function () {
-            callback2(null, false);
-          }, 100);
+            callback(null, false);
+          }, 50);
         },
         { async: true },
         function () {
           assert.ok(filterSpy.callCount, 1);
-          callback();
+          done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by relative path', function (callback) {
+    it('Should filter everything under specific directories by relative path', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path, stat, callback2) {
+        function (entry, callback) {
           filterSpy();
           setTimeout(function () {
-            callback2(null, path !== 'dir2');
-          }, 100);
+            callback(null, entry.path !== 'dir2');
+          }, 50);
         },
         { async: true },
         function () {
           assert.ok(filterSpy.callCount, 13 - 2);
-          callback();
+          done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by stats and relative path', function (callback) {
+    it('Should filter everything under specific directories by stats and relative path', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path) {
+        function (entry) {
           filterSpy();
           setTimeout(function () {
-            var stats = fs.lstatSync(sysPath.join(DIR, path));
-            callback(null, !stats.isDirectory() || startsWith(path, 'dir3/dir4'));
-          }, 100);
+            var stats = fs.lstatSync(entry.fullPath);
+            done(null, !stats.isDirectory() || startsWith(entry.path, 'dir3/dir4'));
+          }, 50);
         },
         { async: true },
         function () {
           assert.ok(filterSpy.callCount, 13 - 1);
-          callback();
+          done();
         }
       );
     });
@@ -164,62 +164,62 @@ describe('filtering', function () {
   describe('promise', function () {
     if (typeof Promise === 'undefined') return; // no promise support
 
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('Should filter everything under the root directory', function (callback) {
+    it('Should filter everything under the root directory', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
         function () {
           filterSpy();
-          return sleep(100).then(function () {
+          return sleep(50).then(function () {
             return false;
           });
         },
         function () {
           assert.ok(filterSpy.callCount, 1);
-          callback();
+          done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by relative path', function (callback) {
+    it('Should filter everything under specific directories by relative path', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path) {
+        function (entry) {
           filterSpy();
-          return sleep(100).then(function () {
+          return sleep(50).then(function () {
             return path !== 'dir2';
           });
         },
         function () {
           assert.ok(filterSpy.callCount, 13 - 2);
-          callback();
+          done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by stats and relative path', function (callback) {
+    it('Should filter everything under specific directories by stats and relative path', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path, stats) {
+        function (entry) {
           filterSpy();
-          return sleep(100).then(function () {
-            return !stats.isDirectory() || startsWith(path, 'dir3/dir4');
+          return sleep(50).then(function () {
+            return !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4');
           });
         },
         function () {
           assert.ok(filterSpy.callCount, 13 - 1);
-          callback();
+          done();
         }
       );
     });
