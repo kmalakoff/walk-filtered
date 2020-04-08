@@ -5,13 +5,13 @@ var sinon = require('sinon');
 var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
-var sysPath = require('path');
+var path = require('path');
 var fs = require('fs');
 
 var walk = require('../..');
 var statsSpys = require('../utils').statsSpys;
 
-var DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
+var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -33,66 +33,66 @@ function sleep(timeout) {
 describe('promise', function () {
   if (typeof Promise === 'undefined') return; // no promise support
 
-  beforeEach(function (callback) {
+  beforeEach(function (done) {
     rimraf(DIR, function () {
-      generate(DIR, STRUCTURE, callback);
+      generate(DIR, STRUCTURE, done);
     });
   });
-  after(function (callback) {
-    rimraf(DIR, callback);
+  after(function (done) {
+    rimraf(DIR, done);
   });
 
-  it('should be default false', function (callback) {
+  it('should be default false', function (done) {
     var statsSpy = sinon.spy();
 
-    walk(DIR, function (path) {
+    walk(DIR, function (entry) {
       statsSpy();
     }).then(function () {
       assert.ok(statsSpy.callCount, 13);
       statsSpy.args.forEach(function (args) {
         assert.isUndefined(args[0]);
       });
-      callback();
+      done();
     });
   });
 
-  it('Should find everything with no return', function (callback) {
+  it('Should find everything with no return', function (done) {
     var spys = statsSpys();
 
-    walk(DIR, function (path) {
-      var stats = fs.lstatSync(sysPath.join(DIR, path));
-      spys(stats, path);
+    walk(DIR, function (entry) {
+      var stats = fs.lstatSync(entry.fullPath);
+      spys(stats, entry.path);
     }).then(function () {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
-      callback();
+      done();
     });
   });
 
-  it('Should find everything with return true', function (callback) {
+  it('Should find everything with return true', function (done) {
     var spys = statsSpys();
 
-    walk(DIR, function (path) {
-      var stats = fs.lstatSync(sysPath.join(DIR, path));
-      spys(stats, path);
+    walk(DIR, function (entry) {
+      var stats = fs.lstatSync(entry.fullPath);
+      spys(stats, entry.path);
       return true;
     }).then(function () {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
-      callback();
+      done();
     });
   });
 
-  it('should propagate errors', function (callback) {
+  it('should propagate errors', function (done) {
     walk(DIR, function () {
-      return sleep(100).then(function () {
+      return sleep(50).then(function () {
         throw new Error('Failed');
       });
     }).catch(function (err) {
       assert.ok(!!err);
-      callback();
+      done();
     });
   });
 });

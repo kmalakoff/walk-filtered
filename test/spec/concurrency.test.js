@@ -5,11 +5,11 @@ var assert = chai.assert;
 var sinon = require('sinon');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
-var sysPath = require('path');
+var path = require('path');
 
 var walk = require('../..');
 
-var DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
+var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -29,18 +29,18 @@ function sleep(timeout) {
 }
 
 describe('concurrency', function () {
-  after(function (callback) {
-    rimraf(DIR, callback);
+  after(function (done) {
+    rimraf(DIR, done);
   });
 
   describe('sync', function () {
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('should run with concurrency 1', function (callback) {
+    it('should run with concurrency 1', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
@@ -50,13 +50,14 @@ describe('concurrency', function () {
         },
         { concurrency: 1 },
         function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback(err);
+          done();
         }
       );
     });
 
-    it('should run with concurrency 5', function (callback) {
+    it('should run with concurrency 5', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
@@ -66,13 +67,14 @@ describe('concurrency', function () {
         },
         { concurrency: 5 },
         function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback(err);
+          done();
         }
       );
     });
 
-    it('should run with concurrency Infinity', function (callback) {
+    it('should run with concurrency Infinity', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
@@ -82,67 +84,71 @@ describe('concurrency', function () {
         },
         { concurrency: Infinity },
         function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback(err);
+          done();
         }
       );
     });
   });
 
   describe('async', function () {
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('should run with concurrency 1', function (callback) {
+    it('should run with concurrency 1', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path, stat, callback2) {
+        function (entry, callback) {
           filterSpy();
-          setTimeout(callback2, 100);
+          setTimeout(callback, 50);
         },
         { async: true, concurrency: 1 },
         function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback(err);
+          done();
         }
       );
     });
 
-    it('should run with concurrency 5', function (callback) {
+    it('should run with concurrency 5', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path, stat, callback2) {
+        function (entry, callback) {
           filterSpy();
-          setTimeout(callback2, 100);
+          setTimeout(callback, 50);
         },
         { async: true, concurrency: 5 },
         function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback(err);
+          done();
         }
       );
     });
 
-    it('should run with concurrency Infinity', function (callback) {
+    it('should run with concurrency Infinity', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
-        function (path, stat, callback2) {
+        function (entry, callback) {
           filterSpy();
-          setTimeout(callback2, 100);
+          setTimeout(callback, 50);
         },
         { async: true, concurrency: Infinity },
         function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback(err);
+          done();
         }
       );
     });
@@ -151,59 +157,62 @@ describe('concurrency', function () {
   describe('promise', function () {
     if (typeof Promise === 'undefined') return; // no promise support
 
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('should run with concurrency 1', function (callback) {
+    it('should run with concurrency 1', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
         function () {
           filterSpy();
-          return sleep(100);
+          return sleep(50);
         },
         { concurrency: 1 },
         function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback(err);
+          done();
         }
       );
     });
 
-    it('should run with concurrency 5', function (callback) {
+    it('should run with concurrency 5', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
         function () {
           filterSpy();
-          return sleep(100);
+          return sleep(50);
         },
         { concurrency: 5 },
         function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback(err);
+          done();
         }
       );
     });
 
-    it('should run with concurrency Infinity', function (callback) {
+    it('should run with concurrency Infinity', function (done) {
       var filterSpy = sinon.spy();
 
       walk(
         DIR,
         function () {
           filterSpy();
-          return sleep(100);
+          return sleep(50);
         },
         { concurrency: Infinity },
-        function () {
+        function (err) {
+          assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
-          callback();
+          done();
         }
       );
     });

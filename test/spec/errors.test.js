@@ -4,11 +4,11 @@ chai.use(require('sinon-chai'));
 var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
-var sysPath = require('path');
+var path = require('path');
 
 var walk = require('../..');
 
-var DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
+var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -28,50 +28,51 @@ function sleep(timeout) {
 }
 
 describe('errors', function () {
-  after(function (callback) {
-    rimraf(DIR, callback);
+  after(function (done) {
+    rimraf(DIR, done);
   });
 
   describe('sync', function () {
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('should propagate errors', function (callback) {
+    it('should propagate errors', function (done) {
       walk(
         DIR,
         function () {
           throw new Error('Failed');
         },
+        { concurrency: 1 },
         function (err) {
           assert.ok(!!err);
-          callback();
+          done();
         }
       );
     });
   });
 
   describe('async', function () {
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('should propagate errors', function (callback) {
+    it('should propagate errors', function (done) {
       walk(
         DIR,
-        function (path, stat, callback2) {
+        function (entry, callback) {
           setTimeout(function () {
-            callback2(new Error('Failed'));
-          }, 100);
+            callback(new Error('Failed'));
+          }, 50);
         },
         { async: true },
         function (err) {
           assert.ok(!!err);
-          callback();
+          done();
         }
       );
     });
@@ -80,23 +81,23 @@ describe('errors', function () {
   describe('promise', function () {
     if (typeof Promise === 'undefined') return; // no promise support
 
-    beforeEach(function (callback) {
+    beforeEach(function (done) {
       rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, callback);
+        generate(DIR, STRUCTURE, done);
       });
     });
 
-    it('should propagate errors', function (callback) {
+    it('should propagate errors', function (done) {
       walk(
         DIR,
         function () {
-          return sleep(100).then(function () {
+          return sleep(50).then(function () {
             throw new Error('Failed');
           });
         },
         function (err) {
           assert.ok(!!err);
-          callback();
+          done();
         }
       );
     });
