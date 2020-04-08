@@ -4,13 +4,13 @@ chai.use(require('sinon-chai'));
 var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
-var sysPath = require('path');
+var path = require('path');
 var fs = require('fs');
 
 var walk = require('../..');
 var statsSpys = require('../utils').statsSpys;
 
-var DIR = sysPath.resolve(sysPath.join(__dirname, '..', 'data'));
+var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -24,61 +24,61 @@ var STRUCTURE = {
 };
 
 describe('walk everything', function () {
-  beforeEach(function (callback) {
+  beforeEach(function (done) {
     rimraf(DIR, function () {
-      generate(DIR, STRUCTURE, callback);
+      generate(DIR, STRUCTURE, done);
     });
   });
-  after(function (callback) {
-    rimraf(DIR, callback);
+  after(function (done) {
+    rimraf(DIR, done);
   });
 
-  it('Should find everything with no return', function (callback) {
+  it('Should find everything with no return', function (done) {
     var spys = statsSpys();
 
     walk(
       DIR,
-      function (path) {
-        var stats = fs.lstatSync(sysPath.join(DIR, path));
-        spys(stats, path);
+      function (entry) {
+        var stats = fs.lstatSync(entry.fullPath);
+        spys(stats, entry.path);
       },
       function () {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 5);
         assert.equal(spys.link.callCount, 2);
-        callback();
+        done();
       }
     );
   });
 
-  it('Should find everything with return true', function (callback) {
+  it('Should find everything with return true', function (done) {
     var spys = statsSpys();
 
     walk(
       DIR,
-      function (path) {
-        var stats = fs.lstatSync(sysPath.join(DIR, path));
-        spys(stats, path);
+      function (entry) {
+        var stats = fs.lstatSync(entry.fullPath);
+        spys(stats, entry.path);
         return true;
       },
       function () {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 5);
         assert.equal(spys.link.callCount, 2);
-        callback();
+        done();
       }
     );
   });
-  it('Should handle a delete', function (callback) {
+  it('Should handle a delete', function (done) {
     var spys = statsSpys();
 
     walk(
       DIR,
-      function (path) {
-        var stats = fs.lstatSync(sysPath.join(DIR, path));
-        spys(stats, path);
+      function (entry) {
+        var stats = fs.lstatSync(entry.fullPath);
+        spys(stats, entry.path);
 
-        if (path === 'dir2/file1') rimraf.sync(sysPath.join(DIR, 'dir2'));
+        if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
         return true;
       },
       { concurrency: 1 },
@@ -86,7 +86,7 @@ describe('walk everything', function () {
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 4);
         assert.equal(spys.link.callCount, 2);
-        callback();
+        done();
       }
     );
   });
