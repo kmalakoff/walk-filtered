@@ -1,14 +1,11 @@
 var Benchmark = require('benchmark');
 
-const CONCURRENCIES = [1, 25, 100, 400, 1600, 6400, Infinity];
-const FILE_SYSTEMS = [
-  { name: 'fs', fs: require('fs') },
-  // { name: 'gfs', fs: require('graceful-fs') },
-];
+const CONCURRENCIES = [1, 100, 1600, Infinity];
+const FILE_SYSTEMS = [{ name: 'fs', fs: require('fs') }];
 
 const TESTS = [];
 for (const fileSystem of FILE_SYSTEMS) {
-  TESTS.push({ name: `${fileSystem.name}`, options: { fs: fileSystem.fs } });
+  TESTS.push({ name: `${fileSystem.name}, default`, options: { fs: fileSystem.fs } });
   for (const concurrency of CONCURRENCIES) {
     TESTS.push({ name: `${fileSystem.name}, ${concurrency}`, options: { fs: fileSystem.fs, concurrency: concurrency } });
   }
