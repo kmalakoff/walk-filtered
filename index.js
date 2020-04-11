@@ -20,11 +20,15 @@ module.exports = function walk(cwd, filter, options, callback) {
       stat: options.stat,
       filter: filter,
       async: options.async,
-    });
-    return iterator.each(
-      function (err) {
-        if (err && !~NORMAL_FLOW_ERRORS.indexOf(err.code)) throw err;
+      error: function (err) {
+        if (!~NORMAL_FLOW_ERRORS.indexOf(err.code)) return false;
+        if (options.error) return options.error(err);
+        return true;
       },
+    });
+
+    return iterator.forEach(
+      function () {},
       {
         concurrency: options.concurrency || DEFAULT_CONCURRENCY,
       },
