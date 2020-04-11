@@ -16,10 +16,6 @@
   "dependencies": {
     "benchmark": "^2.1.4",
     "fs-extra": "^9.0.0",
-    "graceful-fs": "^4.2.3",
-    "walk-filtered-1.13.0": "npm:walk-filtered@^1.13.0",
-    "walk-filtered-1.17.0": "npm:walk-filtered@^1.17.0",
-    "walk-filtered-1.22.0": "npm:walk-filtered@^1.22.0",
-    "walk-filtered-2.1.0": "npm:walk-filtered@^2.1.0"
+    "walk-filtered-2.3.0": "npm:walk-filtered@^2.3.0"
   }
 }
