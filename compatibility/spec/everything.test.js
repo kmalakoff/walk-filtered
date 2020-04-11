@@ -69,6 +69,7 @@ describe('walk everything', function () {
       }
     );
   });
+
   it('Should handle a delete', function (done) {
     var spys = statsSpys();
 
@@ -82,10 +83,72 @@ describe('walk everything', function () {
         return true;
       },
       { concurrency: 1 },
-      function () {
+      function (err) {
+        assert.ok(!err);
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 4);
         assert.equal(spys.link.callCount, 2);
+        done();
+      }
+    );
+  });
+
+  it('Should handle a delete (custom error callback)', function (done) {
+    var spys = statsSpys();
+    var errors = [];
+
+    walk(
+      DIR,
+      function (entry) {
+        var stats = fs.lstatSync(entry.fullPath);
+        spys(stats, entry.path);
+
+        if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
+        return true;
+      },
+      {
+        concurrency: 1,
+        error: function (err) {
+          errors.push(err);
+        },
+      },
+      function (err) {
+        assert.ok(!err);
+        assert.equal(errors.length, 1);
+        assert.equal(spys.dir.callCount, 6);
+        assert.equal(spys.file.callCount, 4);
+        assert.equal(spys.link.callCount, 2);
+        done();
+      }
+    );
+  });
+
+  it('Should handle a delete (custom error callback)', function (done) {
+    var spys = statsSpys();
+    var errors = [];
+
+    walk(
+      DIR,
+      function (entry) {
+        var stats = fs.lstatSync(entry.fullPath);
+        spys(stats, entry.path);
+
+        if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
+        return true;
+      },
+      {
+        concurrency: 1,
+        error: function (err) {
+          errors.push(err);
+          return false;
+        },
+      },
+      function (err) {
+        assert.ok(err);
+        assert.equal(errors.length, 1);
+        assert.equal(spys.dir.callCount, 3);
+        assert.equal(spys.file.callCount, 1);
+        assert.equal(spys.link.callCount, 0);
         done();
       }
     );
