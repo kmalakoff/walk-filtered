@@ -14,24 +14,25 @@ Entries are of the format:
 **Promise Filter Function**
 
 ```
-await walk(rootPath, async (path) => { /* do something */ return true or false });
+await walk(rootPath, async (entry) => { /* do something */ return true or false });
 ```
 
 **Callback Filter Function**
 
 ```
-walk(rootPath, function(path, callback) { /* do something */ callback(null, true or false); }, {async: true}, done);
+walk(rootPath, function(entry, callback) { /* do something */ callback(null, true or false); }, {async: true}, done);
 ```
 
 **Synchronous Filter Function**
 
 ```
-walk(rootPath, function(path) { /* do something */ return true or false }, done);
+walk(rootPath, function(entry) { /* do something */ return true or false }, done);
 ```
 
 **Options**:
 
 - number: depth - choose maximum depth of the tree to traverse. (default: infinity)
 - number: concurrency - choose maximum number of concurrently processed files or folders. (default: set from performance testing)
+- function: error - custom error callback for expected filesystem errors ('ENOENT', 'EPERM', 'EACCES', 'ELOOP'). Return false to stop processing. (default: silent filsystem errors)
 - object: fs - choose an fs implementation; for example, you can use use graceful-fs and concurrency 1. (default: fs)
 - bool: async - use an async filter function of the form function(path, stats, callback) with callback being of the form function(err, keep) where keep undefined means continue. `If you use promises, this is unnecessary`. (default: false)
