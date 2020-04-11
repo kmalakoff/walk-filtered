@@ -4,15 +4,7 @@ module.exports = [
     walk: require('..'),
   },
   {
-    version: '0.13.0',
-    walk: require('walk-filtered-1.13.0'),
-  },
-  {
-    version: '0.22.0',
-    walk: require('walk-filtered-1.22.0'),
-  },
-  {
-    version: '2.1.0 ',
-    walk: require('walk-filtered-2.1.0'),
+    version: '2.3.0 ',
+    walk: require('walk-filtered-2.3.0'),
   },
 ];
