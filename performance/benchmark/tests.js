@@ -1,14 +1,11 @@
 var Benchmark = require('benchmark');
 
 const CONCURRENCIES = [1, 100, 1600, Infinity];
-const FILE_SYSTEMS = [{ name: 'fs', fs: require('fs') }];
 
 const TESTS = [];
-for (const fileSystem of FILE_SYSTEMS) {
-  TESTS.push({ name: `${fileSystem.name}, default`, options: { fs: fileSystem.fs } });
-  for (const concurrency of CONCURRENCIES) {
-    TESTS.push({ name: `${fileSystem.name}, ${concurrency}`, options: { fs: fileSystem.fs, concurrency: concurrency } });
-  }
+TESTS.push({ name: `default`, options: {} });
+for (const concurrency of CONCURRENCIES) {
+  TESTS.push({ name: `${concurrency}`, options: { concurrency: concurrency } });
 }
 
 module.exports = async function run({ walk, version }, dir) {
