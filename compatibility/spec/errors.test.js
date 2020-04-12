@@ -67,7 +67,7 @@ describe('errors', function () {
         function (entry, callback) {
           setTimeout(function () {
             callback(new Error('Failed'));
-          }, 50);
+          }, 10);
         },
         { async: true },
         function (err) {
@@ -91,7 +91,7 @@ describe('errors', function () {
       walk(
         DIR,
         function () {
-          return sleep(50).then(function () {
+          return sleep(10).then(function () {
             throw new Error('Failed');
           });
         },
