@@ -22,7 +22,7 @@ module.exports = async function run({ walk, version }, dir) {
     async (rel) => {
       updateMemory(highest);
     },
-    { concurrency: 50 }
+    { concurrency: 10 }
   );
 
   const end = process.memoryUsage();
