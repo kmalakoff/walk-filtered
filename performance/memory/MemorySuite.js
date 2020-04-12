@@ -1,14 +1,17 @@
 var EventEmitter = require('eventemitter3');
 var memwatch = require('@luneo7/node-memwatch');
-var stats = require('simple-statistics');
+var Stats = require('stats-incremental');
 var humanize = require('humanize-data');
 
 async function runOnce(fn) {
+  const stats = Stats();
   memwatch.gc();
   var hd = new memwatch.HeapDiff();
-  await fn();
-  var diff = hd.end();
-  return diff.change.size_bytes;
+  const start = process.memoryUsage();
+  await fn(function () {
+    stats.update(process.memoryUsage().heapUsed - start.heapUsed);
+  });
+  return { end: hd.end().change.size_bytes, iteration: stats };
 }
 
 module.exports = class MemorySuite extends EventEmitter {
@@ -25,22 +28,25 @@ module.exports = class MemorySuite extends EventEmitter {
   async run(options) {
     if (!options.maxTime) throw new Error('Missing maxTime option');
     const maxTime = options.maxTime;
+    const largest = { end: null, max: null };
 
-    for (let i = 0; i < this.tests.length; i++) {
-      const test = this.tests[i];
-      var samples = [];
-
+    for (const test of this.tests) {
+      const current = { end: { name: test.name, stats: Stats() }, max: { name: test.name, stats: Stats() } };
       const start = Date.now();
-      let time = start;
-      while (time - start <= maxTime) {
-        samples.push(await runOnce(test.fn));
-        time = Date.now();
-      }
+      do {
+        const run = await runOnce(test.fn);
+        current.end.stats.update(run.end);
+        current.max.stats.update(run.iteration.max);
+      } while (Date.now() - start <= maxTime);
 
-      const mean = stats.mean(samples);
-      const variance = stats.variance(samples);
-      var standardDeviationPercent = Math.sqrt(variance / mean);
-      this.emit('cycle', `${test.name} x ${humanize(mean)} ±${standardDeviationPercent.toFixed(2)}% (${samples.length} runs sampled)`);
+      this.emit('cycle', current);
+      if (!largest.end || largest.end.stats.max < current.end.stats.max) largest.end = current.end;
+      if (!largest.max || largest.max.stats.max < current.max.stats.max) largest.max = current.max;
     }
+    this.emit('complete', largest);
+  }
+
+  formatStats(stats) {
+    return `${humanize(stats.mean)} ±${Math.sqrt(stats.variance / stats.mean).toFixed(1)}% (${stats.n} runs sampled)`;
   }
 };
