@@ -137,7 +137,7 @@ describe('depth', function () {
         function (entry, callback) {
           var stats = fs.lstatSync(entry.fullPath);
           spys(stats, entry.path);
-          setTimeout(callback, 50);
+          setTimeout(callback, 10);
         },
         {
           depth: 0,
@@ -161,7 +161,7 @@ describe('depth', function () {
         function (entry, callback) {
           var stats = fs.lstatSync(entry.fullPath);
           spys(stats, entry.path);
-          setTimeout(callback, 50);
+          setTimeout(callback, 10);
         },
         {
           depth: 1,
@@ -185,7 +185,7 @@ describe('depth', function () {
         function (entry, callback) {
           var stats = fs.lstatSync(entry.fullPath);
           spys(stats, entry.path);
-          setTimeout(callback, 50);
+          setTimeout(callback, 10);
         },
         {
           depth: 2,
@@ -209,7 +209,7 @@ describe('depth', function () {
         function (entry, callback) {
           var stats = fs.lstatSync(entry.fullPath);
           spys(stats, entry.path);
-          setTimeout(callback, 50);
+          setTimeout(callback, 10);
         },
         {
           depth: Infinity,
@@ -243,7 +243,7 @@ describe('depth', function () {
         function (entry, callback) {
           var stats = fs.lstatSync(entry.fullPath);
           spys(stats, entry.path);
-          return sleep(50);
+          return sleep(10);
         },
         {
           depth: 0,
@@ -266,7 +266,7 @@ describe('depth', function () {
         function (entry, callback) {
           var stats = fs.lstatSync(entry.fullPath);
           spys(stats, entry.path);
-          return sleep(50);
+          return sleep(10);
         },
         {
           depth: 1,
@@ -289,7 +289,7 @@ describe('depth', function () {
         function (entry, callback) {
           var stats = fs.lstatSync(entry.fullPath);
           spys(stats, entry.path);
-          return sleep(50);
+          return sleep(10);
         },
         {
           depth: 2,
@@ -312,7 +312,7 @@ describe('depth', function () {
         function (entry, callback) {
           var stats = fs.lstatSync(entry.fullPath);
           spys(stats, entry.path);
-          return sleep(50);
+          return sleep(10);
         },
         {
           depth: Infinity,
