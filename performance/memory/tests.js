@@ -16,13 +16,22 @@ module.exports = async function run({ walk, version }, dir) {
   var suite = new MemorySuite('Walk ' + dir);
 
   for (const test of TESTS) {
-    suite.add(test.name, async function () {
-      await walk(dir, () => {}, test.options);
+    suite.add(test.name, async function (fn) {
+      await walk(dir, fn, test.options);
     });
   }
 
-  suite.on('cycle', (result) => {
-    console.log(result);
+  suite.on('cycle', (current) => {
+    console.log(`${current.end.name} (end) x ${suite.formatStats(current.end.stats)}`);
+    console.log(`${current.max.name} (max) x ${suite.formatStats(current.max.stats)}`);
+  });
+  suite.on('complete', function (largest) {
+    console.log('----------------');
+    console.log('Largest');
+    console.log('----------------');
+    console.log(`${largest.end.name} (end) x ${suite.formatStats(largest.end.stats)}`);
+    console.log(`${largest.max.name} (max) x ${suite.formatStats(largest.max.stats)}`);
+    console.log('****************\n');
   });
 
   console.log('Comparing ' + suite.name);
