@@ -1,37 +1,32 @@
-async function updateMemory(highest) {
-  const memory = process.memoryUsage();
-  for (const key in highest) {
-    if (highest[key] < memory[key]) highest[key] = memory[key];
-  }
-}
+var MemorySuite = require('./MemorySuite');
 
-async function writeMemory(key, value) {
-  console.log(`${key} ${Math.round((value / 1024 / 1024) * 100) / 100} MB`);
+const CONCURRENCIES = [1, 100, 1600, Infinity];
+
+const TESTS = [];
+TESTS.push({ name: `default` });
+for (const concurrency of CONCURRENCIES) {
+  TESTS.push({ name: `${concurrency}`, options: { concurrency: concurrency } });
 }
 
 module.exports = async function run({ walk, version }, dir) {
   console.log('****************\n');
   console.log(`Running: ${version}`);
   console.log('----------------');
-  global.gc();
-  const start = process.memoryUsage();
-  const highest = { heapUsed: start.heapUsed };
 
-  await walk(
-    dir,
-    async (rel) => {
-      updateMemory(highest);
-    },
-    { concurrency: 10 }
-  );
+  var suite = new MemorySuite('Walk ' + dir);
 
-  const end = process.memoryUsage();
-  for (const key in highest) {
-    writeMemory(`Highest ${key}`, highest[key] - start[key]);
-    writeMemory(`End ${key}`, end[key] - start[key]);
+  for (const test of TESTS) {
+    suite.add(test.name, async function () {
+      await walk(dir, () => {}, test.options);
+    });
   }
+
+  suite.on('cycle', (result) => {
+    console.log(result);
+  });
+
+  console.log('Comparing ' + suite.name);
+  global.gc();
+  await suite.run({ maxTime: 10000 });
   console.log('****************\n');
 };
-
-// var util = require('util');
-// var writeSnapshot = util.promisify(require('heapdump').writeSnapshot);
