@@ -106,7 +106,7 @@ describe('concurrency', function () {
         DIR,
         function (entry, callback) {
           filterSpy();
-          setTimeout(callback, 50);
+          setTimeout(callback, 10);
         },
         { async: true, concurrency: 1 },
         function (err) {
@@ -124,7 +124,7 @@ describe('concurrency', function () {
         DIR,
         function (entry, callback) {
           filterSpy();
-          setTimeout(callback, 50);
+          setTimeout(callback, 10);
         },
         { async: true, concurrency: 5 },
         function (err) {
@@ -142,7 +142,7 @@ describe('concurrency', function () {
         DIR,
         function (entry, callback) {
           filterSpy();
-          setTimeout(callback, 50);
+          setTimeout(callback, 10);
         },
         { async: true, concurrency: Infinity },
         function (err) {
@@ -170,7 +170,7 @@ describe('concurrency', function () {
         DIR,
         function () {
           filterSpy();
-          return sleep(50);
+          return sleep(10);
         },
         { concurrency: 1 },
         function (err) {
@@ -188,7 +188,7 @@ describe('concurrency', function () {
         DIR,
         function () {
           filterSpy();
-          return sleep(50);
+          return sleep(10);
         },
         { concurrency: 5 },
         function (err) {
@@ -206,7 +206,7 @@ describe('concurrency', function () {
         DIR,
         function () {
           filterSpy();
-          return sleep(50);
+          return sleep(10);
         },
         { concurrency: Infinity },
         function (err) {

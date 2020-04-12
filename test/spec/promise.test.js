@@ -87,7 +87,7 @@ describe('promise', function () {
 
   it('should propagate errors', function (done) {
     walk(DIR, function () {
-      return sleep(50).then(function () {
+      return sleep(10).then(function () {
         throw new Error('Failed');
       });
     }).catch(function (err) {
