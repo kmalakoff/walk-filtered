@@ -86,7 +86,7 @@ describe('filtering', function () {
           filterSpy();
           return !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4');
         },
-        true,
+        { alwaysStat: true },
         function () {
           assert.ok(filterSpy.callCount, 13 - 1);
           done();
@@ -148,11 +148,10 @@ describe('filtering', function () {
         function (entry) {
           filterSpy();
           setTimeout(function () {
-            var stats = fs.lstatSync(entry.fullPath);
-            done(null, !stats.isDirectory() || startsWith(entry.path, 'dir3/dir4'));
+            done(null, !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4'));
           }, 10);
         },
-        { async: true },
+        { async: true, alwaysStat: true },
         function () {
           assert.ok(filterSpy.callCount, 13 - 1);
           done();
@@ -217,6 +216,7 @@ describe('filtering', function () {
             return !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4');
           });
         },
+        { alwaysStat: true },
         function () {
           assert.ok(filterSpy.callCount, 13 - 1);
           done();

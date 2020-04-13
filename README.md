@@ -32,6 +32,7 @@ walk(rootPath, function(entry) { /* do something */ return true or false }, done
 **Options**:
 
 - number: depth - choose maximum depth of the tree to traverse. (default: infinity)
+- bool: alwaysStat - always call stats before filter. (default: false)
 - number: concurrency - choose maximum number of concurrently processed files or folders. (default: set from performance testing)
 - function: error - custom error callback for expected filesystem errors ('ENOENT', 'EPERM', 'EACCES', 'ELOOP'). Return false to stop processing. (default: silent filsystem errors)
 - object: fs - choose an fs implementation; for example, you can use use graceful-fs and concurrency 1. (default: fs)

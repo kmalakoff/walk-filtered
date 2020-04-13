@@ -48,9 +48,9 @@ describe('depth', function () {
         DIR,
         function (entry) {
           var stats = fs.lstatSync(path.join(DIR, entry.path));
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
         },
-        { depth: 0 },
+        { depth: 0, alwaysStat: true },
         function (err) {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 1);
@@ -67,10 +67,9 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
         },
-        { depth: 1 },
+        { depth: 1, alwaysStat: true },
         function (err) {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 4);
@@ -87,10 +86,9 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
         },
-        { depth: 2 },
+        { depth: 2, alwaysStat: true },
         function (err) {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 5);
@@ -107,10 +105,9 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
         },
-        { depth: Infinity },
+        { depth: Infinity, alwaysStat: true },
         function (err) {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 6);
@@ -135,12 +132,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
           setTimeout(callback, 10);
         },
         {
           depth: 0,
+          alwaysStat: true,
           async: true,
         },
         function (err) {
@@ -159,12 +156,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
           setTimeout(callback, 10);
         },
         {
           depth: 1,
+          alwaysStat: true,
           async: true,
         },
         function (err) {
@@ -183,12 +180,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
           setTimeout(callback, 10);
         },
         {
           depth: 2,
+          alwaysStat: true,
           async: true,
         },
         function (err) {
@@ -207,12 +204,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
           setTimeout(callback, 10);
         },
         {
           depth: Infinity,
+          alwaysStat: true,
           async: true,
         },
         function (err) {
@@ -241,12 +238,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
           return sleep(10);
         },
         {
           depth: 0,
+          alwaysStat: true,
         },
         function (err) {
           assert.ok(!err);
@@ -264,12 +261,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
           return sleep(10);
         },
         {
           depth: 1,
+          alwaysStat: true,
         },
         function (err) {
           assert.ok(!err);
@@ -287,12 +284,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
           return sleep(10);
         },
         {
           depth: 2,
+          alwaysStat: true,
         },
         function (err) {
           assert.ok(!err);
@@ -310,12 +307,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          var stats = fs.lstatSync(entry.fullPath);
-          spys(stats, entry.path);
+          spys(fs.lstatSync(entry.fullPath), entry.path);
           return sleep(10);
         },
         {
           depth: Infinity,
+          alwaysStat: true,
         },
         function (err) {
           assert.ok(!err);
