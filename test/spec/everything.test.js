@@ -39,8 +39,7 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        var stats = fs.lstatSync(entry.fullPath);
-        spys(stats, entry.path);
+        spys(fs.lstatSync(entry.fullPath), entry.path);
       },
       function () {
         assert.equal(spys.dir.callCount, 6);
@@ -57,8 +56,7 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        var stats = fs.lstatSync(entry.fullPath);
-        spys(stats, entry.path);
+        spys(fs.lstatSync(entry.fullPath), entry.path);
         return true;
       },
       function () {
@@ -76,8 +74,11 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        var stats = fs.lstatSync(entry.fullPath);
-        spys(stats, entry.path);
+        try {
+          spys(fs.lstatSync(entry.fullPath), entry.path);
+        } catch (err) {
+          return err;
+        }
 
         if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
         return true;
@@ -100,8 +101,11 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        var stats = fs.lstatSync(entry.fullPath);
-        spys(stats, entry.path);
+        try {
+          spys(fs.lstatSync(entry.fullPath), entry.path);
+        } catch (err) {
+          return err;
+        }
 
         if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
         return true;
@@ -114,7 +118,7 @@ describe('walk everything', function () {
       },
       function (err) {
         assert.ok(!err);
-        assert.equal(errors.length, 1);
+        assert.equal(errors.length, 2);
         assert.equal(spys.dir.callCount, 6);
         assert.equal(spys.file.callCount, 4);
         assert.equal(spys.link.callCount, 2);
@@ -130,8 +134,11 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        var stats = fs.lstatSync(entry.fullPath);
-        spys(stats, entry.path);
+        try {
+          spys(fs.lstatSync(entry.fullPath), entry.path);
+        } catch (err) {
+          return err;
+        }
 
         if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
         return true;
