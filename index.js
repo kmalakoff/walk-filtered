@@ -16,6 +16,7 @@ module.exports = function walk(cwd, filter, options, callback) {
 
     var iterator = new Iterator(cwd, {
       depth: options.depth === undefined ? Infinity : options.depth,
+      alwaysStat: options.alwaysStat,
       fs: options.fs,
       stat: options.stat,
       filter: filter,
