@@ -60,8 +60,7 @@ describe('promise', function () {
     var spys = statsSpys();
 
     walk(DIR, function (entry) {
-      var stats = fs.lstatSync(entry.fullPath);
-      spys(stats, entry.path);
+      spys(fs.lstatSync(entry.fullPath), entry.path);
     }).then(function () {
       assert.equal(spys.dir.callCount, 6);
       assert.equal(spys.file.callCount, 5);
@@ -74,8 +73,7 @@ describe('promise', function () {
     var spys = statsSpys();
 
     walk(DIR, function (entry) {
-      var stats = fs.lstatSync(entry.fullPath);
-      spys(stats, entry.path);
+      spys(fs.lstatSync(entry.fullPath), entry.path);
       return true;
     }).then(function () {
       assert.equal(spys.dir.callCount, 6);

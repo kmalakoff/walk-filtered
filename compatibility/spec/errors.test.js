@@ -43,7 +43,7 @@ describe('errors', function () {
       walk(
         DIR,
         function () {
-          throw new Error('Failed');
+          return new Error('Failed');
         },
         { concurrency: 1 },
         function (err) {
