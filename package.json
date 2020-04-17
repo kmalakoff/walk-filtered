@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk. Supports Node 0.10 and above.",
   "main": "index.js",
   "engines": {
@@ -29,7 +29,7 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "fs-iterator": "^2.4.0"
+    "fs-iterator": "^2.5.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
