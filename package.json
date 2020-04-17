@@ -29,7 +29,7 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "fs-iterator": "^2.5.0"
+    "fs-iterator": "^2.5.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
