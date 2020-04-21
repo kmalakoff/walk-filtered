@@ -12,6 +12,5 @@ const ITERATION_COUNT = 2;
     for (let i = 0; i < ITERATION_COUNT; i++) {
       await tests(Object.assign({}, options, { testOptions: TESTS_OPTIONS }), DATA_DIR);
     }
-    console.log('****************\n');
   }
 })();
