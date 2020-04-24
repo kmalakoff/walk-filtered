@@ -32,7 +32,7 @@ describe('errors', function () {
     rimraf(DIR, done);
   });
 
-  describe('sync', function () {
+  describe('synchronous', function () {
     beforeEach(function (done) {
       rimraf(DIR, function () {
         generate(DIR, STRUCTURE, done);
@@ -54,7 +54,7 @@ describe('errors', function () {
     });
   });
 
-  describe('async', function () {
+  describe('callbacks', function () {
     beforeEach(function (done) {
       rimraf(DIR, function () {
         generate(DIR, STRUCTURE, done);
@@ -69,7 +69,7 @@ describe('errors', function () {
             callback(new Error('Failed'));
           }, 10);
         },
-        { async: true },
+        { callbacks: true },
         function (err) {
           assert.ok(!!err);
           done();

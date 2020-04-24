@@ -34,7 +34,7 @@ describe('depth', function () {
     rimraf(DIR, done);
   });
 
-  describe('sync', function () {
+  describe('synchronous', function () {
     beforeEach(function (done) {
       rimraf(DIR, function () {
         generate(DIR, STRUCTURE, done);
@@ -47,13 +47,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          var stats = fs.lstatSync(path.join(DIR, entry.path));
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
         },
-        { depth: 0, alwaysStat: true },
+        { depth: 0, lstat: true },
         function (err) {
           assert.ok(!err);
-          assert.equal(spys.dir.callCount, 1);
+          assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
           done();
@@ -67,9 +66,9 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
         },
-        { depth: 1, alwaysStat: true },
+        { depth: 1, lstat: true },
         function (err) {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 4);
@@ -86,9 +85,9 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
         },
-        { depth: 2, alwaysStat: true },
+        { depth: 2, lstat: true },
         function (err) {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 5);
@@ -105,12 +104,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
         },
-        { depth: Infinity, alwaysStat: true },
+        { depth: Infinity, lstat: true },
         function (err) {
           assert.ok(!err);
-          assert.equal(spys.dir.callCount, 6);
+          assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
           done();
@@ -119,7 +118,7 @@ describe('depth', function () {
     });
   });
 
-  describe('async', function () {
+  describe('callbacks', function () {
     beforeEach(function (done) {
       rimraf(DIR, function () {
         generate(DIR, STRUCTURE, done);
@@ -132,17 +131,17 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
           setTimeout(callback, 10);
         },
         {
           depth: 0,
-          alwaysStat: true,
-          async: true,
+          lstat: true,
+          callbacks: true,
         },
         function (err) {
           assert.ok(!err);
-          assert.equal(spys.dir.callCount, 1);
+          assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
           done();
@@ -156,13 +155,13 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
           setTimeout(callback, 10);
         },
         {
           depth: 1,
-          alwaysStat: true,
-          async: true,
+          lstat: true,
+          callbacks: true,
         },
         function (err) {
           assert.ok(!err);
@@ -180,13 +179,13 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
           setTimeout(callback, 10);
         },
         {
           depth: 2,
-          alwaysStat: true,
-          async: true,
+          lstat: true,
+          callbacks: true,
         },
         function (err) {
           assert.ok(!err);
@@ -204,17 +203,17 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
           setTimeout(callback, 10);
         },
         {
           depth: Infinity,
-          alwaysStat: true,
-          async: true,
+          lstat: true,
+          callbacks: true,
         },
         function (err) {
           assert.ok(!err);
-          assert.equal(spys.dir.callCount, 6);
+          assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
           done();
@@ -238,16 +237,16 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
           return sleep(10);
         },
         {
           depth: 0,
-          alwaysStat: true,
+          lstat: true,
         },
         function (err) {
           assert.ok(!err);
-          assert.equal(spys.dir.callCount, 1);
+          assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
           done();
@@ -261,12 +260,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
           return sleep(10);
         },
         {
           depth: 1,
-          alwaysStat: true,
+          lstat: true,
         },
         function (err) {
           assert.ok(!err);
@@ -284,12 +283,12 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
           return sleep(10);
         },
         {
           depth: 2,
-          alwaysStat: true,
+          lstat: true,
         },
         function (err) {
           assert.ok(!err);
@@ -307,16 +306,16 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
           return sleep(10);
         },
         {
           depth: Infinity,
-          alwaysStat: true,
+          lstat: true,
         },
         function (err) {
           assert.ok(!err);
-          assert.equal(spys.dir.callCount, 6);
+          assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
           done();

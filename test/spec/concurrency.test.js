@@ -33,7 +33,7 @@ describe('concurrency', function () {
     rimraf(DIR, done);
   });
 
-  describe('sync', function () {
+  describe('synchronous', function () {
     beforeEach(function (done) {
       rimraf(DIR, function () {
         generate(DIR, STRUCTURE, done);
@@ -92,7 +92,7 @@ describe('concurrency', function () {
     });
   });
 
-  describe('async', function () {
+  describe('callbacks', function () {
     beforeEach(function (done) {
       rimraf(DIR, function () {
         generate(DIR, STRUCTURE, done);
@@ -108,7 +108,7 @@ describe('concurrency', function () {
           filterSpy();
           setTimeout(callback, 10);
         },
-        { async: true, concurrency: 1 },
+        { callbacks: true, concurrency: 1 },
         function (err) {
           assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
@@ -126,7 +126,7 @@ describe('concurrency', function () {
           filterSpy();
           setTimeout(callback, 10);
         },
-        { async: true, concurrency: 5 },
+        { callbacks: true, concurrency: 5 },
         function (err) {
           assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);
@@ -144,7 +144,7 @@ describe('concurrency', function () {
           filterSpy();
           setTimeout(callback, 10);
         },
-        { async: true, concurrency: Infinity },
+        { callbacks: true, concurrency: Infinity },
         function (err) {
           assert.ok(!err);
           assert.ok(filterSpy.callCount, 13);

@@ -9,7 +9,7 @@ Entries are of the format:
 - string: basename - file or directory name
 - string: path - realtive path from the directory to the file or directory
 - string: fullPath - full path to the file or directory
-- fs.Stats: stats - file, directory or symlink stats
+- fs.Stats | fs.Dirent: stats - file, directory or symlink stats
 
 **Promise Filter Function**
 
@@ -20,7 +20,7 @@ await walk(rootPath, async (entry) => { /* do something */ return true or false 
 **Callback Filter Function**
 
 ```
-walk(rootPath, function(entry, callback) { /* do something */ callback(null, true or false); }, {async: true}, done);
+walk(rootPath, function(entry, callback) { /* do something */ callback(null, true or false); }, {callbacks: true}, done);
 ```
 
 **Synchronous Filter Function**
@@ -31,9 +31,9 @@ walk(rootPath, function(entry) { /* do something */ return true or false }, done
 
 **Options**:
 
-- number: depth - choose maximum depth of the tree to traverse. (default: infinity)
-- bool: alwaysStat - always call stats before filter. (default: false)
-- number: concurrency - choose maximum number of concurrently processed files or folders. (default: set from performance testing)
+- number: depth - choose maximum depth of the tree to traverse. (default: Infinity)
+- function: filter - filter function to continue processing the tree. Return false to skip processing (default: process all)
+- bool: callbacks - use a filter function with a callback format like `function(entry, callback)`. (default: false)
+- bool: alwaysStat - stat each file individually rather than fetching dirents when reading directories. (default: false)
+- bool: lstat - use lstat to get the link's stats instead of using stat on the file itself. (default: false)
 - function: error - custom error callback for expected filesystem errors ('ENOENT', 'EPERM', 'EACCES', 'ELOOP'). Return false to stop processing. (default: silent filsystem errors)
-- object: fs - choose an fs implementation; for example, you can use use graceful-fs and concurrency 1. (default: fs)
-- bool: async - use an async filter function of the form function(path, stats, callback) with callback being of the form function(err, keep) where keep undefined means continue. `If you use promises, this is unnecessary`. (default: false)
