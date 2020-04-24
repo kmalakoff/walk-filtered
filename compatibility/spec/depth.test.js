@@ -5,7 +5,6 @@ var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var path = require('path');
-var fs = require('fs');
 
 var walk = require('../..');
 var statsSpys = require('../utils').statsSpys;
