@@ -59,10 +59,14 @@ describe('promise', function () {
   it('Should find everything with no return', function (done) {
     var spys = statsSpys();
 
-    walk(DIR, function (entry) {
-      spys(fs.lstatSync(entry.fullPath), entry.path);
-    }).then(function () {
-      assert.equal(spys.dir.callCount, 6);
+    walk(
+      DIR,
+      function (entry) {
+        spys(entry.stats, entry.path);
+      },
+      { lstat: true }
+    ).then(function () {
+      assert.equal(spys.dir.callCount, 5);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
       done();
@@ -72,11 +76,15 @@ describe('promise', function () {
   it('Should find everything with return true', function (done) {
     var spys = statsSpys();
 
-    walk(DIR, function (entry) {
-      spys(fs.lstatSync(entry.fullPath), entry.path);
-      return true;
-    }).then(function () {
-      assert.equal(spys.dir.callCount, 6);
+    walk(
+      DIR,
+      function (entry) {
+        spys(entry.stats, entry.path);
+        return true;
+      },
+      { lstat: true }
+    ).then(function () {
+      assert.equal(spys.dir.callCount, 5);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
       done();

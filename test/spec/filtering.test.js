@@ -6,7 +6,6 @@ var sinon = require('sinon');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var path = require('path');
-var fs = require('fs');
 
 var walk = require('../..');
 
@@ -37,7 +36,7 @@ describe('filtering', function () {
     rimraf(DIR, done);
   });
 
-  describe('sync', function () {
+  describe('synchronous', function () {
     beforeEach(function (done) {
       rimraf(DIR, function () {
         generate(DIR, STRUCTURE, done);
@@ -95,7 +94,7 @@ describe('filtering', function () {
     });
   });
 
-  describe('async', function () {
+  describe('callbacks', function () {
     beforeEach(function (done) {
       rimraf(DIR, function () {
         generate(DIR, STRUCTURE, done);
@@ -113,7 +112,7 @@ describe('filtering', function () {
             callback(null, false);
           }, 10);
         },
-        { async: true },
+        { callbacks: true },
         function () {
           assert.ok(filterSpy.callCount, 1);
           done();
@@ -132,7 +131,7 @@ describe('filtering', function () {
             callback(null, entry.path !== 'dir2');
           }, 10);
         },
-        { async: true },
+        { callbacks: true },
         function () {
           assert.ok(filterSpy.callCount, 13 - 2);
           done();
@@ -145,13 +144,13 @@ describe('filtering', function () {
 
       walk(
         DIR,
-        function (entry) {
+        function (entry, callback) {
           filterSpy();
           setTimeout(function () {
-            done(null, !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4'));
+            callback(null, !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4'));
           }, 10);
         },
-        { async: true, alwaysStat: true },
+        { callbacks: true },
         function () {
           assert.ok(filterSpy.callCount, 13 - 1);
           done();

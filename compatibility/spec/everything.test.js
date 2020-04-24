@@ -5,7 +5,6 @@ var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var path = require('path');
-var fs = require('fs');
 
 var walk = require('../..');
 var statsSpys = require('../utils').statsSpys;
@@ -39,10 +38,11 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        spys(fs.lstatSync(entry.fullPath), entry.path);
+        spys(entry.stats, entry.path);
       },
+      { lstat: true },
       function () {
-        assert.equal(spys.dir.callCount, 6);
+        assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 5);
         assert.equal(spys.link.callCount, 2);
         done();
@@ -56,11 +56,12 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        spys(fs.lstatSync(entry.fullPath), entry.path);
+        spys(entry.stats, entry.path);
         return true;
       },
+      { lstat: true },
       function () {
-        assert.equal(spys.dir.callCount, 6);
+        assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 5);
         assert.equal(spys.link.callCount, 2);
         done();
@@ -75,7 +76,7 @@ describe('walk everything', function () {
       DIR,
       function (entry) {
         try {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
         } catch (err) {
           return err;
         }
@@ -83,10 +84,10 @@ describe('walk everything', function () {
         if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
         return true;
       },
-      { concurrency: 1 },
+      { concurrency: 1, lstat: true, alwaysStat: true },
       function (err) {
         assert.ok(!err);
-        assert.equal(spys.dir.callCount, 6);
+        assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
         assert.equal(spys.link.callCount, 2);
         done();
@@ -102,7 +103,7 @@ describe('walk everything', function () {
       DIR,
       function (entry) {
         try {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
         } catch (err) {
           return err;
         }
@@ -112,14 +113,16 @@ describe('walk everything', function () {
       },
       {
         concurrency: 1,
+        lstat: true,
+        alwaysStat: true,
         error: function (err) {
           errors.push(err);
         },
       },
       function (err) {
         assert.ok(!err);
-        assert.equal(errors.length, 2);
-        assert.equal(spys.dir.callCount, 6);
+        assert.equal(errors.length, 1);
+        assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
         assert.equal(spys.link.callCount, 2);
         done();
@@ -127,7 +130,7 @@ describe('walk everything', function () {
     );
   });
 
-  it('Should handle a delete (custom error callback)', function (done) {
+  it('Should handle a delete (custom error callback, false)', function (done) {
     var spys = statsSpys();
     var errors = [];
 
@@ -135,7 +138,7 @@ describe('walk everything', function () {
       DIR,
       function (entry) {
         try {
-          spys(fs.lstatSync(entry.fullPath), entry.path);
+          spys(entry.stats, entry.path);
         } catch (err) {
           return err;
         }
@@ -145,6 +148,8 @@ describe('walk everything', function () {
       },
       {
         concurrency: 1,
+        lstat: true,
+        alwaysStat: true,
         error: function (err) {
           errors.push(err);
           return false;
@@ -153,7 +158,7 @@ describe('walk everything', function () {
       function (err) {
         assert.ok(err);
         assert.equal(errors.length, 1);
-        assert.equal(spys.dir.callCount, 3);
+        assert.equal(spys.dir.callCount, 2);
         assert.equal(spys.file.callCount, 1);
         assert.equal(spys.link.callCount, 0);
         done();
