@@ -25,11 +25,6 @@ var STRUCTURE = {
 function startsWith(string, start) {
   return string.substring(0, start.length) === start;
 }
-function sleep(timeout) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, timeout);
-  });
-}
 
 describe('legacy', function () {
   after(function (done) {
