@@ -1,14 +1,10 @@
-var chai = require('chai');
-chai.use(require('sinon-chai'));
-var sinon = require('sinon');
-
-var assert = chai.assert;
+var assert = require('assert');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var path = require('path');
 
 var walk = require('../..');
-var statsSpys = require('../utils').statsSpys;
+var statsSpys = require('../lib/statsSpys');
 
 var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
@@ -23,12 +19,6 @@ var STRUCTURE = {
   'dir3/link2': '~dir2/file1',
 };
 
-function sleep(timeout) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, timeout);
-  });
-}
-
 describe('promise', function () {
   if (typeof Promise === 'undefined') return; // no promise support
 
@@ -42,15 +32,12 @@ describe('promise', function () {
   });
 
   it('should be default false', function (done) {
-    var statsSpy = sinon.spy();
+    var spys = statsSpys();
 
     walk(DIR, function (entry) {
-      statsSpy();
+      spys(entry.stats, entry.path);
     }).then(function () {
-      assert.ok(statsSpy.callCount, 13);
-      statsSpy.args.forEach(function (args) {
-        assert.isUndefined(args[0]);
-      });
+      assert.ok(spys.callCount, 13);
       done();
     });
   });
@@ -92,9 +79,7 @@ describe('promise', function () {
 
   it('should propagate errors', function (done) {
     walk(DIR, function () {
-      return sleep(10).then(function () {
-        throw new Error('Failed');
-      });
+      return Promise.reject(new Error('Failed'));
     }).catch(function (err) {
       assert.ok(!!err);
       done();
