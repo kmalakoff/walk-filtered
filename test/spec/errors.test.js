@@ -1,7 +1,4 @@
-var chai = require('chai');
-chai.use(require('sinon-chai'));
-
-var assert = chai.assert;
+var assert = require('assert');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var path = require('path');
@@ -20,12 +17,6 @@ var STRUCTURE = {
   link1: '~dir3/dir4/file1',
   'dir3/link2': '~dir2/file1',
 };
-
-function sleep(timeout) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, timeout);
-  });
-}
 
 describe('errors', function () {
   after(function (done) {
@@ -91,9 +82,7 @@ describe('errors', function () {
       walk(
         DIR,
         function () {
-          return sleep(10).then(function () {
-            throw new Error('Failed');
-          });
+          return Promise.reject(new Error('Failed'));
         },
         function (err) {
           assert.ok(!!err);
