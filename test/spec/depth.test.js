@@ -1,13 +1,10 @@
-var chai = require('chai');
-chai.use(require('sinon-chai'));
-
-var assert = chai.assert;
+var assert = require('assert');
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var path = require('path');
 
 var walk = require('../..');
-var statsSpys = require('../utils').statsSpys;
+var statsSpys = require('../lib/statsSpys');
 
 var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
@@ -21,12 +18,6 @@ var STRUCTURE = {
   link1: '~dir3/dir4/file1',
   'dir3/link2': '~dir2/file1',
 };
-
-function sleep(timeout) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, timeout);
-  });
-}
 
 describe('depth', function () {
   after(function (done) {
@@ -237,7 +228,7 @@ describe('depth', function () {
         DIR,
         function (entry, callback) {
           spys(entry.stats, entry.path);
-          return sleep(10);
+          return Promise.resolve();
         },
         {
           depth: 0,
@@ -260,7 +251,7 @@ describe('depth', function () {
         DIR,
         function (entry, callback) {
           spys(entry.stats, entry.path);
-          return sleep(10);
+          return Promise.resolve();
         },
         {
           depth: 1,
@@ -283,7 +274,7 @@ describe('depth', function () {
         DIR,
         function (entry, callback) {
           spys(entry.stats, entry.path);
-          return sleep(10);
+          return Promise.resolve();
         },
         {
           depth: 2,
@@ -306,7 +297,7 @@ describe('depth', function () {
         DIR,
         function (entry, callback) {
           spys(entry.stats, entry.path);
-          return sleep(10);
+          return Promise.resolve();
         },
         {
           depth: Infinity,
