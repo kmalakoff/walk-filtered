@@ -15,7 +15,7 @@
     "test": "npm run operations && npm run memory"
   },
   "dependencies": {
-    "benchmark-suite": "^0.1.4",
+    "benchmark-suite": "^0.1.5",
     "walk-filtered-2.3.0": "npm:walk-filtered@^2.3.0"
   }
 }
