@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var rimraf = require('rimraf');
+var rimraf = require('rimraf2');
 var generate = require('fs-generate');
 var statsSpys = require('fs-stats-spys');
 var startsWith = require('starts-with');
@@ -22,17 +22,14 @@ var STRUCTURE = {
 var DIR_PATH = 'dir3' + path.sep + 'dir4';
 
 describe('filtering', function () {
-  after(function (done) {
-    rimraf(DIR, done);
+  beforeEach(function (done) {
+    rimraf(DIR, function () {
+      generate(DIR, STRUCTURE, done);
+    });
   });
+  after(rimraf.bind(null, DIR));
 
   describe('synchronous', function () {
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
-
     it('Should filter everything under the root directory', function (done) {
       var spys = statsSpys();
 
@@ -85,12 +82,6 @@ describe('filtering', function () {
   });
 
   describe('callbacks', function () {
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
-
     it('Should filter everything under the root directory', function (done) {
       var spys = statsSpys();
 
@@ -151,12 +142,6 @@ describe('filtering', function () {
 
   describe('promise', function () {
     if (typeof Promise === 'undefined') return; // no promise support
-
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
 
     it('Should filter everything under the root directory', function (done) {
       var spys = statsSpys();
