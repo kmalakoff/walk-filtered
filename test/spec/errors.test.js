@@ -1,7 +1,7 @@
 var assert = require('assert');
-var generate = require('fs-generate');
-var rimraf = require('rimraf');
 var path = require('path');
+var rimraf = require('rimraf');
+var generate = require('fs-generate');
 
 var walk = require('../..');
 

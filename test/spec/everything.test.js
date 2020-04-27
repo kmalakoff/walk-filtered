@@ -1,10 +1,10 @@
 var assert = require('assert');
-var generate = require('fs-generate');
-var rimraf = require('rimraf');
 var path = require('path');
+var rimraf = require('rimraf');
+var generate = require('fs-generate');
+var statsSpys = require('fs-stats-spys');
 
 var walk = require('../..');
-var statsSpys = require('../lib/statsSpys');
 
 var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
@@ -35,7 +35,7 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        spys(entry.stats, entry.path);
+        spys(entry.stats);
       },
       { lstat: true },
       function () {
@@ -53,7 +53,7 @@ describe('walk everything', function () {
     walk(
       DIR,
       function (entry) {
-        spys(entry.stats, entry.path);
+        spys(entry.stats);
         return true;
       },
       { lstat: true },
@@ -73,7 +73,7 @@ describe('walk everything', function () {
       DIR,
       function (entry) {
         try {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
         } catch (err) {
           return err;
         }
@@ -100,7 +100,7 @@ describe('walk everything', function () {
       DIR,
       function (entry) {
         try {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
         } catch (err) {
           return err;
         }
@@ -135,7 +135,7 @@ describe('walk everything', function () {
       DIR,
       function (entry) {
         try {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
         } catch (err) {
           return err;
         }

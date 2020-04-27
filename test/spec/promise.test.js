@@ -1,10 +1,10 @@
 var assert = require('assert');
-var generate = require('fs-generate');
-var rimraf = require('rimraf');
 var path = require('path');
+var rimraf = require('rimraf');
+var generate = require('fs-generate');
+var statsSpys = require('fs-stats-spys');
 
 var walk = require('../..');
-var statsSpys = require('../lib/statsSpys');
 
 var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
@@ -35,7 +35,7 @@ describe('promise', function () {
     var spys = statsSpys();
 
     walk(DIR, function (entry) {
-      spys(entry.stats, entry.path);
+      spys(entry.stats);
     }).then(function () {
       assert.ok(spys.callCount, 13);
       done();
@@ -48,7 +48,7 @@ describe('promise', function () {
     walk(
       DIR,
       function (entry) {
-        spys(entry.stats, entry.path);
+        spys(entry.stats);
       },
       { lstat: true }
     ).then(function () {
@@ -65,7 +65,7 @@ describe('promise', function () {
     walk(
       DIR,
       function (entry) {
-        spys(entry.stats, entry.path);
+        spys(entry.stats);
         return true;
       },
       { lstat: true }

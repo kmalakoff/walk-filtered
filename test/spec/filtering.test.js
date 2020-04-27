@@ -1,11 +1,11 @@
 var assert = require('assert');
-var generate = require('fs-generate');
-var rimraf = require('rimraf');
 var path = require('path');
+var rimraf = require('rimraf');
+var generate = require('fs-generate');
+var statsSpys = require('fs-stats-spys');
 var startsWith = require('starts-with');
 
 var walk = require('../..');
-var statsSpys = require('../lib/statsSpys');
 
 var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
@@ -39,7 +39,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return false;
         },
         function () {
@@ -55,7 +55,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return entry.path !== 'dir2';
         },
         true,
@@ -72,7 +72,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return !entry.stats.isDirectory() || startsWith(entry.path, DIR_PATH);
         },
         { alwaysStat: true },
@@ -97,7 +97,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(function () {
             callback(null, false);
           });
@@ -116,7 +116,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(function () {
             callback(null, entry.path !== 'dir2');
           });
@@ -135,7 +135,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(function () {
             callback(null, !entry.stats.isDirectory() || startsWith(entry.path, DIR_PATH));
           });
@@ -164,7 +164,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return Promise.resolve(false);
         },
         function () {
@@ -180,7 +180,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return Promise.resolve(path !== 'dir2');
         },
         function () {
@@ -196,7 +196,7 @@ describe('filtering', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return Promise.resolve(!entry.stats.isDirectory() || startsWith(entry.path, DIR_PATH));
         },
         { alwaysStat: true },
