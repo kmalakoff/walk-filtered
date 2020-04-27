@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var rimraf = require('rimraf');
+var rimraf = require('rimraf2');
 var generate = require('fs-generate');
 var statsSpys = require('fs-stats-spys');
 
@@ -25,9 +25,7 @@ describe('walk everything', function () {
       generate(DIR, STRUCTURE, done);
     });
   });
-  after(function (done) {
-    rimraf(DIR, done);
-  });
+  after(rimraf.bind(null, DIR));
 
   it('Should find everything with no return', function (done) {
     var spys = statsSpys();

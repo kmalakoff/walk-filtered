@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var rimraf = require('rimraf');
+var rimraf = require('rimraf2');
 var generate = require('fs-generate');
 var statsSpys = require('fs-stats-spys');
 
@@ -27,9 +27,7 @@ describe('promise', function () {
       generate(DIR, STRUCTURE, done);
     });
   });
-  after(function (done) {
-    rimraf(DIR, done);
-  });
+  after(rimraf.bind(null, DIR));
 
   it('should be default false', function (done) {
     var spys = statsSpys();
