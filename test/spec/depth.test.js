@@ -1,10 +1,10 @@
 var assert = require('assert');
-var generate = require('fs-generate');
-var rimraf = require('rimraf');
 var path = require('path');
+var rimraf = require('rimraf');
+var generate = require('fs-generate');
+var statsSpys = require('fs-stats-spys');
 
 var walk = require('../..');
-var statsSpys = require('../lib/statsSpys');
 
 var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
@@ -37,7 +37,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
         },
         { depth: 0, lstat: true },
         function (err) {
@@ -56,7 +56,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
         },
         { depth: 1, lstat: true },
         function (err) {
@@ -75,7 +75,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
         },
         { depth: 2, lstat: true },
         function (err) {
@@ -94,7 +94,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
         },
         { depth: Infinity, lstat: true },
         function (err) {
@@ -121,7 +121,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(callback, 10);
         },
         {
@@ -145,7 +145,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(callback, 10);
         },
         {
@@ -169,7 +169,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(callback, 10);
         },
         {
@@ -193,7 +193,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(callback, 10);
         },
         {
@@ -227,7 +227,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return Promise.resolve();
         },
         {
@@ -250,7 +250,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return Promise.resolve();
         },
         {
@@ -273,7 +273,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return Promise.resolve();
         },
         {
@@ -296,7 +296,7 @@ describe('depth', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           return Promise.resolve();
         },
         {
