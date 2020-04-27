@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var rimraf = require('rimraf');
+var rimraf = require('rimraf2');
 var generate = require('fs-generate');
 var statsSpys = require('fs-stats-spys');
 var startsWith = require('starts-with');
@@ -21,17 +21,14 @@ var STRUCTURE = {
 };
 
 describe('legacy', function () {
-  after(function (done) {
-    rimraf(DIR, done);
+  beforeEach(function (done) {
+    rimraf(DIR, function () {
+      generate(DIR, STRUCTURE, done);
+    });
   });
+  after(rimraf.bind(null, DIR));
 
   describe('async', function () {
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
-
     it('Should filter everything under the root directory', function (done) {
       var spys = statsSpys();
 
