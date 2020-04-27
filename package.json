@@ -43,13 +43,12 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "fs-generate": "^1.5.0",
+    "fs-generate": "^1.7.0",
     "mocha": "^7.1.2",
     "mocha-compat": "^3.5.5",
-    "nvs": "^0.1.5",
+    "nvs": "^0.1.8",
     "prettier": "^2.0.5",
-    "rimraf": "^2.7.1",
-    "sinon": "^2.4.1",
+    "rimraf2": "^0.1.0",
     "starts-with": "^1.0.2"
   }
 }

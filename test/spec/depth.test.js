@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var rimraf = require('rimraf');
+var rimraf = require('rimraf2');
 var generate = require('fs-generate');
 var statsSpys = require('fs-stats-spys');
 
@@ -20,17 +20,14 @@ var STRUCTURE = {
 };
 
 describe('depth', function () {
-  after(function (done) {
-    rimraf(DIR, done);
+  beforeEach(function (done) {
+    rimraf(DIR, function () {
+      generate(DIR, STRUCTURE, done);
+    });
   });
+  after(rimraf.bind(null, DIR));
 
   describe('synchronous', function () {
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
-
     it('depth 0', function (done) {
       var spys = statsSpys();
 
@@ -109,12 +106,6 @@ describe('depth', function () {
   });
 
   describe('callbacks', function () {
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
-
     it('depth 0', function (done) {
       var spys = statsSpys();
 
@@ -214,12 +205,6 @@ describe('depth', function () {
 
   describe('promise', function () {
     if (typeof Promise === 'undefined') return; // no promise support
-
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
 
     it('depth 0', function (done) {
       var spys = statsSpys();

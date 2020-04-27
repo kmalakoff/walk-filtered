@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var rimraf = require('rimraf');
+var rimraf = require('rimraf2');
 var generate = require('fs-generate');
 
 var walk = require('../..');
@@ -19,17 +19,14 @@ var STRUCTURE = {
 };
 
 describe('errors', function () {
-  after(function (done) {
-    rimraf(DIR, done);
+  beforeEach(function (done) {
+    rimraf(DIR, function () {
+      generate(DIR, STRUCTURE, done);
+    });
   });
+  after(rimraf.bind(null, DIR));
 
   describe('synchronous', function () {
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
-
     it('should propagate errors', function (done) {
       walk(
         DIR,
@@ -46,12 +43,6 @@ describe('errors', function () {
   });
 
   describe('callbacks', function () {
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
-
     it('should propagate errors', function (done) {
       walk(
         DIR,
@@ -71,12 +62,6 @@ describe('errors', function () {
 
   describe('promise', function () {
     if (typeof Promise === 'undefined') return; // no promise support
-
-    beforeEach(function (done) {
-      rimraf(DIR, function () {
-        generate(DIR, STRUCTURE, done);
-      });
-    });
 
     it('should propagate errors', function (done) {
       walk(
