@@ -30,7 +30,8 @@
   "license": "MIT",
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
-    "fs-iterator": "^2.6.0"
+    "fs-iterator": "^2.6.0",
+    "fs-stats-spys": "^1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
@@ -48,7 +49,7 @@
     "nvs": "^0.1.5",
     "prettier": "^2.0.5",
     "rimraf": "^2.7.1",
-    "sinon": "^9.0.2",
+    "sinon": "^2.4.1",
     "starts-with": "^1.0.2"
   }
 }

@@ -1,11 +1,11 @@
 var assert = require('assert');
-var generate = require('fs-generate');
-var rimraf = require('rimraf');
 var path = require('path');
+var rimraf = require('rimraf');
+var generate = require('fs-generate');
+var statsSpys = require('fs-stats-spys');
 var startsWith = require('starts-with');
 
 var walk = require('../..');
-var statsSpys = require('../lib/statsSpys');
 
 var DIR = path.resolve(path.join(__dirname, '..', 'data'));
 var STRUCTURE = {
@@ -38,7 +38,7 @@ describe('legacy', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(function () {
             callback(null, false);
           }, 10);
@@ -57,7 +57,7 @@ describe('legacy', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(function () {
             callback(null, entry.path !== 'dir2');
           }, 10);
@@ -76,7 +76,7 @@ describe('legacy', function () {
       walk(
         DIR,
         function (entry, callback) {
-          spys(entry.stats, entry.path);
+          spys(entry.stats);
           setTimeout(function () {
             callback(null, !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4'));
           }, 10);
