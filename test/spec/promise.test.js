@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var rimraf = require('rimraf2');
+var rimraf = require('rimraf');
 var generate = require('fs-generate');
 var statsSpys = require('fs-stats-spys');
 
