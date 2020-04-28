@@ -15,8 +15,8 @@ var STRUCTURE = {
   'dir2/file2': 'd',
   'dir3/dir4/file1': 'e',
   'dir3/dir4/dir5': null,
-  link1: '~dir3/dir4/file1',
-  'dir3/link2': '~dir2/file1',
+  filelink1: '~dir3/dir4/file1',
+  'dir3/filelink2': '~dir2/file1',
 };
 
 describe('walk everything', function () {
@@ -84,7 +84,7 @@ describe('walk everything', function () {
         assert.ok(!err);
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
-        assert.equal(spys.link.callCount, 2);
+        assert.equal(spys.link.callCount, 1);
         done();
       }
     );
@@ -116,10 +116,10 @@ describe('walk everything', function () {
       },
       function (err) {
         assert.ok(!err);
-        assert.equal(errors.length, 1);
+        assert.equal(errors.length, 2);
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
-        assert.equal(spys.link.callCount, 2);
+        assert.equal(spys.link.callCount, 1);
         done();
       }
     );
