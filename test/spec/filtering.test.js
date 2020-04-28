@@ -16,8 +16,8 @@ var STRUCTURE = {
   'dir2/file2': 'd',
   'dir3/dir4/file1': 'e',
   'dir3/dir4/dir5': null,
-  link1: '~dir3/dir4/file1',
-  'dir3/link2': '~dir2/file1',
+  filelink1: '~dir3/dir4/file1',
+  'dir3/filelink2': '~dir2/file1',
 };
 var DIR_PATH = 'dir3' + path.sep + 'dir4';
 
@@ -72,7 +72,6 @@ describe('filtering', function () {
           spys(entry.stats);
           return !entry.stats.isDirectory() || startsWith(entry.path, DIR_PATH);
         },
-        { alwaysStat: true },
         function () {
           assert.ok(spys.callCount, 13 - 1);
           done();
@@ -184,7 +183,6 @@ describe('filtering', function () {
           spys(entry.stats);
           return Promise.resolve(!entry.stats.isDirectory() || startsWith(entry.path, DIR_PATH));
         },
-        { alwaysStat: true },
         function () {
           assert.ok(spys.callCount, 13 - 1);
           done();

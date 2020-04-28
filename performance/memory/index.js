@@ -5,7 +5,7 @@ const tests = require('./tests');
 const VERSIONS = require('../VERSIONS');
 const TESTS_OPTIONS = require('../TESTS_OPTIONS');
 const DATA_DIR = path.resolve(path.join(__dirname, '..', 'node_modules'));
-const ITERATION_COUNT = 2;
+const ITERATION_COUNT = 1;
 
 (async () => {
   for (const options of VERSIONS) {
