@@ -16,8 +16,8 @@ var STRUCTURE = {
   'dir2/file2': 'd',
   'dir3/dir4/file1': 'e',
   'dir3/dir4/dir5': null,
-  link1: '~dir3/dir4/file1',
-  'dir3/link2': '~dir2/file1',
+  filelink1: '~dir3/dir4/file1',
+  'dir3/filelink2': '~dir2/file1',
 };
 
 describe('legacy', function () {
