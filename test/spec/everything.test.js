@@ -6,7 +6,7 @@ var statsSpys = require('fs-stats-spys');
 
 var walk = require('../..');
 
-var DIR = path.resolve(path.join(__dirname, '..', 'data'));
+var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -21,17 +21,17 @@ var STRUCTURE = {
 
 describe('walk everything', function () {
   beforeEach(function (done) {
-    rimraf(DIR, function () {
-      generate(DIR, STRUCTURE, done);
+    rimraf(TEST_DIR, function () {
+      generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, DIR));
+  after(rimraf.bind(null, TEST_DIR));
 
   it('Should find everything with no return', function (done) {
     var spys = statsSpys();
 
     walk(
-      DIR,
+      TEST_DIR,
       function (entry) {
         spys(entry.stats);
       },
@@ -49,7 +49,7 @@ describe('walk everything', function () {
     var spys = statsSpys();
 
     walk(
-      DIR,
+      TEST_DIR,
       function (entry) {
         spys(entry.stats);
         return true;
@@ -68,7 +68,7 @@ describe('walk everything', function () {
     var spys = statsSpys();
 
     walk(
-      DIR,
+      TEST_DIR,
       function (entry) {
         try {
           spys(entry.stats);
@@ -76,7 +76,7 @@ describe('walk everything', function () {
           return err;
         }
 
-        if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
+        if (entry.path === 'dir2/file1') rimraf.sync(path.join(TEST_DIR, 'dir2'));
         return true;
       },
       { concurrency: 1, lstat: true, alwaysStat: true },
@@ -95,7 +95,7 @@ describe('walk everything', function () {
     var errors = [];
 
     walk(
-      DIR,
+      TEST_DIR,
       function (entry) {
         try {
           spys(entry.stats);
@@ -103,7 +103,7 @@ describe('walk everything', function () {
           return err;
         }
 
-        if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
+        if (entry.path === 'dir2/file1') rimraf.sync(path.join(TEST_DIR, 'dir2'));
         return true;
       },
       {
@@ -130,7 +130,7 @@ describe('walk everything', function () {
     var errors = [];
 
     walk(
-      DIR,
+      TEST_DIR,
       function (entry) {
         try {
           spys(entry.stats);
@@ -138,7 +138,7 @@ describe('walk everything', function () {
           return err;
         }
 
-        if (entry.path === 'dir2/file1') rimraf.sync(path.join(DIR, 'dir2'));
+        if (entry.path === 'dir2/file1') rimraf.sync(path.join(TEST_DIR, 'dir2'));
         return true;
       },
       {

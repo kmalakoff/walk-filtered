@@ -7,7 +7,7 @@ var startsWith = require('starts-with');
 
 var walk = require('../..');
 
-var DIR = path.resolve(path.join(__dirname, '..', 'data'));
+var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -22,18 +22,18 @@ var STRUCTURE = {
 
 describe('legacy', function () {
   beforeEach(function (done) {
-    rimraf(DIR, function () {
-      generate(DIR, STRUCTURE, done);
+    rimraf(TEST_DIR, function () {
+      generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, DIR));
+  after(rimraf.bind(null, TEST_DIR));
 
   describe('async', function () {
     it('Should filter everything under the root directory', function (done) {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry, callback) {
           spys(entry.stats);
           setTimeout(function () {
@@ -52,7 +52,7 @@ describe('legacy', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry, callback) {
           spys(entry.stats);
           setTimeout(function () {
@@ -71,7 +71,7 @@ describe('legacy', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry, callback) {
           spys(entry.stats);
           setTimeout(function () {
