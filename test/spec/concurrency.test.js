@@ -6,7 +6,7 @@ var statsSpys = require('fs-stats-spys');
 
 var walk = require('../..');
 
-var DIR = path.resolve(path.join(__dirname, '..', 'data'));
+var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -21,18 +21,18 @@ var STRUCTURE = {
 
 describe('concurrency', function () {
   beforeEach(function (done) {
-    rimraf(DIR, function () {
-      generate(DIR, STRUCTURE, done);
+    rimraf(TEST_DIR, function () {
+      generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, DIR));
+  after(rimraf.bind(null, TEST_DIR));
 
   describe('asynchronous', function () {
     it('should run with concurrency 1', function (done) {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry) {
           spys(entry.stats);
         },
@@ -49,7 +49,7 @@ describe('concurrency', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry) {
           spys(entry.stats);
         },
@@ -66,7 +66,7 @@ describe('concurrency', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry) {
           spys(entry.stats);
         },
@@ -85,7 +85,7 @@ describe('concurrency', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry, callback) {
           spys(entry.stats);
           setTimeout(callback, 10);
@@ -103,7 +103,7 @@ describe('concurrency', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry, callback) {
           spys(entry.stats);
           setTimeout(callback, 10);
@@ -121,7 +121,7 @@ describe('concurrency', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry, callback) {
           spys(entry.stats);
           setTimeout(callback, 10);
@@ -143,7 +143,7 @@ describe('concurrency', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry) {
           spys(entry.stats);
           return Promise.resolve();
@@ -161,7 +161,7 @@ describe('concurrency', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry) {
           spys(entry.stats);
           return Promise.resolve();
@@ -179,7 +179,7 @@ describe('concurrency', function () {
       var spys = statsSpys();
 
       walk(
-        DIR,
+        TEST_DIR,
         function (entry) {
           spys(entry.stats);
           return Promise.resolve();
