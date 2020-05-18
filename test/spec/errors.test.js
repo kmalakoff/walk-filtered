@@ -5,7 +5,7 @@ var generate = require('fs-generate');
 
 var walk = require('../..');
 
-var DIR = path.resolve(path.join(__dirname, '..', 'data'));
+var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -20,16 +20,16 @@ var STRUCTURE = {
 
 describe('errors', function () {
   beforeEach(function (done) {
-    rimraf(DIR, function () {
-      generate(DIR, STRUCTURE, done);
+    rimraf(TEST_DIR, function () {
+      generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, DIR));
+  after(rimraf.bind(null, TEST_DIR));
 
   describe('synchronous', function () {
     it('should propagate errors', function (done) {
       walk(
-        DIR,
+        TEST_DIR,
         function () {
           return new Error('Failed');
         },
@@ -45,7 +45,7 @@ describe('errors', function () {
   describe('callbacks', function () {
     it('should propagate errors', function (done) {
       walk(
-        DIR,
+        TEST_DIR,
         function (entry, callback) {
           setTimeout(function () {
             callback(new Error('Failed'));
@@ -65,7 +65,7 @@ describe('errors', function () {
 
     it('should propagate errors', function (done) {
       walk(
-        DIR,
+        TEST_DIR,
         function () {
           return Promise.reject(new Error('Failed'));
         },

@@ -6,7 +6,7 @@ var statsSpys = require('fs-stats-spys');
 
 var walk = require('../..');
 
-var DIR = path.resolve(path.join(__dirname, '..', 'data'));
+var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
 var STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -23,16 +23,16 @@ describe('promise', function () {
   if (typeof Promise === 'undefined') return; // no promise support
 
   beforeEach(function (done) {
-    rimraf(DIR, function () {
-      generate(DIR, STRUCTURE, done);
+    rimraf(TEST_DIR, function () {
+      generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, DIR));
+  after(rimraf.bind(null, TEST_DIR));
 
   it('should be default false', function (done) {
     var spys = statsSpys();
 
-    walk(DIR, function (entry) {
+    walk(TEST_DIR, function (entry) {
       spys(entry.stats);
     }).then(function () {
       assert.ok(spys.callCount, 13);
@@ -44,7 +44,7 @@ describe('promise', function () {
     var spys = statsSpys();
 
     walk(
-      DIR,
+      TEST_DIR,
       function (entry) {
         spys(entry.stats);
       },
@@ -61,7 +61,7 @@ describe('promise', function () {
     var spys = statsSpys();
 
     walk(
-      DIR,
+      TEST_DIR,
       function (entry) {
         spys(entry.stats);
         return true;
@@ -76,7 +76,7 @@ describe('promise', function () {
   });
 
   it('should propagate errors', function (done) {
-    walk(DIR, function () {
+    walk(TEST_DIR, function () {
       return Promise.reject(new Error('Failed'));
     }).catch(function (err) {
       assert.ok(!!err);
