@@ -76,7 +76,7 @@ describe('walk everything', function () {
           return err;
         }
 
-        if (entry.path === 'dir2/file1') rimraf.sync(path.join(TEST_DIR, 'dir2'));
+        if (entry.path === path.join('dir2', 'file1')) rimraf.sync(path.join(TEST_DIR, 'dir2'));
         return true;
       },
       { concurrency: 1, lstat: true, alwaysStat: true },
@@ -103,7 +103,7 @@ describe('walk everything', function () {
           return err;
         }
 
-        if (entry.path === 'dir2/file1') rimraf.sync(path.join(TEST_DIR, 'dir2'));
+        if (entry.path === path.join('dir2', 'file1')) rimraf.sync(path.join(TEST_DIR, 'dir2'));
         return true;
       },
       {
@@ -138,7 +138,7 @@ describe('walk everything', function () {
           return err;
         }
 
-        if (entry.path === 'dir2/file1') rimraf.sync(path.join(TEST_DIR, 'dir2'));
+        if (entry.path === path.join('dir2', 'file1')) rimraf.sync(path.join(TEST_DIR, 'dir2'));
         return true;
       },
       {
