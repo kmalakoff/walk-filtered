@@ -27,7 +27,7 @@
     "test": "mocha-compat test/spec/**/*.test.js"
   },
   "dependencies": {
-    "fs-iterator": "^3.0.1",
+    "fs-iterator": "^3.0.2",
     "fs-stats-spys": "^1.0.1"
   },
   "devDependencies": {
