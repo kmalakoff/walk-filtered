@@ -16,6 +16,6 @@
   },
   "dependencies": {
     "benchmark-suite": "^0.1.6",
-    "walk-filtered-2.3.0": "npm:walk-filtered@^2.3.0"
+    "walk-filtered-2.3.0": "npm:walk-filtered@2.3.0"
   }
 }
