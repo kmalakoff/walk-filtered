@@ -1,5 +1,5 @@
 {
-  "name": "walk-filtered",
+  "name": "walk-filtered-performance",
   "version": "0.0.0",
   "private": true,
   "description": "Tests",
@@ -15,7 +15,10 @@
     "test": "npm run ops && npm run mem"
   },
   "dependencies": {
-    "benchmark-suite": "^0.1.6",
-    "walk-filtered-2.3.0": "npm:walk-filtered@2.3.0"
+    "benchmark-suite": "^0.1.7",
+    "walk-filtered-2.3.0": "npm:walk-filtered@2.5.1"
+  },
+  "engines": {
+    "node": ">=8"
   }
 }
