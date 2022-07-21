@@ -46,7 +46,7 @@
     "fs-generate": "^1.8.5",
     "mocha-compat": "^3.5.5",
     "prettier": "^2.7.1",
-    "rimraf": "^2.7.1",
+    "rimraf": "^3.0.2",
     "starts-with": "^1.0.2"
   },
   "engines": {
