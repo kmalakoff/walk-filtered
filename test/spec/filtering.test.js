@@ -1,14 +1,14 @@
-var assert = require('assert');
-var path = require('path');
-var rimraf = require('rimraf');
-var generate = require('fs-generate');
-var statsSpys = require('fs-stats-spys');
-var startsWith = require('starts-with');
+const assert = require('assert');
+const path = require('path');
+const rimraf = require('rimraf');
+const generate = require('fs-generate');
+const statsSpys = require('fs-stats-spys');
+const startsWith = require('starts-with');
 
-var walk = require('../..');
+const walk = require('walk-filtered');
 
-var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
-var STRUCTURE = {
+const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -19,60 +19,60 @@ var STRUCTURE = {
   filelink1: '~dir3/dir4/file1',
   'dir3/filelink2': '~dir2/file1',
 };
-var TEST_DIR_PATH = 'dir3' + path.sep + 'dir4';
+const TEST_DIR_PATH = `dir3${path.sep}dir4`;
 
-describe('filtering', function () {
-  beforeEach(function (done) {
-    rimraf(TEST_DIR, function () {
+describe('filtering', () => {
+  beforeEach((done) => {
+    rimraf(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
   after(rimraf.bind(null, TEST_DIR));
 
-  describe('synchronous', function () {
-    it('Should filter everything under the root directory', function (done) {
-      var spys = statsSpys();
+  describe('synchronous', () => {
+    it('Should filter everything under the root directory', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return false;
         },
-        function () {
+        () => {
           assert.ok(spys.callCount, 1);
           done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by relative path', function (done) {
-      var spys = statsSpys();
+    it('Should filter everything under specific directories by relative path', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return entry.path !== 'dir2';
         },
         true,
-        function () {
+        () => {
           assert.ok(spys.callCount, 13 - 2);
           done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by stats and relative path', function (done) {
-      var spys = statsSpys();
+    it('Should filter everything under specific directories by stats and relative path', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return !entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH);
         },
-        function () {
+        () => {
           assert.ok(spys.callCount, 13 - 1);
           done();
         }
@@ -80,58 +80,58 @@ describe('filtering', function () {
     });
   });
 
-  describe('callbacks', function () {
-    it('Should filter everything under the root directory', function (done) {
-      var spys = statsSpys();
+  describe('callbacks', () => {
+    it('Should filter everything under the root directory', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
-          setTimeout(function () {
+          setTimeout(() => {
             callback(null, false);
           });
         },
         { callbacks: true },
-        function () {
+        () => {
           assert.ok(spys.callCount, 1);
           done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by relative path', function (done) {
-      var spys = statsSpys();
+    it('Should filter everything under specific directories by relative path', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
-          setTimeout(function () {
+          setTimeout(() => {
             callback(null, entry.path !== 'dir2');
           });
         },
         { callbacks: true },
-        function () {
+        () => {
           assert.ok(spys.callCount, 13 - 2);
           done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by stats and relative path', function (done) {
-      var spys = statsSpys();
+    it('Should filter everything under specific directories by stats and relative path', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
-          setTimeout(function () {
+          setTimeout(() => {
             callback(null, !entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH));
           });
         },
         { callbacks: true },
-        function () {
+        () => {
           assert.ok(spys.callCount, 13 - 1);
           done();
         }
@@ -139,51 +139,51 @@ describe('filtering', function () {
     });
   });
 
-  describe('promise', function () {
+  describe('promise', () => {
     if (typeof Promise === 'undefined') return; // no promise support
 
-    it('Should filter everything under the root directory', function (done) {
-      var spys = statsSpys();
+    it('Should filter everything under the root directory', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return Promise.resolve(false);
         },
-        function () {
+        () => {
           assert.ok(spys.callCount, 1);
           done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by relative path', function (done) {
-      var spys = statsSpys();
+    it('Should filter everything under specific directories by relative path', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return Promise.resolve(path !== 'dir2');
         },
-        function () {
+        () => {
           assert.ok(spys.callCount, 13 - 2);
           done();
         }
       );
     });
 
-    it('Should filter everything under specific directories by stats and relative path', function (done) {
-      var spys = statsSpys();
+    it('Should filter everything under specific directories by stats and relative path', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return Promise.resolve(!entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH));
         },
-        function () {
+        () => {
           assert.ok(spys.callCount, 13 - 1);
           done();
         }

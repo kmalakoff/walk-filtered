@@ -1,13 +1,13 @@
-var assert = require('assert');
-var path = require('path');
-var rimraf = require('rimraf');
-var generate = require('fs-generate');
-var statsSpys = require('fs-stats-spys');
+const assert = require('assert');
+const path = require('path');
+const rimraf = require('rimraf');
+const generate = require('fs-generate');
+const statsSpys = require('fs-stats-spys');
 
-var walk = require('../..');
+const walk = require('walk-filtered');
 
-var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
-var STRUCTURE = {
+const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -19,25 +19,25 @@ var STRUCTURE = {
   'dir3/filelink2': '~dir2/file1',
 };
 
-describe('concurrency', function () {
-  beforeEach(function (done) {
-    rimraf(TEST_DIR, function () {
+describe('concurrency', () => {
+  beforeEach((done) => {
+    rimraf(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
   after(rimraf.bind(null, TEST_DIR));
 
-  describe('asynchronous', function () {
-    it('should run with concurrency 1', function (done) {
-      var spys = statsSpys();
+  describe('asynchronous', () => {
+    it('should run with concurrency 1', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
         },
         { concurrency: 1 },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
@@ -45,16 +45,16 @@ describe('concurrency', function () {
       );
     });
 
-    it('should run with concurrency 5', function (done) {
-      var spys = statsSpys();
+    it('should run with concurrency 5', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
         },
         { concurrency: 5 },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
@@ -62,16 +62,16 @@ describe('concurrency', function () {
       );
     });
 
-    it('should run with concurrency Infinity', function (done) {
-      var spys = statsSpys();
+    it('should run with concurrency Infinity', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
         },
         { concurrency: Infinity },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
@@ -80,18 +80,18 @@ describe('concurrency', function () {
     });
   });
 
-  describe('callbacks', function () {
-    it('should run with concurrency 1', function (done) {
-      var spys = statsSpys();
+  describe('callbacks', () => {
+    it('should run with concurrency 1', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
           setTimeout(callback, 10);
         },
         { callbacks: true, concurrency: 1 },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
@@ -99,17 +99,17 @@ describe('concurrency', function () {
       );
     });
 
-    it('should run with concurrency 5', function (done) {
-      var spys = statsSpys();
+    it('should run with concurrency 5', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
           setTimeout(callback, 10);
         },
         { callbacks: true, concurrency: 5 },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
@@ -117,17 +117,17 @@ describe('concurrency', function () {
       );
     });
 
-    it('should run with concurrency Infinity', function (done) {
-      var spys = statsSpys();
+    it('should run with concurrency Infinity', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
           setTimeout(callback, 10);
         },
         { callbacks: true, concurrency: Infinity },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
@@ -136,20 +136,20 @@ describe('concurrency', function () {
     });
   });
 
-  describe('promise', function () {
+  describe('promise', () => {
     if (typeof Promise === 'undefined') return; // no promise support
 
-    it('should run with concurrency 1', function (done) {
-      var spys = statsSpys();
+    it('should run with concurrency 1', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return Promise.resolve();
         },
         { concurrency: 1 },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
@@ -157,17 +157,17 @@ describe('concurrency', function () {
       );
     });
 
-    it('should run with concurrency 5', function (done) {
-      var spys = statsSpys();
+    it('should run with concurrency 5', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return Promise.resolve();
         },
         { concurrency: 5 },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
@@ -175,17 +175,17 @@ describe('concurrency', function () {
       );
     });
 
-    it('should run with concurrency Infinity', function (done) {
-      var spys = statsSpys();
+    it('should run with concurrency Infinity', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
           return Promise.resolve();
         },
         { concurrency: Infinity },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.ok(spys.callCount, 13);
           done();
