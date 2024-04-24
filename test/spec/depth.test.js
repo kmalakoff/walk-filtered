@@ -1,13 +1,13 @@
-var assert = require('assert');
-var path = require('path');
-var rimraf = require('rimraf');
-var generate = require('fs-generate');
-var statsSpys = require('fs-stats-spys');
+const assert = require('assert');
+const path = require('path');
+const rimraf = require('rimraf');
+const generate = require('fs-generate');
+const statsSpys = require('fs-stats-spys');
 
-var walk = require('../..');
+const walk = require('walk-filtered');
 
-var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
-var STRUCTURE = {
+const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -19,25 +19,25 @@ var STRUCTURE = {
   'dir3/filelink2': '~dir2/file1',
 };
 
-describe('depth', function () {
-  beforeEach(function (done) {
-    rimraf(TEST_DIR, function () {
+describe('depth', () => {
+  beforeEach((done) => {
+    rimraf(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
   after(rimraf.bind(null, TEST_DIR));
 
-  describe('synchronous', function () {
-    it('depth 0', function (done) {
-      var spys = statsSpys();
+  describe('synchronous', () => {
+    it('depth 0', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
         },
         { depth: 0, lstat: true },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
@@ -47,16 +47,16 @@ describe('depth', function () {
       );
     });
 
-    it('depth 1', function (done) {
-      var spys = statsSpys();
+    it('depth 1', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
         },
         { depth: 1, lstat: true },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
@@ -66,16 +66,16 @@ describe('depth', function () {
       );
     });
 
-    it('depth 2', function (done) {
-      var spys = statsSpys();
+    it('depth 2', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
         },
         { depth: 2, lstat: true },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
@@ -85,16 +85,16 @@ describe('depth', function () {
       );
     });
 
-    it('depth Infinity', function (done) {
-      var spys = statsSpys();
+    it('depth Infinity', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry) {
+        (entry) => {
           spys(entry.stats);
         },
         { depth: Infinity, lstat: true },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
@@ -105,13 +105,13 @@ describe('depth', function () {
     });
   });
 
-  describe('callbacks', function () {
-    it('depth 0', function (done) {
-      var spys = statsSpys();
+  describe('callbacks', () => {
+    it('depth 0', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
           setTimeout(callback, 10);
         },
@@ -120,7 +120,7 @@ describe('depth', function () {
           lstat: true,
           callbacks: true,
         },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
@@ -130,12 +130,12 @@ describe('depth', function () {
       );
     });
 
-    it('depth 1', function (done) {
-      var spys = statsSpys();
+    it('depth 1', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
           setTimeout(callback, 10);
         },
@@ -144,7 +144,7 @@ describe('depth', function () {
           lstat: true,
           callbacks: true,
         },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
@@ -154,12 +154,12 @@ describe('depth', function () {
       );
     });
 
-    it('depth 2', function (done) {
-      var spys = statsSpys();
+    it('depth 2', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
           setTimeout(callback, 10);
         },
@@ -168,7 +168,7 @@ describe('depth', function () {
           lstat: true,
           callbacks: true,
         },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
@@ -178,12 +178,12 @@ describe('depth', function () {
       );
     });
 
-    it('depth Infinity', function (done) {
-      var spys = statsSpys();
+    it('depth Infinity', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, callback) => {
           spys(entry.stats);
           setTimeout(callback, 10);
         },
@@ -192,7 +192,7 @@ describe('depth', function () {
           lstat: true,
           callbacks: true,
         },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
@@ -203,15 +203,15 @@ describe('depth', function () {
     });
   });
 
-  describe('promise', function () {
+  describe('promise', () => {
     if (typeof Promise === 'undefined') return; // no promise support
 
-    it('depth 0', function (done) {
-      var spys = statsSpys();
+    it('depth 0', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, _callback) => {
           spys(entry.stats);
           return Promise.resolve();
         },
@@ -219,7 +219,7 @@ describe('depth', function () {
           depth: 0,
           lstat: true,
         },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
@@ -229,12 +229,12 @@ describe('depth', function () {
       );
     });
 
-    it('depth 1', function (done) {
-      var spys = statsSpys();
+    it('depth 1', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, _callback) => {
           spys(entry.stats);
           return Promise.resolve();
         },
@@ -242,7 +242,7 @@ describe('depth', function () {
           depth: 1,
           lstat: true,
         },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
@@ -252,12 +252,12 @@ describe('depth', function () {
       );
     });
 
-    it('depth 2', function (done) {
-      var spys = statsSpys();
+    it('depth 2', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, _callback) => {
           spys(entry.stats);
           return Promise.resolve();
         },
@@ -265,7 +265,7 @@ describe('depth', function () {
           depth: 2,
           lstat: true,
         },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
@@ -275,12 +275,12 @@ describe('depth', function () {
       );
     });
 
-    it('depth Infinity', function (done) {
-      var spys = statsSpys();
+    it('depth Infinity', (done) => {
+      const spys = statsSpys();
 
       walk(
         TEST_DIR,
-        function (entry, callback) {
+        (entry, _callback) => {
           spys(entry.stats);
           return Promise.resolve();
         },
@@ -288,7 +288,7 @@ describe('depth', function () {
           depth: Infinity,
           lstat: true,
         },
-        function (err) {
+        (err) => {
           assert.ok(!err);
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
