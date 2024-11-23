@@ -1,6 +1,6 @@
 node_modules/
+npm-debug.log
 .tmp/
-package-lock.json
 data/
 *.heapsnapshot
 *.0x
