@@ -1,12 +1,12 @@
-var assert = require('assert');
-var path = require('path');
-var rimraf = require('rimraf');
-var generate = require('fs-generate');
+const assert = require('assert');
+const path = require('path');
+const rimraf = require('rimraf');
+const generate = require('fs-generate');
 
-var walk = require('../..');
+const walk = require('walk-filtered');
 
-var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
-var STRUCTURE = {
+const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -18,23 +18,21 @@ var STRUCTURE = {
   'dir3/filelink2': '~dir2/file1',
 };
 
-describe('errors', function () {
-  beforeEach(function (done) {
-    rimraf(TEST_DIR, function () {
+describe('errors', () => {
+  beforeEach((done) => {
+    rimraf(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
   after(rimraf.bind(null, TEST_DIR));
 
-  describe('synchronous', function () {
-    it('should propagate errors', function (done) {
+  describe('synchronous', () => {
+    it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        function () {
-          return new Error('Failed');
-        },
+        () => new Error('Failed'),
         { concurrency: 1 },
-        function (err) {
+        (err) => {
           assert.ok(!!err);
           done();
         }
@@ -42,17 +40,17 @@ describe('errors', function () {
     });
   });
 
-  describe('callbacks', function () {
-    it('should propagate errors', function (done) {
+  describe('callbacks', () => {
+    it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        function (entry, callback) {
-          setTimeout(function () {
+        (_entry, callback) => {
+          setTimeout(() => {
             callback(new Error('Failed'));
           }, 10);
         },
         { callbacks: true },
-        function (err) {
+        (err) => {
           assert.ok(!!err);
           done();
         }
@@ -60,16 +58,14 @@ describe('errors', function () {
     });
   });
 
-  describe('promise', function () {
+  describe('promise', () => {
     if (typeof Promise === 'undefined') return; // no promise support
 
-    it('should propagate errors', function (done) {
+    it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        function () {
-          return Promise.reject(new Error('Failed'));
-        },
-        function (err) {
+        () => Promise.reject(new Error('Failed')),
+        (err) => {
           assert.ok(!!err);
           done();
         }

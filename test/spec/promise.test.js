@@ -1,13 +1,13 @@
-var assert = require('assert');
-var path = require('path');
-var rimraf = require('rimraf');
-var generate = require('fs-generate');
-var statsSpys = require('fs-stats-spys');
+const assert = require('assert');
+const path = require('path');
+const rimraf = require('rimraf');
+const generate = require('fs-generate');
+const statsSpys = require('fs-stats-spys');
 
-var walk = require('../..');
+const walk = require('walk-filtered');
 
-var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
-var STRUCTURE = {
+const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -19,37 +19,37 @@ var STRUCTURE = {
   'dir3/filelink2': '~dir2/file1',
 };
 
-describe('promise', function () {
+describe('promise', () => {
   if (typeof Promise === 'undefined') return; // no promise support
 
-  beforeEach(function (done) {
-    rimraf(TEST_DIR, function () {
+  beforeEach((done) => {
+    rimraf(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
   after(rimraf.bind(null, TEST_DIR));
 
-  it('should be default false', function (done) {
-    var spys = statsSpys();
+  it('should be default false', (done) => {
+    const spys = statsSpys();
 
-    walk(TEST_DIR, function (entry) {
+    walk(TEST_DIR, (entry) => {
       spys(entry.stats);
-    }).then(function () {
+    }).then(() => {
       assert.ok(spys.callCount, 13);
       done();
     });
   });
 
-  it('Should find everything with no return', function (done) {
-    var spys = statsSpys();
+  it('Should find everything with no return', (done) => {
+    const spys = statsSpys();
 
     walk(
       TEST_DIR,
-      function (entry) {
+      (entry) => {
         spys(entry.stats);
       },
       { lstat: true }
-    ).then(function () {
+    ).then(() => {
       assert.equal(spys.dir.callCount, 5);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
@@ -57,17 +57,17 @@ describe('promise', function () {
     });
   });
 
-  it('Should find everything with return true', function (done) {
-    var spys = statsSpys();
+  it('Should find everything with return true', (done) => {
+    const spys = statsSpys();
 
     walk(
       TEST_DIR,
-      function (entry) {
+      (entry) => {
         spys(entry.stats);
         return true;
       },
       { lstat: true }
-    ).then(function () {
+    ).then(() => {
       assert.equal(spys.dir.callCount, 5);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
@@ -75,10 +75,8 @@ describe('promise', function () {
     });
   });
 
-  it('should propagate errors', function (done) {
-    walk(TEST_DIR, function () {
-      return Promise.reject(new Error('Failed'));
-    }).catch(function (err) {
+  it('should propagate errors', (done) => {
+    walk(TEST_DIR, () => Promise.reject(new Error('Failed'))).catch((err) => {
       assert.ok(!!err);
       done();
     });
