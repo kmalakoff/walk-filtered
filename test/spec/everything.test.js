@@ -1,13 +1,13 @@
-var assert = require('assert');
-var path = require('path');
-var rimraf = require('rimraf');
-var generate = require('fs-generate');
-var statsSpys = require('fs-stats-spys');
+const assert = require('assert');
+const path = require('path');
+const rimraf = require('rimraf');
+const generate = require('fs-generate');
+const statsSpys = require('fs-stats-spys');
 
-var walk = require('../..');
+const walk = require('walk-filtered');
 
-var TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
-var STRUCTURE = {
+const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const STRUCTURE = {
   file1: 'a',
   file2: 'b',
   dir1: null,
@@ -19,24 +19,24 @@ var STRUCTURE = {
   'dir3/filelink2': '~dir2/file1',
 };
 
-describe('walk everything', function () {
-  beforeEach(function (done) {
-    rimraf(TEST_DIR, function () {
+describe('walk everything', () => {
+  beforeEach((done) => {
+    rimraf(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
   after(rimraf.bind(null, TEST_DIR));
 
-  it('Should find everything with no return', function (done) {
-    var spys = statsSpys();
+  it('Should find everything with no return', (done) => {
+    const spys = statsSpys();
 
     walk(
       TEST_DIR,
-      function (entry) {
+      (entry) => {
         spys(entry.stats);
       },
       { lstat: true },
-      function () {
+      () => {
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 5);
         assert.equal(spys.link.callCount, 2);
@@ -45,17 +45,17 @@ describe('walk everything', function () {
     );
   });
 
-  it('Should find everything with return true', function (done) {
-    var spys = statsSpys();
+  it('Should find everything with return true', (done) => {
+    const spys = statsSpys();
 
     walk(
       TEST_DIR,
-      function (entry) {
+      (entry) => {
         spys(entry.stats);
         return true;
       },
       { lstat: true },
-      function () {
+      () => {
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 5);
         assert.equal(spys.link.callCount, 2);
@@ -64,12 +64,12 @@ describe('walk everything', function () {
     );
   });
 
-  it('Should handle a delete', function (done) {
-    var spys = statsSpys();
+  it('Should handle a delete', (done) => {
+    const spys = statsSpys();
 
     walk(
       TEST_DIR,
-      function (entry) {
+      (entry) => {
         try {
           spys(entry.stats);
         } catch (err) {
@@ -80,7 +80,7 @@ describe('walk everything', function () {
         return true;
       },
       { concurrency: 1, lstat: true, alwaysStat: true },
-      function (err) {
+      (err) => {
         assert.ok(!err);
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
@@ -90,13 +90,13 @@ describe('walk everything', function () {
     );
   });
 
-  it('Should handle a delete (custom error callback)', function (done) {
-    var spys = statsSpys();
-    var errors = [];
+  it('Should handle a delete (custom error callback)', (done) => {
+    const spys = statsSpys();
+    const errors = [];
 
     walk(
       TEST_DIR,
-      function (entry) {
+      (entry) => {
         try {
           spys(entry.stats);
         } catch (err) {
@@ -110,11 +110,11 @@ describe('walk everything', function () {
         concurrency: 1,
         lstat: true,
         alwaysStat: true,
-        error: function (err) {
+        error: (err) => {
           errors.push(err);
         },
       },
-      function (err) {
+      (err) => {
         assert.ok(!err);
         assert.equal(errors.length, 2);
         assert.equal(spys.dir.callCount, 5);
@@ -125,13 +125,13 @@ describe('walk everything', function () {
     );
   });
 
-  it('Should handle a delete (custom error callback, false)', function (done) {
-    var spys = statsSpys();
-    var errors = [];
+  it('Should handle a delete (custom error callback, false)', (done) => {
+    const spys = statsSpys();
+    const errors = [];
 
     walk(
       TEST_DIR,
-      function (entry) {
+      (entry) => {
         try {
           spys(entry.stats);
         } catch (err) {
@@ -145,12 +145,12 @@ describe('walk everything', function () {
         concurrency: 1,
         lstat: true,
         alwaysStat: true,
-        error: function (err) {
+        error: (err) => {
           errors.push(err);
           return false;
         },
       },
-      function (err) {
+      (err) => {
         assert.ok(err);
         assert.equal(errors.length, 1);
         assert.equal(spys.dir.callCount, 2);

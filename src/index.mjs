@@ -1,11 +1,10 @@
-var Iterator = require('fs-iterator');
+import Iterator from 'fs-iterator';
 
-module.exports = function walk(root, filter, options, callback) {
+export default function walk(root, filter, options, callback) {
   if (typeof root !== 'string') throw new Error('Directory is required');
   if (typeof filter !== 'function') throw new Error('Filter is required');
 
-  /* eslint-disable */
-  if (arguments.length === 3 && typeof options === 'function') {
+  if (typeof options === 'function') {
     callback = options;
     options = {};
   }
@@ -14,13 +13,13 @@ module.exports = function walk(root, filter, options, callback) {
   if (typeof callback === 'function') {
     options = options || {};
 
-    var iterator = new Iterator(root, {
+    let iterator = new Iterator(root, {
       depth: options.depth === undefined ? Infinity : options.depth,
       alwaysStat: options.alwaysStat || false,
       lstat: options.lstat || false,
       filter: filter,
       callbacks: options.callbacks || options.async,
-      error: function (err) {
+      error: (err) => {
         if (!~Iterator.EXPECTED_ERRORS.indexOf(err.code)) return false;
         if (options.error) return options.error(err);
         return true;
@@ -28,7 +27,7 @@ module.exports = function walk(root, filter, options, callback) {
     });
 
     return iterator.forEach(
-      function () {},
+      () => {},
       {
         concurrency: options.concurrency || Infinity,
       },
@@ -38,11 +37,10 @@ module.exports = function walk(root, filter, options, callback) {
         callback(err);
       }
     );
-  } else {
-    return new Promise(function (resolve, reject) {
-      walk(root, filter, options, function (err) {
-        err ? reject(err) : resolve();
-      });
-    });
   }
-};
+  return new Promise((resolve, reject) => {
+    walk(root, filter, options, (err) => {
+      err ? reject(err) : resolve();
+    });
+  });
+}
