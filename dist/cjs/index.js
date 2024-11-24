@@ -15,14 +15,14 @@ function _interop_require_default(obj) {
     };
 }
 function walk(root, filter, options, callback) {
-    if (typeof root !== "string") throw new Error("Directory is required");
-    if (typeof filter !== "function") throw new Error("Filter is required");
-    if (typeof options === "function") {
+    if (typeof root !== 'string') throw new Error('Directory is required');
+    if (typeof filter !== 'function') throw new Error('Filter is required');
+    if (typeof options === 'function') {
         callback = options;
         options = {};
     }
     // choose between promise and callback API
-    if (typeof callback === "function") {
+    if (typeof callback === 'function') {
         options = options || {};
         var iterator = new _fsiterator.default(root, {
             depth: options.depth === undefined ? Infinity : options.depth,

@@ -39,12 +39,12 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.9.2",
+    "@types/node": "^22.9.3",
     "depcheck": "^1.4.7",
     "fs-generate": "^1.8.6",
     "rimraf": "^2.7.1",
     "starts-with": "^1.0.2",
-    "ts-dev-stack": "^0.15.8"
+    "ts-dev-stack": "^0.16.0"
   },
   "engines": {
     "node": ">=0.8"
