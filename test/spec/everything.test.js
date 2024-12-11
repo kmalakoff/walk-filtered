@@ -1,6 +1,6 @@
 const assert = require('assert');
 const path = require('path');
-const rimraf = require('rimraf');
+const rimraf2 = require('rimraf2');
 const generate = require('fs-generate');
 const statsSpys = require('fs-stats-spys');
 
@@ -21,11 +21,11 @@ const STRUCTURE = {
 
 describe('walk everything', () => {
   beforeEach((done) => {
-    rimraf(TEST_DIR, () => {
+    rimraf2(TEST_DIR, { disableGlob: true }, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, TEST_DIR));
+  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
 
   it('Should find everything with no return', (done) => {
     const spys = statsSpys();
@@ -76,12 +76,12 @@ describe('walk everything', () => {
           return err;
         }
 
-        if (entry.path === path.join('dir2', 'file1')) rimraf.sync(path.join(TEST_DIR, 'dir2'));
+        if (entry.path === path.join('dir2', 'file1')) rimraf2.sync(path.join(TEST_DIR, 'dir2'), { disableGlob: true });
         return true;
       },
       { concurrency: 1, lstat: true, alwaysStat: true },
       (err) => {
-        assert.ok(!err);
+        assert.ok(!err, err ? err.message : '');
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
         assert.equal(spys.link.callCount, 1);
@@ -103,7 +103,7 @@ describe('walk everything', () => {
           return err;
         }
 
-        if (entry.path === path.join('dir2', 'file1')) rimraf.sync(path.join(TEST_DIR, 'dir2'));
+        if (entry.path === path.join('dir2', 'file1')) rimraf2.sync(path.join(TEST_DIR, 'dir2'), { disableGlob: true });
         return true;
       },
       {
@@ -115,7 +115,7 @@ describe('walk everything', () => {
         },
       },
       (err) => {
-        assert.ok(!err);
+        assert.ok(!err, err ? err.message : '');
         assert.equal(errors.length, 2);
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
@@ -138,7 +138,7 @@ describe('walk everything', () => {
           return err;
         }
 
-        if (entry.path === path.join('dir2', 'file1')) rimraf.sync(path.join(TEST_DIR, 'dir2'));
+        if (entry.path === path.join('dir2', 'file1')) rimraf2.sync(path.join(TEST_DIR, 'dir2'), { disableGlob: true });
         return true;
       },
       {
