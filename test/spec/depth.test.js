@@ -1,6 +1,6 @@
 const assert = require('assert');
 const path = require('path');
-const rimraf = require('rimraf');
+const rimraf2 = require('rimraf2');
 const generate = require('fs-generate');
 const statsSpys = require('fs-stats-spys');
 
@@ -21,11 +21,11 @@ const STRUCTURE = {
 
 describe('depth', () => {
   beforeEach((done) => {
-    rimraf(TEST_DIR, () => {
+    rimraf2(TEST_DIR, { disableGlob: true }, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, TEST_DIR));
+  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
 
   describe('synchronous', () => {
     it('depth 0', (done) => {
@@ -38,7 +38,7 @@ describe('depth', () => {
         },
         { depth: 0, lstat: true },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
@@ -57,7 +57,7 @@ describe('depth', () => {
         },
         { depth: 1, lstat: true },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
           assert.equal(spys.link.callCount, 2);
@@ -76,7 +76,7 @@ describe('depth', () => {
         },
         { depth: 2, lstat: true },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -95,7 +95,7 @@ describe('depth', () => {
         },
         { depth: Infinity, lstat: true },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -121,7 +121,7 @@ describe('depth', () => {
           callbacks: true,
         },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
@@ -145,7 +145,7 @@ describe('depth', () => {
           callbacks: true,
         },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
           assert.equal(spys.link.callCount, 2);
@@ -169,7 +169,7 @@ describe('depth', () => {
           callbacks: true,
         },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -193,7 +193,7 @@ describe('depth', () => {
           callbacks: true,
         },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -204,8 +204,6 @@ describe('depth', () => {
   });
 
   describe('promise', () => {
-    if (typeof Promise === 'undefined') return; // no promise support
-
     it('depth 0', (done) => {
       const spys = statsSpys();
 
@@ -220,7 +218,7 @@ describe('depth', () => {
           lstat: true,
         },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
@@ -243,7 +241,7 @@ describe('depth', () => {
           lstat: true,
         },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
           assert.equal(spys.link.callCount, 2);
@@ -266,7 +264,7 @@ describe('depth', () => {
           lstat: true,
         },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -289,7 +287,7 @@ describe('depth', () => {
           lstat: true,
         },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);

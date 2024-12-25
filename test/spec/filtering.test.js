@@ -1,6 +1,6 @@
 const assert = require('assert');
 const path = require('path');
-const rimraf = require('rimraf');
+const rimraf2 = require('rimraf2');
 const generate = require('fs-generate');
 const statsSpys = require('fs-stats-spys');
 const startsWith = require('starts-with');
@@ -23,11 +23,11 @@ const TEST_DIR_PATH = `dir3${path.sep}dir4`;
 
 describe('filtering', () => {
   beforeEach((done) => {
-    rimraf(TEST_DIR, () => {
+    rimraf2(TEST_DIR, { disableGlob: true }, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, TEST_DIR));
+  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
 
   describe('synchronous', () => {
     it('Should filter everything under the root directory', (done) => {
@@ -140,8 +140,6 @@ describe('filtering', () => {
   });
 
   describe('promise', () => {
-    if (typeof Promise === 'undefined') return; // no promise support
-
     it('Should filter everything under the root directory', (done) => {
       const spys = statsSpys();
 

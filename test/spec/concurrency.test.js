@@ -1,6 +1,8 @@
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
+const Promise = require('pinkie-promise');
 const assert = require('assert');
 const path = require('path');
-const rimraf = require('rimraf');
+const rimraf2 = require('rimraf2');
 const generate = require('fs-generate');
 const statsSpys = require('fs-stats-spys');
 
@@ -21,11 +23,11 @@ const STRUCTURE = {
 
 describe('concurrency', () => {
   beforeEach((done) => {
-    rimraf(TEST_DIR, () => {
+    rimraf2(TEST_DIR, { disableGlob: true }, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, TEST_DIR));
+  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
 
   describe('asynchronous', () => {
     it('should run with concurrency 1', (done) => {
@@ -38,7 +40,7 @@ describe('concurrency', () => {
         },
         { concurrency: 1 },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
@@ -55,7 +57,7 @@ describe('concurrency', () => {
         },
         { concurrency: 5 },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
@@ -72,7 +74,7 @@ describe('concurrency', () => {
         },
         { concurrency: Infinity },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
@@ -92,7 +94,7 @@ describe('concurrency', () => {
         },
         { callbacks: true, concurrency: 1 },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
@@ -110,7 +112,7 @@ describe('concurrency', () => {
         },
         { callbacks: true, concurrency: 5 },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
@@ -128,7 +130,7 @@ describe('concurrency', () => {
         },
         { callbacks: true, concurrency: Infinity },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
@@ -137,8 +139,6 @@ describe('concurrency', () => {
   });
 
   describe('promise', () => {
-    if (typeof Promise === 'undefined') return; // no promise support
-
     it('should run with concurrency 1', (done) => {
       const spys = statsSpys();
 
@@ -150,7 +150,7 @@ describe('concurrency', () => {
         },
         { concurrency: 1 },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
@@ -168,7 +168,7 @@ describe('concurrency', () => {
         },
         { concurrency: 5 },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
@@ -186,7 +186,7 @@ describe('concurrency', () => {
         },
         { concurrency: Infinity },
         (err) => {
-          assert.ok(!err);
+          assert.ok(!err, err ? err.message : '');
           assert.ok(spys.callCount, 13);
           done();
         }
