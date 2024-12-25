@@ -1,6 +1,6 @@
 const assert = require('assert');
 const path = require('path');
-const rimraf = require('rimraf');
+const rimraf2 = require('rimraf2');
 const generate = require('fs-generate');
 const statsSpys = require('fs-stats-spys');
 const startsWith = require('starts-with');
@@ -22,11 +22,11 @@ const STRUCTURE = {
 
 describe('legacy', () => {
   beforeEach((done) => {
-    rimraf(TEST_DIR, () => {
+    rimraf2(TEST_DIR, { disableGlob: true }, () => {
       generate(TEST_DIR, STRUCTURE, done);
     });
   });
-  after(rimraf.bind(null, TEST_DIR));
+  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
 
   describe('async', () => {
     it('Should filter everything under the root directory', (done) => {
