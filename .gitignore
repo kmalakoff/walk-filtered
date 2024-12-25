@@ -1,0 +1,8 @@
+node_modules/
+dist/
+docs/
+npm-debug.log
+.tmp/
+data/
+*.heapsnapshot
+*.0x
