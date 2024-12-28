@@ -1,5 +1,3 @@
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-const Promise = require('pinkie-promise');
 const assert = require('assert');
 const path = require('path');
 const rimraf2 = require('rimraf2');
@@ -22,63 +20,74 @@ const STRUCTURE = {
 };
 
 describe('promise', () => {
-  beforeEach((done) => {
-    rimraf2(TEST_DIR, { disableGlob: true }, () => {
-      generate(TEST_DIR, STRUCTURE, done);
+  (() => {
+    // patch and restore promise
+    let rootPromise;
+    before(() => {
+      rootPromise = global.Promise;
+      global.Promise = require('pinkie-promise');
     });
-  });
-  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
+    after(() => {
+      global.Promise = rootPromise;
+    });
+  })();
 
-  it('should be default false', (done) => {
-    const spys = statsSpys();
+  describe('setup tests', () => {
+    beforeEach((done) => {
+      rimraf2(TEST_DIR, { disableGlob: true }, () => {
+        generate(TEST_DIR, STRUCTURE, done);
+      });
+    });
+    after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
 
-    walk(TEST_DIR, (entry) => {
-      spys(entry.stats);
-    }).then(() => {
+    it('should be default false', async () => {
+      const spys = statsSpys();
+
+      await walk(TEST_DIR, (entry) => {
+        spys(entry.stats);
+      });
       assert.ok(spys.callCount, 13);
-      done();
     });
-  });
 
-  it('Should find everything with no return', (done) => {
-    const spys = statsSpys();
+    it('Should find everything with no return', async () => {
+      const spys = statsSpys();
 
-    walk(
-      TEST_DIR,
-      (entry) => {
-        spys(entry.stats);
-      },
-      { lstat: true }
-    ).then(() => {
+      await walk(
+        TEST_DIR,
+        (entry) => {
+          spys(entry.stats);
+        },
+        { lstat: true }
+      );
       assert.equal(spys.dir.callCount, 5);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
-      done();
     });
-  });
 
-  it('Should find everything with return true', (done) => {
-    const spys = statsSpys();
+    it('Should find everything with return true', async () => {
+      const spys = statsSpys();
 
-    walk(
-      TEST_DIR,
-      (entry) => {
-        spys(entry.stats);
-        return true;
-      },
-      { lstat: true }
-    ).then(() => {
+      await walk(
+        TEST_DIR,
+        (entry) => {
+          spys(entry.stats);
+          return true;
+        },
+        { lstat: true }
+      );
+
       assert.equal(spys.dir.callCount, 5);
       assert.equal(spys.file.callCount, 5);
       assert.equal(spys.link.callCount, 2);
-      done();
     });
-  });
 
-  it('should propagate errors', (done) => {
-    walk(TEST_DIR, () => Promise.reject(new Error('Failed'))).catch((err) => {
-      assert.ok(!!err);
-      done();
+    it('should propagate errors', async () => {
+      try {
+        await walk(TEST_DIR, () => Promise.reject(new Error('Failed')));
+        assert.ok(false);
+      } catch (err) {
+        assert.ok(!!err);
+      }
     });
   });
 });
