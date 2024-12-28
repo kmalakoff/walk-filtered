@@ -1,6 +1,4 @@
 import Iterator from 'fs-iterator';
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-import Promise from 'pinkie-promise';
 
 export default function walk(root, filter, options, callback) {
   if (typeof root !== 'string') throw new Error('Directory is required');
