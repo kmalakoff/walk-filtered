@@ -1,1 +1,1 @@
-ignores: ["walk-filtered", "depcheck", "@types/*", "@biomejs/*"]
+ignores: ["walk-filtered", "@types/*", "@biomejs/*"]
