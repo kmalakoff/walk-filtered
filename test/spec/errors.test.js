@@ -1,5 +1,4 @@
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-const Promise = require('pinkie-promise');
+const Pinkie = require('pinkie-promise');
 const assert = require('assert');
 const path = require('path');
 const rimraf2 = require('rimraf2');
@@ -7,7 +6,7 @@ const generate = require('fs-generate');
 
 const walk = require('walk-filtered');
 
-const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
 const STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -64,7 +63,7 @@ describe('errors', () => {
     it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        () => Promise.reject(new Error('Failed')),
+        () => Pinkie.reject(new Error('Failed')),
         (err) => {
           assert.ok(!!err);
           done();

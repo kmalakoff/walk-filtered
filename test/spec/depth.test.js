@@ -1,5 +1,4 @@
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-const Promise = require('pinkie-promise');
+const Pinkie = require('pinkie-promise');
 const assert = require('assert');
 const path = require('path');
 const rimraf2 = require('rimraf2');
@@ -8,7 +7,7 @@ const statsSpys = require('fs-stats-spys');
 
 const walk = require('walk-filtered');
 
-const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
 const STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -213,7 +212,7 @@ describe('depth', () => {
         TEST_DIR,
         (entry, _callback) => {
           spys(entry.stats);
-          return Promise.resolve();
+          return Pinkie.resolve();
         },
         {
           depth: 0,
@@ -236,7 +235,7 @@ describe('depth', () => {
         TEST_DIR,
         (entry, _callback) => {
           spys(entry.stats);
-          return Promise.resolve();
+          return Pinkie.resolve();
         },
         {
           depth: 1,
@@ -259,7 +258,7 @@ describe('depth', () => {
         TEST_DIR,
         (entry, _callback) => {
           spys(entry.stats);
-          return Promise.resolve();
+          return Pinkie.resolve();
         },
         {
           depth: 2,
@@ -282,7 +281,7 @@ describe('depth', () => {
         TEST_DIR,
         (entry, _callback) => {
           spys(entry.stats);
-          return Promise.resolve();
+          return Pinkie.resolve();
         },
         {
           depth: Infinity,
