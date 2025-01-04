@@ -15,8 +15,8 @@
     "test": "npm run ops && npm run mem"
   },
   "dependencies": {
-    "benchmark-suite": "^1.1.3",
-    "walk-filtered-2.3.0": "npm:walk-filtered@2.6.1"
+    "benchmark-suite": "^1.1.4",
+    "walk-filtered-2.3.0": "npm:walk-filtered@2.6.2"
   },
   "engines": {
     "node": ">=8"
