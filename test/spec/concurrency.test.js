@@ -1,5 +1,4 @@
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-const Promise = require('pinkie-promise');
+const Pinkie = require('pinkie-promise');
 const assert = require('assert');
 const path = require('path');
 const rimraf2 = require('rimraf2');
@@ -8,7 +7,7 @@ const statsSpys = require('fs-stats-spys');
 
 const walk = require('walk-filtered');
 
-const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
 const STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -139,6 +138,19 @@ describe('concurrency', () => {
   });
 
   describe('promise', () => {
+    (() => {
+      // patch and restore promise
+      const root = typeof global !== 'undefined' ? global : window;
+      let rootPromise;
+      before(() => {
+        rootPromise = root.Promise;
+        root.Promise = Pinkie;
+      });
+      after(() => {
+        root.Promise = rootPromise;
+      });
+    })();
+
     it('should run with concurrency 1', (done) => {
       const spys = statsSpys();
 
@@ -146,7 +158,7 @@ describe('concurrency', () => {
         TEST_DIR,
         (entry) => {
           spys(entry.stats);
-          return Promise.resolve();
+          return Pinkie.resolve();
         },
         { concurrency: 1 },
         (err) => {
@@ -164,7 +176,7 @@ describe('concurrency', () => {
         TEST_DIR,
         (entry) => {
           spys(entry.stats);
-          return Promise.resolve();
+          return Pinkie.resolve();
         },
         { concurrency: 5 },
         (err) => {
@@ -182,7 +194,7 @@ describe('concurrency', () => {
         TEST_DIR,
         (entry) => {
           spys(entry.stats);
-          return Promise.resolve();
+          return Pinkie.resolve();
         },
         { concurrency: Infinity },
         (err) => {

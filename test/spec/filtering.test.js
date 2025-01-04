@@ -1,5 +1,4 @@
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-const Promise = require('pinkie-promise');
+const Pinkie = require('pinkie-promise');
 const assert = require('assert');
 const path = require('path');
 const rimraf2 = require('rimraf2');
@@ -9,7 +8,7 @@ const startsWith = require('starts-with');
 
 const walk = require('walk-filtered');
 
-const TEST_DIR = path.resolve(path.join(__dirname, '..', '..', '.tmp', 'test'));
+const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
 const STRUCTURE = {
   file1: 'a',
   file2: 'b',
@@ -142,6 +141,19 @@ describe('filtering', () => {
   });
 
   describe('promise', () => {
+    (() => {
+      // patch and restore promise
+      const root = typeof global !== 'undefined' ? global : window;
+      let rootPromise;
+      before(() => {
+        rootPromise = root.Promise;
+        root.Promise = Pinkie;
+      });
+      after(() => {
+        root.Promise = rootPromise;
+      });
+    })();
+
     it('Should filter everything under the root directory', (done) => {
       const spys = statsSpys();
 
@@ -149,7 +161,7 @@ describe('filtering', () => {
         TEST_DIR,
         (entry) => {
           spys(entry.stats);
-          return Promise.resolve(false);
+          return Pinkie.resolve(false);
         },
         () => {
           assert.ok(spys.callCount, 1);
@@ -165,7 +177,7 @@ describe('filtering', () => {
         TEST_DIR,
         (entry) => {
           spys(entry.stats);
-          return Promise.resolve(path !== 'dir2');
+          return Pinkie.resolve(path !== 'dir2');
         },
         () => {
           assert.ok(spys.callCount, 13 - 2);
@@ -181,7 +193,7 @@ describe('filtering', () => {
         TEST_DIR,
         (entry) => {
           spys(entry.stats);
-          return Promise.resolve(!entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH));
+          return Pinkie.resolve(!entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH));
         },
         () => {
           assert.ok(spys.callCount, 13 - 1);
