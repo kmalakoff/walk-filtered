@@ -3,6 +3,7 @@ dist/
 docs/
 npm-debug.log
 .tmp/
+.cache/
 data/
 *.heapsnapshot
 *.0x
