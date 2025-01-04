@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "benchmark-suite": "^1.1.4",
-    "walk-filtered-2.3.0": "npm:walk-filtered@2.6.2"
+    "walk-filtered-2.3.0": "npm:walk-filtered@2.6.3"
   },
   "engines": {
     "node": ">=8"
