@@ -32,14 +32,14 @@
     "version": "tsds version"
   },
   "dependencies": {
-    "fs-iterator": "^5.2.10",
+    "fs-iterator": "^5.2.11",
     "fs-stats-spys": "^1.1.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.10.5",
-    "fs-generate": "^1.9.7",
+    "fs-generate": "^1.9.8",
     "pinkie-promise": "^2.0.1",
     "rimraf2": "^2.8.2",
     "starts-with": "^1.0.2"
