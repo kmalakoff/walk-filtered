@@ -33,16 +33,15 @@
   },
   "dependencies": {
     "fs-iterator": "^5.2.13",
-    "fs-stats-spys": "^1.1.10"
+    "fs-stats-spys": "^1.1.12"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^22.10.6",
-    "fs-generate": "^1.9.9",
-    "pinkie-promise": "^2.0.1",
-    "rimraf2": "^2.8.2",
-    "starts-with": "^1.0.2"
+    "@types/mocha": "*",
+    "@types/node": "*",
+    "fs-generate": "*",
+    "pinkie-promise": "*",
+    "rimraf2": "*",
+    "starts-with": "*"
   },
   "engines": {
     "node": ">=0.8"
