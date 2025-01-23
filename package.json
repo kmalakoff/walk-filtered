@@ -32,7 +32,7 @@
     "version": "tsds version"
   },
   "dependencies": {
-    "fs-iterator": "^5.2.18",
+    "fs-iterator": "^5.2.19",
     "fs-stats-spys": "^1.1.12"
   },
   "devDependencies": {
