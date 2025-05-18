@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "fs-iterator": "^5.2.25",
-    "fs-stats-spys": "^1.1.15"
+    "fs-stats-spys": "^1.1.16"
   },
   "devDependencies": {
     "@types/mocha": "*",
