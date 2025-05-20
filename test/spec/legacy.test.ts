@@ -1,12 +1,15 @@
-const assert = require('assert');
-const path = require('path');
-const rimraf2 = require('rimraf2');
-const generate = require('fs-generate');
-const statsSpys = require('fs-stats-spys');
-const startsWith = require('starts-with');
+import assert from 'assert';
+import path from 'path';
+import url from 'url';
+import generate from 'fs-generate';
+import statsSpys from 'fs-stats-spys';
+import rimraf2 from 'rimraf2';
+import startsWith from 'starts-with';
 
-const walk = require('walk-filtered');
+// @ts-ignore
+import walk from 'walk-filtered';
 
+const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
 const STRUCTURE = {
   file1: 'a',
@@ -42,7 +45,7 @@ describe('legacy', () => {
         },
         { async: true },
         () => {
-          assert.ok(spys.callCount, 1);
+          assert.equal(spys.callCount, 6);
           done();
         }
       );
@@ -61,7 +64,7 @@ describe('legacy', () => {
         },
         { async: true },
         () => {
-          assert.ok(spys.callCount, 13 - 2);
+          assert.equal(spys.callCount, 10);
           done();
         }
       );
@@ -80,7 +83,7 @@ describe('legacy', () => {
         },
         { async: true },
         () => {
-          assert.ok(spys.callCount, 13 - 1);
+          assert.equal(spys.callCount, 6);
           done();
         }
       );
