@@ -19,6 +19,14 @@
   },
   "license": "MIT",
   "author": "Kevin Malakoff <kmalakoff@gmail.com> (https://github.com/kmalakoff)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.cts",
   "files": [
@@ -32,8 +40,8 @@
     "version": "tsds version"
   },
   "dependencies": {
-    "fs-iterator": "^5.3.8",
-    "fs-stats-spys": "^1.1.17"
+    "fs-iterator": "^5.3.10",
+    "fs-stats-spys": "^1.1.19"
   },
   "devDependencies": {
     "@types/mocha": "*",
@@ -47,9 +55,6 @@
     "node": ">=0.8"
   },
   "tsds": {
-    "source": "src/index.ts",
-    "targets": [
-      "cjs"
-    ]
+    "source": "src/index.ts"
   }
 }
