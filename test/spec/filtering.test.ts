@@ -1,13 +1,16 @@
-const Pinkie = require('pinkie-promise');
-const assert = require('assert');
-const path = require('path');
-const rimraf2 = require('rimraf2');
-const generate = require('fs-generate');
-const statsSpys = require('fs-stats-spys');
-const startsWith = require('starts-with');
+import assert from 'assert';
+import path from 'path';
+import url from 'url';
+import generate from 'fs-generate';
+import statsSpys from 'fs-stats-spys';
+import Pinkie from 'pinkie-promise';
+import rimraf2 from 'rimraf2';
+import startsWith from 'starts-with';
 
-const walk = require('walk-filtered');
+// @ts-ignore
+import walk from 'walk-filtered';
 
+const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
 const STRUCTURE = {
   file1: 'a',
@@ -41,7 +44,7 @@ describe('filtering', () => {
           return false;
         },
         () => {
-          assert.ok(spys.callCount, 1);
+          assert.equal(spys.callCount, 6);
           done();
         }
       );
@@ -58,7 +61,7 @@ describe('filtering', () => {
         },
         true,
         () => {
-          assert.ok(spys.callCount, 13 - 2);
+          assert.equal(spys.callCount, 10);
           done();
         }
       );
@@ -74,7 +77,7 @@ describe('filtering', () => {
           return !entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH);
         },
         () => {
-          assert.ok(spys.callCount, 13 - 1);
+          assert.equal(spys.callCount, 6);
           done();
         }
       );
@@ -95,7 +98,7 @@ describe('filtering', () => {
         },
         { callbacks: true },
         () => {
-          assert.ok(spys.callCount, 1);
+          assert.equal(spys.callCount, 6);
           done();
         }
       );
@@ -114,7 +117,7 @@ describe('filtering', () => {
         },
         { callbacks: true },
         () => {
-          assert.ok(spys.callCount, 13 - 2);
+          assert.equal(spys.callCount, 10);
           done();
         }
       );
@@ -133,7 +136,7 @@ describe('filtering', () => {
         },
         { callbacks: true },
         () => {
-          assert.ok(spys.callCount, 13 - 1);
+          assert.equal(spys.callCount, 6);
           done();
         }
       );
@@ -143,14 +146,14 @@ describe('filtering', () => {
   describe('promise', () => {
     (() => {
       // patch and restore promise
-      const root = typeof global !== 'undefined' ? global : window;
-      let rootPromise;
+      // @ts-ignore
+      let rootPromise: Promise;
       before(() => {
-        rootPromise = root.Promise;
-        root.Promise = Pinkie;
+        rootPromise = global.Promise;
+        global.Promise = Pinkie;
       });
       after(() => {
-        root.Promise = rootPromise;
+        global.Promise = rootPromise;
       });
     })();
 
@@ -164,7 +167,7 @@ describe('filtering', () => {
           return Pinkie.resolve(false);
         },
         () => {
-          assert.ok(spys.callCount, 1);
+          assert.equal(spys.callCount, 6);
           done();
         }
       );
@@ -177,10 +180,10 @@ describe('filtering', () => {
         TEST_DIR,
         (entry) => {
           spys(entry.stats);
-          return Pinkie.resolve(path !== 'dir2');
+          return Pinkie.resolve(entry.path !== 'dir2');
         },
         () => {
-          assert.ok(spys.callCount, 13 - 2);
+          assert.equal(spys.callCount, 10);
           done();
         }
       );
@@ -196,7 +199,7 @@ describe('filtering', () => {
           return Pinkie.resolve(!entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH));
         },
         () => {
-          assert.ok(spys.callCount, 13 - 1);
+          assert.equal(spys.callCount, 6);
           done();
         }
       );

@@ -1,12 +1,15 @@
-const Pinkie = require('pinkie-promise');
-const assert = require('assert');
-const path = require('path');
-const rimraf2 = require('rimraf2');
-const generate = require('fs-generate');
-const statsSpys = require('fs-stats-spys');
+import assert from 'assert';
+import path from 'path';
+import url from 'url';
+import generate from 'fs-generate';
+import statsSpys from 'fs-stats-spys';
+import Pinkie from 'pinkie-promise';
+import rimraf2 from 'rimraf2';
 
-const walk = require('walk-filtered');
+// @ts-ignore
+import walk from 'walk-filtered';
 
+const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
 const STRUCTURE = {
   file1: 'a',
@@ -40,7 +43,7 @@ describe('concurrency', () => {
         { concurrency: 1 },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );
@@ -57,7 +60,7 @@ describe('concurrency', () => {
         { concurrency: 5 },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );
@@ -74,7 +77,7 @@ describe('concurrency', () => {
         { concurrency: Infinity },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );
@@ -94,7 +97,7 @@ describe('concurrency', () => {
         { callbacks: true, concurrency: 1 },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );
@@ -112,7 +115,7 @@ describe('concurrency', () => {
         { callbacks: true, concurrency: 5 },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );
@@ -130,7 +133,7 @@ describe('concurrency', () => {
         { callbacks: true, concurrency: Infinity },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );
@@ -140,14 +143,14 @@ describe('concurrency', () => {
   describe('promise', () => {
     (() => {
       // patch and restore promise
-      const root = typeof global !== 'undefined' ? global : window;
-      let rootPromise;
+      // @ts-ignore
+      let rootPromise: Promise;
       before(() => {
-        rootPromise = root.Promise;
-        root.Promise = Pinkie;
+        rootPromise = global.Promise;
+        global.Promise = Pinkie;
       });
       after(() => {
-        root.Promise = rootPromise;
+        global.Promise = rootPromise;
       });
     })();
 
@@ -163,7 +166,7 @@ describe('concurrency', () => {
         { concurrency: 1 },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );
@@ -181,7 +184,7 @@ describe('concurrency', () => {
         { concurrency: 5 },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );
@@ -199,7 +202,7 @@ describe('concurrency', () => {
         { concurrency: Infinity },
         (err) => {
           if (err) return done(err.message);
-          assert.ok(spys.callCount, 13);
+          assert.equal(spys.callCount, 12);
           done();
         }
       );

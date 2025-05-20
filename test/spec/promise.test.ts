@@ -1,11 +1,15 @@
-const assert = require('assert');
-const path = require('path');
-const rimraf2 = require('rimraf2');
-const generate = require('fs-generate');
-const statsSpys = require('fs-stats-spys');
+import assert from 'assert';
+import path from 'path';
+import url from 'url';
+import generate from 'fs-generate';
+import statsSpys from 'fs-stats-spys';
+import Pinkie from 'pinkie-promise';
+import rimraf2 from 'rimraf2';
 
-const walk = require('walk-filtered');
+// @ts-ignore
+import walk from 'walk-filtered';
 
+const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
 const STRUCTURE = {
   file1: 'a',
@@ -22,10 +26,11 @@ const STRUCTURE = {
 describe('promise', () => {
   (() => {
     // patch and restore promise
-    let rootPromise;
+    // @ts-ignore
+    let rootPromise: Promise;
     before(() => {
       rootPromise = global.Promise;
-      global.Promise = require('pinkie-promise');
+      global.Promise = Pinkie;
     });
     after(() => {
       global.Promise = rootPromise;
@@ -46,7 +51,7 @@ describe('promise', () => {
       await walk(TEST_DIR, (entry) => {
         spys(entry.stats);
       });
-      assert.ok(spys.callCount, 13);
+      assert.equal(spys.callCount, 12);
     });
 
     it('Should find everything with no return', async () => {
