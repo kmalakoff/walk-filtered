@@ -1,6 +1,10 @@
 import Iterator from 'fs-iterator';
 
-function worker(root, filter, options, callback) {
+export * from './types.js';
+
+import type { Callback, FilterCallback, Options } from './types.js';
+
+function worker(root: string, filter: FilterCallback, options: Options, callback: Callback) {
   let iterator = new Iterator(root, {
     depth: options.depth === undefined ? Infinity : options.depth,
     alwaysStat: options.alwaysStat || false,
@@ -27,7 +31,13 @@ function worker(root, filter, options, callback) {
   );
 }
 
-export default function walk(root, filter, options, callback) {
+export default function walk(root: string, filter: FilterCallback): Promise<undefined>;
+export default function walk(root: string, filter: FilterCallback, options: Options): Promise<undefined>;
+
+export default function walk(root: string, filter: FilterCallback, callback: Callback): undefined;
+export default function walk(root: string, filter: FilterCallback, options: Options, callback: Callback): undefined;
+
+export default function walk(root: string, filter: FilterCallback, options?: Options | Callback, callback?: Callback): undefined | Promise<undefined> {
   if (typeof root !== 'string') throw new Error('Directory is required');
   if (typeof filter !== 'function') throw new Error('Filter is required');
 
@@ -37,6 +47,13 @@ export default function walk(root, filter, options, callback) {
   }
   options = options || {};
 
-  if (typeof callback === 'function') return worker(root, filter, options, callback);
-  return new Promise((resolve, reject) => worker(root, filter, options, (err) => (err ? reject(err) : resolve(undefined))));
+  if (typeof callback === 'function') {
+    worker(root, filter, options, callback);
+    return;
+  }
+  return new Promise((resolve, reject) =>
+    worker(root, filter, options, (err) => {
+      err ? reject(err) : resolve(undefined);
+    })
+  );
 }
