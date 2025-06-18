@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "fs-iterator": "^6.0.0",
-    "fs-stats-spys": "^1.1.19"
+    "fs-stats-spys": "^1.1.20"
   },
   "devDependencies": {
     "@types/mocha": "*",
