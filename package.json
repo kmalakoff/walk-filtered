@@ -34,14 +34,14 @@
   ],
   "scripts": {
     "build": "tsds build",
-    "format": "biome check --write --unsafe src/ test/",
+    "format": "biome check --write --unsafe",
     "test": "tsds test:node --no-timeouts",
     "test:engines": "nvu engines npm test",
     "version": "tsds version"
   },
   "dependencies": {
     "fs-iterator": "^6.0.0",
-    "fs-stats-spys": "^1.1.19"
+    "fs-stats-spys": "^1.1.20"
   },
   "devDependencies": {
     "@types/mocha": "*",
