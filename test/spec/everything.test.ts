@@ -1,9 +1,9 @@
 import assert from 'assert';
-import path from 'path';
-import url from 'url';
 import generate from 'fs-generate';
 import statsSpys from 'fs-stats-spys';
+import path from 'path';
 import rimraf2 from 'rimraf2';
+import url from 'url';
 
 // @ts-ignore
 import walk from 'walk-filtered';
