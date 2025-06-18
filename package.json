@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "2.7.10",
+  "version": "2.7.11",
   "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk. Supports Node 0.10 and above.",
   "keywords": [
     "recursive",
