@@ -1,8 +1,8 @@
 import Iterator from 'fs-iterator';
 
-export * from './types.js';
+export * from './types.ts';
 
-import type { Callback, FilterCallback, Options } from './types.js';
+import type { Callback, FilterCallback, Options } from './types.ts';
 
 function worker(root: string, filter: FilterCallback, options: Options, callback: Callback) {
   let iterator = new Iterator(root, {
