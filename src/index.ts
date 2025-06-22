@@ -2,9 +2,9 @@ import Iterator from 'fs-iterator';
 
 export * from './types.ts';
 
-import type { Callback, FilterCallback, Options } from './types.ts';
+import type { Callback, FilterFunction, Options } from './types.ts';
 
-function worker(root: string, filter: FilterCallback, options: Options, callback: Callback) {
+function worker(root: string, filter: FilterFunction, options: Options, callback: Callback) {
   let iterator = new Iterator(root, {
     depth: options.depth === undefined ? Infinity : options.depth,
     alwaysStat: options.alwaysStat || false,
@@ -31,13 +31,13 @@ function worker(root: string, filter: FilterCallback, options: Options, callback
   );
 }
 
-export default function walk(root: string, filter: FilterCallback): Promise<undefined>;
-export default function walk(root: string, filter: FilterCallback, options: Options): Promise<undefined>;
+export default function walk(root: string, filter: FilterFunction): Promise<undefined>;
+export default function walk(root: string, filter: FilterFunction, options: Options): Promise<undefined>;
 
-export default function walk(root: string, filter: FilterCallback, callback: Callback): undefined;
-export default function walk(root: string, filter: FilterCallback, options: Options, callback: Callback): undefined;
+export default function walk(root: string, filter: FilterFunction, callback: Callback): undefined;
+export default function walk(root: string, filter: FilterFunction, options: Options, callback: Callback): undefined;
 
-export default function walk(root: string, filter: FilterCallback, options?: Options | Callback, callback?: Callback): undefined | Promise<undefined> {
+export default function walk(root: string, filter: FilterFunction, options?: Options | Callback, callback?: Callback): undefined | Promise<undefined> {
   if (typeof root !== 'string') throw new Error('Directory is required');
   if (typeof filter !== 'function') throw new Error('Filter is required');
 

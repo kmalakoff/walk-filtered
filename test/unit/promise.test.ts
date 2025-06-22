@@ -49,7 +49,7 @@ describe('promise', () => {
     it('should be default false', async () => {
       const spys = statsSpys();
 
-      await walk(TEST_DIR, (entry) => {
+      await walk(TEST_DIR, (entry): undefined => {
         spys(entry.stats);
       });
       assert.equal(spys.callCount, 12);
@@ -60,7 +60,7 @@ describe('promise', () => {
 
       await walk(
         TEST_DIR,
-        (entry) => {
+        (entry): undefined => {
           spys(entry.stats);
         },
         { lstat: true }
@@ -75,7 +75,7 @@ describe('promise', () => {
 
       await walk(
         TEST_DIR,
-        (entry) => {
+        (entry): boolean => {
           spys(entry.stats);
           return true;
         },
@@ -89,7 +89,9 @@ describe('promise', () => {
 
     it('should propagate errors', async () => {
       try {
-        await walk(TEST_DIR, () => Promise.reject(new Error('Failed')));
+        await walk(TEST_DIR, (_entry) => {
+          return Promise.reject(new Error('Failed'));
+        });
         assert.ok(false);
       } catch (err) {
         assert.ok(!!err);

@@ -8,7 +8,7 @@ import startsWith from 'starts-with';
 import url from 'url';
 
 // @ts-ignore
-import walk from 'walk-filtered';
+import walk, { type Entry } from 'walk-filtered';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
@@ -41,11 +41,11 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry: Entry): boolean => {
           spys(entry.stats);
           return false;
         },
-        () => {
+        (_err) => {
           assert.equal(spys.callCount, 6);
           done();
         }
@@ -57,12 +57,11 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry: Entry): boolean => {
           spys(entry.stats);
           return entry.path !== 'dir2';
         },
-        true,
-        () => {
+        (_err) => {
           assert.equal(spys.callCount, 10);
           done();
         }
@@ -74,11 +73,11 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry: Entry): boolean => {
           spys(entry.stats);
           return !entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH);
         },
-        () => {
+        (_err?) => {
           assert.equal(spys.callCount, 6);
           done();
         }
@@ -92,14 +91,14 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
+        (entry, callback): undefined => {
           spys(entry.stats);
           setTimeout(() => {
             callback(null, false);
           });
         },
         { callbacks: true },
-        () => {
+        (_err?) => {
           assert.equal(spys.callCount, 6);
           done();
         }
@@ -118,7 +117,7 @@ describe('filtering', () => {
           });
         },
         { callbacks: true },
-        () => {
+        (_err) => {
           assert.equal(spys.callCount, 10);
           done();
         }
@@ -137,7 +136,7 @@ describe('filtering', () => {
           });
         },
         { callbacks: true },
-        () => {
+        (_err): undefined => {
           assert.equal(spys.callCount, 6);
           done();
         }
@@ -163,11 +162,11 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry: Entry): undefined => {
           spys(entry.stats);
           return Pinkie.resolve(false);
         },
-        () => {
+        (_err): undefined => {
           assert.equal(spys.callCount, 6);
           done();
         }
@@ -179,11 +178,11 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry: Entry) => {
           spys(entry.stats);
           return Pinkie.resolve(entry.path !== 'dir2');
         },
-        () => {
+        (_err): undefined => {
           assert.equal(spys.callCount, 10);
           done();
         }
@@ -195,11 +194,11 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry: Entry) => {
           spys(entry.stats);
           return Pinkie.resolve(!entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH));
         },
-        () => {
+        (_err): undefined => {
           assert.equal(spys.callCount, 6);
           done();
         }
