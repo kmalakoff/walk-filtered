@@ -36,7 +36,7 @@ describe('errors', () => {
     it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        () => new Error('Failed'),
+        (_entry): Error => new Error('Failed'),
         { concurrency: 1 },
         (err) => {
           assert.ok(!!err);
@@ -68,8 +68,8 @@ describe('errors', () => {
     it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        () => Pinkie.reject(new Error('Failed')),
-        (err) => {
+        (_entry) => Pinkie.reject(new Error('Failed')),
+        (err): undefined => {
           assert.ok(!!err);
           done();
         }

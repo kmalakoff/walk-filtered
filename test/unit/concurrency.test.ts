@@ -39,7 +39,7 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry): undefined => {
           spys(entry.stats);
         },
         { concurrency: 1 },
@@ -59,7 +59,7 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry): undefined => {
           spys(entry.stats);
         },
         { concurrency: 5 },
@@ -79,7 +79,7 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry): undefined => {
           spys(entry.stats);
         },
         { concurrency: Infinity },
@@ -178,7 +178,7 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry): undefined => {
           spys(entry.stats);
           return Pinkie.resolve();
         },
@@ -199,7 +199,7 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry): undefined => {
           spys(entry.stats);
           return Pinkie.resolve();
         },
@@ -220,7 +220,7 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry) => {
+        (entry): undefined => {
           spys(entry.stats);
           return Pinkie.resolve();
         },
