@@ -5,7 +5,6 @@ import path from 'path';
 import rimraf2 from 'rimraf2';
 import url from 'url';
 
-// @ts-ignore
 import walk from 'walk-filtered';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
