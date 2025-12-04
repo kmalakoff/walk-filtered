@@ -1,1 +1,1 @@
-ignores: ["node-version-use", "ts-dev-stack", "@biomejs/biome", "walk-filtered"]
+ignores: ["node-version-use", "ts-dev-stack", "walk-filtered"]
