@@ -4,10 +4,9 @@ import statsSpys from 'fs-stats-spys';
 import path from 'path';
 import Pinkie from 'pinkie-promise';
 import rimraf2 from 'rimraf2';
-import startsWith from 'starts-with';
 import url from 'url';
-
 import walk, { type Entry } from 'walk-filtered';
+import { stringStartsWith } from '../lib/compat.ts';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
@@ -74,7 +73,7 @@ describe('filtering', () => {
         TEST_DIR,
         (entry: Entry): boolean => {
           spys(entry.stats);
-          return !entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH);
+          return !entry.stats.isDirectory() || stringStartsWith(entry.path, TEST_DIR_PATH);
         },
         (_err?) => {
           assert.equal(spys.callCount, 6);
@@ -131,7 +130,7 @@ describe('filtering', () => {
         (entry, callback) => {
           spys(entry.stats);
           setTimeout(() => {
-            callback(null, !entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH));
+            callback(null, !entry.stats.isDirectory() || stringStartsWith(entry.path, TEST_DIR_PATH));
           });
         },
         { callbacks: true },
@@ -195,7 +194,7 @@ describe('filtering', () => {
         TEST_DIR,
         (entry: Entry) => {
           spys(entry.stats);
-          return Pinkie.resolve(!entry.stats.isDirectory() || startsWith(entry.path, TEST_DIR_PATH));
+          return Pinkie.resolve(!entry.stats.isDirectory() || stringStartsWith(entry.path, TEST_DIR_PATH));
         },
         (_err): undefined => {
           assert.equal(spys.callCount, 6);

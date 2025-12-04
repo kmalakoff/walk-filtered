@@ -28,6 +28,7 @@
     "./package.json": "./package.json"
   },
   "main": "dist/cjs/index.js",
+  "source": "src/index.ts",
   "types": "dist/cjs/index.d.ts",
   "files": [
     "dist"
@@ -52,13 +53,9 @@
     "node-version-use": "*",
     "pinkie-promise": "*",
     "rimraf2": "*",
-    "starts-with": "*",
     "ts-dev-stack": "*"
   },
   "engines": {
     "node": ">=0.8"
-  },
-  "tsds": {
-    "source": "src/index.ts"
   }
 }
