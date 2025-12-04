@@ -3,10 +3,9 @@ import generate from 'fs-generate';
 import statsSpys from 'fs-stats-spys';
 import path from 'path';
 import rimraf2 from 'rimraf2';
-import startsWith from 'starts-with';
 import url from 'url';
-
 import walk from 'walk-filtered';
+import { stringStartsWith } from '../lib/compat.ts';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
@@ -79,7 +78,7 @@ describe('legacy', () => {
         (entry, callback) => {
           spys(entry.stats);
           setTimeout(() => {
-            callback(null, !entry.stats.isDirectory() || startsWith(entry.path, 'dir3/dir4'));
+            callback(null, !entry.stats.isDirectory() || stringStartsWith(entry.path, 'dir3/dir4'));
           }, 10);
         },
         { async: true },
