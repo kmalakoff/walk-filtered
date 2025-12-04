@@ -1,9 +1,9 @@
 import assert from 'assert';
 import generate from 'fs-generate';
+import { safeRm } from 'fs-remove-compat';
 import statsSpys from 'fs-stats-spys';
 import path from 'path';
 import Pinkie from 'pinkie-promise';
-import rimraf2 from 'rimraf2';
 import url from 'url';
 import walk, { type Entry } from 'walk-filtered';
 import { stringStartsWith } from '../lib/compat.ts';
@@ -25,13 +25,13 @@ const TEST_DIR_PATH = `dir3${path.sep}dir4`;
 
 describe('filtering', () => {
   beforeEach((done) => {
-    rimraf2(TEST_DIR, { disableGlob: true }, () => {
+    safeRm(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, (err) => {
         done(err);
       });
     });
   });
-  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
+  after((cb) => safeRm(TEST_DIR, () => cb()));
 
   describe('synchronous', () => {
     it('Should filter everything under the root directory', (done) => {

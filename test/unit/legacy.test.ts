@@ -1,8 +1,8 @@
 import assert from 'assert';
 import generate from 'fs-generate';
+import { safeRm } from 'fs-remove-compat';
 import statsSpys from 'fs-stats-spys';
 import path from 'path';
-import rimraf2 from 'rimraf2';
 import url from 'url';
 import walk from 'walk-filtered';
 import { stringStartsWith } from '../lib/compat.ts';
@@ -23,13 +23,13 @@ const STRUCTURE = {
 
 describe('legacy', () => {
   beforeEach((done) => {
-    rimraf2(TEST_DIR, { disableGlob: true }, () => {
+    safeRm(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, (err) => {
         done(err);
       });
     });
   });
-  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
+  after((cb) => safeRm(TEST_DIR, () => cb()));
 
   describe('async', () => {
     it('Should filter everything under the root directory', (done) => {

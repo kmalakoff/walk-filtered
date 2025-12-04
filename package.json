@@ -49,9 +49,9 @@
     "@types/mocha": "*",
     "@types/node": "*",
     "fs-generate": "*",
+    "fs-remove-compat": "*",
     "node-version-use": "*",
     "pinkie-promise": "*",
-    "rimraf2": "*",
     "ts-dev-stack": "*",
     "tsds-config": "*"
   },

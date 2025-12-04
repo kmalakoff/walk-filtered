@@ -1,8 +1,8 @@
 import assert from 'assert';
 import generate from 'fs-generate';
+import { safeRm } from 'fs-remove-compat';
 import path from 'path';
 import Pinkie from 'pinkie-promise';
-import rimraf2 from 'rimraf2';
 import url from 'url';
 
 import walk from 'walk-filtered';
@@ -23,13 +23,13 @@ const STRUCTURE = {
 
 describe('errors', () => {
   beforeEach((done) => {
-    rimraf2(TEST_DIR, { disableGlob: true }, () => {
+    safeRm(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, (err) => {
         done(err);
       });
     });
   });
-  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
+  after((cb) => safeRm(TEST_DIR, () => cb()));
 
   describe('synchronous', () => {
     it('should propagate errors', (done) => {
