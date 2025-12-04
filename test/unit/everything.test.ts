@@ -1,8 +1,8 @@
 import assert from 'assert';
 import generate from 'fs-generate';
+import { safeRm, safeRmSync } from 'fs-remove-compat';
 import statsSpys from 'fs-stats-spys';
 import path from 'path';
-import rimraf2 from 'rimraf2';
 import url from 'url';
 
 import walk from 'walk-filtered';
@@ -23,13 +23,13 @@ const STRUCTURE = {
 
 describe('walk everything', () => {
   beforeEach((done) => {
-    rimraf2(TEST_DIR, { disableGlob: true }, () => {
+    safeRm(TEST_DIR, () => {
       generate(TEST_DIR, STRUCTURE, (err) => {
         done(err);
       });
     });
   });
-  after((cb) => rimraf2(TEST_DIR, { disableGlob: true }, () => cb()));
+  after((cb) => safeRm(TEST_DIR, () => cb()));
 
   it('Should find everything with no return', (done) => {
     const spys = statsSpys();
@@ -80,7 +80,7 @@ describe('walk everything', () => {
           return err;
         }
 
-        if (entry.path === path.join('dir2', 'file1')) rimraf2.sync(path.join(TEST_DIR, 'dir2'), { disableGlob: true });
+        if (entry.path === path.join('dir2', 'file1')) safeRmSync(path.join(TEST_DIR, 'dir2'), { recursive: true, force: true });
         return true;
       },
       { concurrency: 1, lstat: true, alwaysStat: true },
@@ -110,7 +110,7 @@ describe('walk everything', () => {
           return err;
         }
 
-        if (entry.path === path.join('dir2', 'file1')) rimraf2.sync(path.join(TEST_DIR, 'dir2'), { disableGlob: true });
+        if (entry.path === path.join('dir2', 'file1')) safeRmSync(path.join(TEST_DIR, 'dir2'), { recursive: true, force: true });
         return true;
       },
       {
@@ -148,7 +148,7 @@ describe('walk everything', () => {
           return err;
         }
 
-        if (entry.path === path.join('dir2', 'file1')) rimraf2.sync(path.join(TEST_DIR, 'dir2'), { disableGlob: true });
+        if (entry.path === path.join('dir2', 'file1')) safeRmSync(path.join(TEST_DIR, 'dir2'), { recursive: true, force: true });
         return true;
       },
       {
