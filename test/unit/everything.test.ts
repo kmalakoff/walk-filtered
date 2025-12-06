@@ -86,7 +86,7 @@ describe('walk everything', () => {
       { concurrency: 1, lstat: true, alwaysStat: true },
       (err) => {
         if (err) {
-          done(err.message);
+          done(err);
           return;
         }
         assert.equal(spys.dir.callCount, 5);
@@ -123,7 +123,7 @@ describe('walk everything', () => {
       },
       (err) => {
         if (err) {
-          done(err.message);
+          done(err);
           return;
         }
         assert.equal(errors.length, 2);
