@@ -44,7 +44,7 @@ describe('depth', () => {
         { depth: 0, lstat: true },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 3);
@@ -66,7 +66,7 @@ describe('depth', () => {
         { depth: 1, lstat: true },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 4);
@@ -88,7 +88,7 @@ describe('depth', () => {
         { depth: 2, lstat: true },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 5);
@@ -110,7 +110,7 @@ describe('depth', () => {
         { depth: Infinity, lstat: true },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 5);
@@ -139,7 +139,7 @@ describe('depth', () => {
         },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 3);
@@ -166,7 +166,7 @@ describe('depth', () => {
         },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 4);
@@ -193,7 +193,7 @@ describe('depth', () => {
         },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 5);
@@ -220,7 +220,7 @@ describe('depth', () => {
         },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 5);
@@ -248,7 +248,7 @@ describe('depth', () => {
         },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 3);
@@ -274,7 +274,7 @@ describe('depth', () => {
         },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 4);
@@ -300,7 +300,7 @@ describe('depth', () => {
         },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 5);
@@ -326,7 +326,7 @@ describe('depth', () => {
         },
         (err) => {
           if (err) {
-            done(err.message);
+            done(err);
             return;
           }
           assert.equal(spys.dir.callCount, 5);
