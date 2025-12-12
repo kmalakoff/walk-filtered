@@ -42,7 +42,7 @@
     "version": "tsds version"
   },
   "dependencies": {
-    "fs-iterator": "^6.1.11",
+    "fs-iterator": "^6.1.12",
     "fs-stats-spys": "^1.2.9"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "@types/node": "^25.0.1",
     "fs-generate": "^1.10.10",
     "fs-remove-compat": "^0.2.3",
-    "node-version-use": "^2.1.5",
+    "node-version-use": "^2.1.6",
     "pinkie-promise": "^2.0.1",
     "ts-dev-stack": "^1.21.3",
     "tsds-config": "^0.2.1"
