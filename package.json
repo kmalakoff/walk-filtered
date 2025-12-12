@@ -43,13 +43,13 @@
   },
   "dependencies": {
     "fs-iterator": "^6.1.10",
-    "fs-stats-spys": "^1.2.7"
+    "fs-stats-spys": "^1.2.8"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.0.1",
-    "fs-generate": "^1.10.8",
-    "fs-remove-compat": "^0.2.1",
+    "fs-generate": "^1.10.9",
+    "fs-remove-compat": "^0.2.2",
     "node-version-use": "^2.1.5",
     "pinkie-promise": "^2.0.1",
     "ts-dev-stack": "^1.21.3",
