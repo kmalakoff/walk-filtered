@@ -19,7 +19,7 @@ function worker(root: string, filter: FilterFunction, options: Options, callback
   });
 
   return iterator.forEach(
-    (_entry: unknown): undefined => {},
+    (_entry: unknown): void => {},
     {
       concurrency: options.concurrency || Infinity,
     },
@@ -31,13 +31,13 @@ function worker(root: string, filter: FilterFunction, options: Options, callback
   );
 }
 
-export default function walk(root: string, filter: FilterFunction): Promise<undefined>;
-export default function walk(root: string, filter: FilterFunction, options: Options): Promise<undefined>;
+export default function walk(root: string, filter: FilterFunction): Promise<void>;
+export default function walk(root: string, filter: FilterFunction, options: Options): Promise<void>;
 
-export default function walk(root: string, filter: FilterFunction, callback: Callback): undefined;
-export default function walk(root: string, filter: FilterFunction, options: Options, callback: Callback): undefined;
+export default function walk(root: string, filter: FilterFunction, callback: Callback): void;
+export default function walk(root: string, filter: FilterFunction, options: Options, callback: Callback): void;
 
-export default function walk(root: string, filter: FilterFunction, options?: Options | Callback, callback?: Callback): undefined | Promise<undefined> {
+export default function walk(root: string, filter: FilterFunction, options?: Options | Callback, callback?: Callback): void | Promise<void> {
   if (typeof root !== 'string') throw new Error('Directory is required');
   if (typeof filter !== 'function') throw new Error('Filter is required');
 
@@ -53,7 +53,7 @@ export default function walk(root: string, filter: FilterFunction, options?: Opt
   }
   return new Promise((resolve, reject) =>
     worker(root, filter, options, (err) => {
-      err ? reject(err) : resolve(undefined);
+      err ? reject(err) : resolve();
     })
   );
 }

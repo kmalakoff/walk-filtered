@@ -89,7 +89,7 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback): undefined => {
+        (entry, callback): void => {
           spys(entry.stats);
           setTimeout(() => {
             callback(null, false);
@@ -134,7 +134,7 @@ describe('filtering', () => {
           });
         },
         { callbacks: true },
-        (_err): undefined => {
+        (_err): void => {
           assert.equal(spys.callCount, 6);
           done();
         }
@@ -160,11 +160,11 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry: Entry): undefined => {
+        (entry: Entry): void => {
           spys(entry.stats);
           return Pinkie.resolve(false);
         },
-        (_err): undefined => {
+        (_err): void => {
           assert.equal(spys.callCount, 6);
           done();
         }
@@ -180,7 +180,7 @@ describe('filtering', () => {
           spys(entry.stats);
           return Pinkie.resolve(entry.path !== 'dir2');
         },
-        (_err): undefined => {
+        (_err): void => {
           assert.equal(spys.callCount, 10);
           done();
         }
@@ -196,7 +196,7 @@ describe('filtering', () => {
           spys(entry.stats);
           return Pinkie.resolve(!entry.stats.isDirectory() || stringStartsWith(entry.path, TEST_DIR_PATH));
         },
-        (_err): undefined => {
+        (_err): void => {
           assert.equal(spys.callCount, 6);
           done();
         }
