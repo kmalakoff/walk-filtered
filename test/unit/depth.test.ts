@@ -38,7 +38,7 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry): undefined => {
+        (entry): void => {
           spys(entry.stats);
         },
         { depth: 0, lstat: true },
@@ -60,7 +60,7 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry): undefined => {
+        (entry): void => {
           spys(entry.stats);
         },
         { depth: 1, lstat: true },
@@ -82,7 +82,7 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry): undefined => {
+        (entry): void => {
           spys(entry.stats);
         },
         { depth: 2, lstat: true },
@@ -104,7 +104,7 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry): undefined => {
+        (entry): void => {
           spys(entry.stats);
         },
         { depth: Infinity, lstat: true },

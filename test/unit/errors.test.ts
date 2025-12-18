@@ -68,7 +68,7 @@ describe('errors', () => {
       walk(
         TEST_DIR,
         (_entry) => Pinkie.reject(new Error('Failed')),
-        (err): undefined => {
+        (err): void => {
           assert.ok(!!err);
           done();
         }

@@ -36,7 +36,7 @@ describe('walk everything', () => {
 
     walk(
       TEST_DIR,
-      (entry): undefined => {
+      (entry): void => {
         spys(entry.stats);
       },
       { lstat: true },
@@ -117,7 +117,7 @@ describe('walk everything', () => {
         concurrency: 1,
         lstat: true,
         alwaysStat: true,
-        error: (err): undefined => {
+        error: (err): void => {
           errors.push(err);
         },
       },
