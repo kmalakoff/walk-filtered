@@ -48,7 +48,7 @@ describe('promise', () => {
     it('should be default false', async () => {
       const spys = statsSpys();
 
-      await walk(TEST_DIR, (entry): undefined => {
+      await walk(TEST_DIR, (entry): void => {
         spys(entry.stats);
       });
       assert.equal(spys.callCount, 12);
@@ -59,7 +59,7 @@ describe('promise', () => {
 
       await walk(
         TEST_DIR,
-        (entry): undefined => {
+        (entry): void => {
           spys(entry.stats);
         },
         { lstat: true }
