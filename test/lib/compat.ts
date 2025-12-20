@@ -1,5 +1,5 @@
 /**
- * Compatibility Layer for Node.js 0.8+ (Test Only)
+ * Compatibility Layer for Node.js 0.8+
  * Local to this package - contains only needed functions.
  */
 
