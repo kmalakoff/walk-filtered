@@ -40,17 +40,10 @@ export default function walk(root: string, filter: FilterFunction, options: Opti
 export default function walk(root: string, filter: FilterFunction, options?: Options | Callback, callback?: Callback): void | Promise<void> {
   if (typeof root !== 'string') throw new Error('Directory is required');
   if (typeof filter !== 'function') throw new Error('Filter is required');
+  callback = typeof options === 'function' ? options : callback;
+  options = typeof options === 'function' ? {} : ((options || {}) as Options);
 
-  if (typeof options === 'function') {
-    callback = options;
-    options = {};
-  }
-  options = options || {};
-
-  if (typeof callback === 'function') {
-    worker(root, filter, options, callback);
-    return;
-  }
+  if (typeof callback === 'function') return worker(root, filter, options, callback);
   return new Promise((resolve, reject) =>
     worker(root, filter, options, (err) => {
       err ? reject(err) : resolve();
