@@ -9,11 +9,8 @@
  * - Falls back to indexOf on Node 0.8-3.x
  */
 const hasStartsWith = typeof String.prototype.startsWith === 'function';
-
 export function stringStartsWith(str: string, search: string, position?: number): boolean {
-  if (hasStartsWith) {
-    return str.startsWith(search, position);
-  }
+  if (hasStartsWith) return str.startsWith(search, position);
   position = position || 0;
   return str.indexOf(search, position) === position;
 }
