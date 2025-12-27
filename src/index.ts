@@ -44,9 +44,5 @@ export default function walk(root: string, filter: FilterFunction, options?: Opt
   options = typeof options === 'function' ? {} : ((options || {}) as Options);
 
   if (typeof callback === 'function') return worker(root, filter, options, callback);
-  return new Promise((resolve, reject) =>
-    worker(root, filter, options, (err) => {
-      err ? reject(err) : resolve();
-    })
-  );
+  return new Promise((resolve, reject) => worker(root, filter, options, (err) => (err ? reject(err) : resolve())));
 }
