@@ -4,7 +4,7 @@ import { safeRm } from 'fs-remove-compat';
 import statsSpys from 'fs-stats-spys';
 import path from 'path';
 import url from 'url';
-import walk from 'walk-filtered';
+import walk, { type Entry } from 'walk-filtered';
 import { stringStartsWith } from '../lib/compat.ts';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
@@ -37,10 +37,10 @@ describe('legacy', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
-          spys(entry.stats);
+        (entry: Entry, callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(() => {
-            callback(null, false);
+            callback(undefined, false);
           }, 10);
         },
         { async: true },
@@ -57,9 +57,9 @@ describe('legacy', () => {
       walk(
         TEST_DIR,
         (entry, callback) => {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(() => {
-            callback(null, entry.path !== 'dir2');
+            callback(undefined, entry.path !== 'dir2');
           }, 10);
         },
         { async: true },
@@ -76,9 +76,9 @@ describe('legacy', () => {
       walk(
         TEST_DIR,
         (entry, callback) => {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(() => {
-            callback(null, !entry.stats.isDirectory() || stringStartsWith(entry.path, 'dir3/dir4'));
+            callback(undefined, !(entry.stats?.isDirectory() ?? false) || stringStartsWith(entry.path, 'dir3/dir4'));
           }, 10);
         },
         { async: true },

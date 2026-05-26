@@ -6,7 +6,7 @@ import path from 'path';
 import Pinkie from 'pinkie-promise';
 import url from 'url';
 
-import walk from 'walk-filtered';
+import walk, { type Entry } from 'walk-filtered';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
@@ -48,8 +48,8 @@ describe('promise', () => {
     it('should be default false', async () => {
       const spys = statsSpys();
 
-      await walk(TEST_DIR, (entry): void => {
-        spys(entry.stats);
+      await walk(TEST_DIR, (entry: Entry): void => {
+        spys(entry.stats as NonNullable<Entry['stats']>);
       });
       assert.equal(spys.callCount, 12);
     });
@@ -59,8 +59,8 @@ describe('promise', () => {
 
       await walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry): void => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
         },
         { lstat: true }
       );
@@ -74,8 +74,8 @@ describe('promise', () => {
 
       await walk(
         TEST_DIR,
-        (entry): boolean => {
-          spys(entry.stats);
+        (entry: Entry): boolean => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return true;
         },
         { lstat: true }
@@ -88,7 +88,7 @@ describe('promise', () => {
 
     it('should propagate errors', async () => {
       try {
-        await walk(TEST_DIR, (_entry) => {
+        await walk(TEST_DIR, (_entry: Entry) => {
           return Promise.reject(new Error('Failed'));
         });
         assert.ok(false);

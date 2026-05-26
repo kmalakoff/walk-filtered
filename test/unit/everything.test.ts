@@ -5,7 +5,7 @@ import statsSpys from 'fs-stats-spys';
 import path from 'path';
 import url from 'url';
 
-import walk from 'walk-filtered';
+import walk, { type Entry } from 'walk-filtered';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
@@ -36,8 +36,8 @@ describe('walk everything', () => {
 
     walk(
       TEST_DIR,
-      (entry): void => {
-        spys(entry.stats);
+      (entry: Entry): void => {
+        spys(entry.stats as NonNullable<Entry['stats']>);
       },
       { lstat: true },
       () => {
@@ -54,8 +54,8 @@ describe('walk everything', () => {
 
     walk(
       TEST_DIR,
-      (entry) => {
-        spys(entry.stats);
+      (entry: Entry) => {
+        spys(entry.stats as NonNullable<Entry['stats']>);
         return true;
       },
       { lstat: true },
@@ -73,9 +73,9 @@ describe('walk everything', () => {
 
     walk(
       TEST_DIR,
-      (entry) => {
+      (entry: Entry) => {
         try {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
         } catch (err) {
           return err;
         }
@@ -85,10 +85,7 @@ describe('walk everything', () => {
       },
       { concurrency: 1, lstat: true, alwaysStat: true },
       (err) => {
-        if (err) {
-          done(err);
-          return;
-        }
+        if (err) return done(err);
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
         assert.equal(spys.link.callCount, 1);
@@ -103,9 +100,9 @@ describe('walk everything', () => {
 
     walk(
       TEST_DIR,
-      (entry) => {
+      (entry: Entry) => {
         try {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
         } catch (err) {
           return err;
         }
@@ -122,10 +119,7 @@ describe('walk everything', () => {
         },
       },
       (err) => {
-        if (err) {
-          done(err);
-          return;
-        }
+        if (err) return done(err);
         assert.equal(errors.length, 2);
         assert.equal(spys.dir.callCount, 5);
         assert.equal(spys.file.callCount, 4);
@@ -141,9 +135,9 @@ describe('walk everything', () => {
 
     walk(
       TEST_DIR,
-      (entry) => {
+      (entry: Entry) => {
         try {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
         } catch (err) {
           return err;
         }

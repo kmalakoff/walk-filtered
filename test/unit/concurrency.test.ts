@@ -6,7 +6,7 @@ import path from 'path';
 import Pinkie from 'pinkie-promise';
 import url from 'url';
 
-import walk from 'walk-filtered';
+import walk, { type Entry } from 'walk-filtered';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
@@ -38,15 +38,13 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry): void => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
         },
         { concurrency: 1 },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }
@@ -58,15 +56,13 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry): void => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
         },
         { concurrency: 5 },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }
@@ -78,15 +74,13 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry): void => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
         },
         { concurrency: Infinity },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }
@@ -100,16 +94,14 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
-          spys(entry.stats);
+        (entry: Entry, callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(callback, 10);
         },
         { callbacks: true, concurrency: 1 },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }
@@ -121,16 +113,14 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
-          spys(entry.stats);
+        (entry: Entry, callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(callback, 10);
         },
         { callbacks: true, concurrency: 5 },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }
@@ -142,16 +132,14 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
-          spys(entry.stats);
+        (entry: Entry, callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(callback, 10);
         },
         { callbacks: true, concurrency: Infinity },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }
@@ -177,16 +165,14 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve();
         },
         { concurrency: 1 },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }
@@ -198,16 +184,14 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve();
         },
         { concurrency: 5 },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }
@@ -219,16 +203,14 @@ describe('concurrency', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve();
         },
         { concurrency: Infinity },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.callCount, 12);
           done();
         }

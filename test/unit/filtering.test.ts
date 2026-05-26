@@ -40,7 +40,7 @@ describe('filtering', () => {
       walk(
         TEST_DIR,
         (entry: Entry): boolean => {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return false;
         },
         (_err) => {
@@ -56,7 +56,7 @@ describe('filtering', () => {
       walk(
         TEST_DIR,
         (entry: Entry): boolean => {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return entry.path !== 'dir2';
         },
         (_err) => {
@@ -72,8 +72,8 @@ describe('filtering', () => {
       walk(
         TEST_DIR,
         (entry: Entry): boolean => {
-          spys(entry.stats);
-          return !entry.stats.isDirectory() || stringStartsWith(entry.path, TEST_DIR_PATH);
+          spys(entry.stats as NonNullable<Entry['stats']>);
+          return !(entry.stats?.isDirectory() ?? false) || stringStartsWith(entry.path, TEST_DIR_PATH);
         },
         (_err?) => {
           assert.equal(spys.callCount, 6);
@@ -90,9 +90,9 @@ describe('filtering', () => {
       walk(
         TEST_DIR,
         (entry, callback): void => {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(() => {
-            callback(null, false);
+            callback(undefined, false);
           });
         },
         { callbacks: true },
@@ -109,9 +109,9 @@ describe('filtering', () => {
       walk(
         TEST_DIR,
         (entry, callback) => {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(() => {
-            callback(null, entry.path !== 'dir2');
+            callback(undefined, entry.path !== 'dir2');
           });
         },
         { callbacks: true },
@@ -128,9 +128,9 @@ describe('filtering', () => {
       walk(
         TEST_DIR,
         (entry, callback) => {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(() => {
-            callback(null, !entry.stats.isDirectory() || stringStartsWith(entry.path, TEST_DIR_PATH));
+            callback(undefined, !(entry.stats?.isDirectory() ?? false) || stringStartsWith(entry.path, TEST_DIR_PATH));
           });
         },
         { callbacks: true },
@@ -160,8 +160,8 @@ describe('filtering', () => {
 
       walk(
         TEST_DIR,
-        (entry: Entry): void => {
-          spys(entry.stats);
+        (entry: Entry) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve(false);
         },
         (_err): void => {
@@ -177,7 +177,7 @@ describe('filtering', () => {
       walk(
         TEST_DIR,
         (entry: Entry) => {
-          spys(entry.stats);
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve(entry.path !== 'dir2');
         },
         (_err): void => {
@@ -193,8 +193,8 @@ describe('filtering', () => {
       walk(
         TEST_DIR,
         (entry: Entry) => {
-          spys(entry.stats);
-          return Pinkie.resolve(!entry.stats.isDirectory() || stringStartsWith(entry.path, TEST_DIR_PATH));
+          spys(entry.stats as NonNullable<Entry['stats']>);
+          return Pinkie.resolve(!(entry.stats as NonNullable<Entry['stats']>).isDirectory() || stringStartsWith(entry.path, TEST_DIR_PATH));
         },
         (_err): void => {
           assert.equal(spys.callCount, 6);
