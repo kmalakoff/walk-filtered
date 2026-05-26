@@ -6,7 +6,7 @@ import path from 'path';
 import Pinkie from 'pinkie-promise';
 import url from 'url';
 
-import walk from 'walk-filtered';
+import walk, { type Entry } from 'walk-filtered';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
@@ -38,15 +38,13 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry): void => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
         },
         { depth: 0, lstat: true },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
@@ -60,15 +58,13 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry): void => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
         },
         { depth: 1, lstat: true },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
           assert.equal(spys.link.callCount, 2);
@@ -82,15 +78,13 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry): void => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
         },
         { depth: 2, lstat: true },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -104,15 +98,13 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry): void => {
-          spys(entry.stats);
+        (entry: Entry): void => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
         },
         { depth: Infinity, lstat: true },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -128,8 +120,8 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
-          spys(entry.stats);
+        (entry: Entry, callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(callback, 10);
         },
         {
@@ -138,10 +130,8 @@ describe('depth', () => {
           callbacks: true,
         },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
@@ -155,8 +145,8 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
-          spys(entry.stats);
+        (entry: Entry, callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(callback, 10);
         },
         {
@@ -165,10 +155,8 @@ describe('depth', () => {
           callbacks: true,
         },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
           assert.equal(spys.link.callCount, 2);
@@ -182,8 +170,8 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
-          spys(entry.stats);
+        (entry: Entry, callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(callback, 10);
         },
         {
@@ -192,10 +180,8 @@ describe('depth', () => {
           callbacks: true,
         },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -209,8 +195,8 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry, callback) => {
-          spys(entry.stats);
+        (entry: Entry, callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           setTimeout(callback, 10);
         },
         {
@@ -219,10 +205,8 @@ describe('depth', () => {
           callbacks: true,
         },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -238,8 +222,8 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry, _callback) => {
-          spys(entry.stats);
+        (entry: Entry, _callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve();
         },
         {
@@ -247,10 +231,8 @@ describe('depth', () => {
           lstat: true,
         },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 3);
           assert.equal(spys.file.callCount, 2);
           assert.equal(spys.link.callCount, 1);
@@ -264,8 +246,8 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry, _callback) => {
-          spys(entry.stats);
+        (entry: Entry, _callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve();
         },
         {
@@ -273,10 +255,8 @@ describe('depth', () => {
           lstat: true,
         },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 4);
           assert.equal(spys.file.callCount, 4);
           assert.equal(spys.link.callCount, 2);
@@ -290,8 +270,8 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry, _callback) => {
-          spys(entry.stats);
+        (entry: Entry, _callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve();
         },
         {
@@ -299,10 +279,8 @@ describe('depth', () => {
           lstat: true,
         },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);
@@ -316,8 +294,8 @@ describe('depth', () => {
 
       walk(
         TEST_DIR,
-        (entry, _callback) => {
-          spys(entry.stats);
+        (entry: Entry, _callback) => {
+          spys(entry.stats as NonNullable<Entry['stats']>);
           return Pinkie.resolve();
         },
         {
@@ -325,10 +303,8 @@ describe('depth', () => {
           lstat: true,
         },
         (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
+          if (err) return done(err);
+
           assert.equal(spys.dir.callCount, 5);
           assert.equal(spys.file.callCount, 5);
           assert.equal(spys.link.callCount, 2);

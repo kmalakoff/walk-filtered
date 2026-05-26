@@ -5,7 +5,7 @@ import path from 'path';
 import Pinkie from 'pinkie-promise';
 import url from 'url';
 
-import walk from 'walk-filtered';
+import walk, { type Entry } from 'walk-filtered';
 
 const __dirname = path.dirname(typeof __filename !== 'undefined' ? __filename : url.fileURLToPath(import.meta.url));
 const TEST_DIR = path.join(path.join(__dirname, '..', '..', '.tmp', 'test'));
@@ -35,7 +35,7 @@ describe('errors', () => {
     it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        (_entry): Error => new Error('Failed'),
+        (_entry: Entry): Error => new Error('Failed'),
         { concurrency: 1 },
         (err) => {
           assert.ok(!!err);
@@ -49,7 +49,7 @@ describe('errors', () => {
     it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        (_entry, callback) => {
+        (_entry: Entry, callback) => {
           setTimeout(() => {
             callback(new Error('Failed'));
           }, 10);
@@ -67,7 +67,7 @@ describe('errors', () => {
     it('should propagate errors', (done) => {
       walk(
         TEST_DIR,
-        (_entry) => Pinkie.reject(new Error('Failed')),
+        (_entry: Entry) => Pinkie.reject(new Error('Failed')),
         (err): void => {
           assert.ok(!!err);
           done();
