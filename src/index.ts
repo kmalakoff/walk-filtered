@@ -12,7 +12,7 @@ function worker(root: string, filter: FilterFunction, options: Options, callback
     filter: filter,
     callbacks: options.callbacks || options.async,
     error: (err) => {
-      if (!~Iterator.EXPECTED_ERRORS.indexOf(err.code)) return false;
+      if (!~Iterator.EXPECTED_ERRORS.indexOf(err.code ?? '')) return false;
       if (options.error) return options.error(err);
       return true;
     },
@@ -25,7 +25,7 @@ function worker(root: string, filter: FilterFunction, options: Options, callback
     },
     function forEachCallback(err) {
       iterator.destroy();
-      iterator = null;
+      iterator = null as unknown as typeof iterator;
       callback(err);
     }
   );
