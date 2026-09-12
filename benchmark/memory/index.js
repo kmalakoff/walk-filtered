@@ -5,9 +5,13 @@ const tests = require('./tests');
 const VERSIONS = require('../VERSIONS');
 const TESTS_OPTIONS = require('../TESTS_OPTIONS');
 const DATA_DIR = path.resolve(path.join(__dirname, '..', 'node_modules'));
+const ITERATION_COUNT = 2;
 
 (async () => {
   for (const options of VERSIONS) {
-    await tests(Object.assign({}, options, { testOptions: TESTS_OPTIONS }), DATA_DIR);
+    for (let i = 0; i < ITERATION_COUNT; i++) {
+      await tests(Object.assign({}, options, { testOptions: TESTS_OPTIONS }), DATA_DIR);
+    }
+    console.log('****************\n');
   }
 })();
