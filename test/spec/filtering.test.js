@@ -3,8 +3,9 @@ var chai = require('chai'); chai.use(require('sinon-chai'));
 var assert = chai.assert;
 var sinon = require('sinon');
 var generate = require('fs-generate');
-var fs = require('fs-extra');
+var rimraf = require('rimraf');
 var sysPath = require('path');
+var BPromise = require('bluebird');
 
 var walk = require('../..');
 
@@ -23,14 +24,14 @@ var STRUCTURE = {
 
 function startsWith(string, start) { return (string.substring(0, start.length) === start); }
 function sleep(timeout) {
-  return new Promise(function (resolve) { setTimeout(resolve, timeout); });
+  return new BPromise(function (resolve) { setTimeout(resolve, timeout); });
 }
 
 describe('filtering', function () {
-  after(function (callback) { fs.remove(DIR, callback); });
+  after(function (callback) { rimraf(DIR, callback); });
 
   describe('sync', function () {
-    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+    beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
@@ -61,7 +62,7 @@ describe('filtering', function () {
   });
 
   describe('async', function () {
-    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+    beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
@@ -94,12 +95,12 @@ describe('filtering', function () {
   });
 
   describe('promise', function () {
-    beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+    beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
 
     it('Should filter everything under the root directory', function (callback) {
       var filterSpy = sinon.spy();
 
-      walk(DIR, function () { filterSpy(); return sleep(50).then(function () { return false; }); }, function () {
+      walk(DIR, function () { filterSpy(); return sleep(200).then(function () { return false; }); }, function () {
         assert.ok(filterSpy.callCount, 1);
         callback();
       });
@@ -109,7 +110,7 @@ describe('filtering', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path) {
-        filterSpy(); return sleep(50).then(function () { return path !== 'dir2'; });
+        filterSpy(); return sleep(200).then(function () { return path !== 'dir2'; });
       }, { stats: true }, function () {
         assert.ok(filterSpy.callCount, 13 - 2);
         callback();
@@ -120,7 +121,7 @@ describe('filtering', function () {
       var filterSpy = sinon.spy();
 
       walk(DIR, function (path, stats) {
-        filterSpy(); return sleep(50).then(function () { return !stats.isDirectory() || startsWith(path, 'dir3/dir4'); });
+        filterSpy(); return sleep(200).then(function () { return !stats.isDirectory() || startsWith(path, 'dir3/dir4'); });
       }, { stats: true }, function () {
         assert.ok(filterSpy.callCount, 13 - 1);
         callback();

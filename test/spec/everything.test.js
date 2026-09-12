@@ -2,7 +2,7 @@ var chai = require('chai'); chai.use(require('sinon-chai'));
 
 var assert = chai.assert;
 var generate = require('fs-generate');
-var fs = require('fs-extra');
+var rimraf = require('rimraf');
 var sysPath = require('path');
 
 var walk = require('../..');
@@ -22,8 +22,8 @@ var STRUCTURE = {
 };
 
 describe('walk everything', function () {
-  beforeEach(function (callback) { fs.remove(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
-  after(function (callback) { fs.remove(DIR, callback); });
+  beforeEach(function (callback) { rimraf(DIR, function () { generate(DIR, STRUCTURE, callback); }); });
+  after(function (callback) { rimraf(DIR, callback); });
 
   it('Should find everything with no return', function (callback) {
     var spys = statsSpys();
