@@ -25,6 +25,6 @@ module.exports = async function run({ walk, version, testOptions }, dir) {
   });
 
   console.log('Comparing ' + suite.name);
-  await suite.run({ time: 10000 });
+  await suite.run({ time: 1000 });
   console.log('****************\n');
 };
