@@ -44,9 +44,14 @@ module.exports = function run(dir, callback) {
     .add(
       'Serial (fs)',
       function(deferred) {
-        walk(dir, function() {}, serialOptionsFn(fs), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          serialOptionsFn(fs),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
@@ -54,18 +59,28 @@ module.exports = function run(dir, callback) {
     .add(
       'Parallel (fs)',
       function(deferred) {
-        walk(dir, function() {}, paralleOptionsFn(fs), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          paralleOptionsFn(fs),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
     .add(
       'Parallel (gfs)',
       function(deferred) {
-        walk(dir, function() {}, paralleOptionsFn(gfs), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          paralleOptionsFn(gfs),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
@@ -73,27 +88,42 @@ module.exports = function run(dir, callback) {
     .add(
       'Parallel limit (fs, 10)',
       function(deferred) {
-        walk(dir, function() {}, parallelLimitOptionsFn(fs, 10), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          parallelLimitOptionsFn(fs, 10),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
     .add(
       'Parallel limit (fs, 50)',
       function(deferred) {
-        walk(dir, function() {}, parallelLimitOptionsFn(fs, 50), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          parallelLimitOptionsFn(fs, 50),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
     .add(
       'Parallel limit (fs, 100)',
       function(deferred) {
-        walk(dir, function() {}, parallelLimitOptionsFn(fs, 100), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          parallelLimitOptionsFn(fs, 100),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
@@ -101,27 +131,42 @@ module.exports = function run(dir, callback) {
     .add(
       'Parallel limit (gfs, 10)',
       function(deferred) {
-        walk(dir, function() {}, parallelLimitOptionsFn(gfs, 10), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          parallelLimitOptionsFn(gfs, 10),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
     .add(
       'Parallel limit (gfs, 50)',
       function(deferred) {
-        walk(dir, function() {}, parallelLimitOptionsFn(gfs, 50), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          parallelLimitOptionsFn(gfs, 50),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
     .add(
       'Parallel limit (gfs, 100)',
       function(deferred) {
-        walk(dir, function() {}, parallelLimitOptionsFn(gfs, 100), function(err) {
-          err ? deferred.reject() : deferred.resolve();
-        });
+        walk(
+          dir,
+          function() {},
+          parallelLimitOptionsFn(gfs, 100),
+          function(err) {
+            err ? deferred.reject() : deferred.resolve();
+          }
+        );
       },
       { defer: true }
     )
