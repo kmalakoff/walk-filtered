@@ -28,7 +28,7 @@
   "dependencies": {
     "each-limit": "^1.0.0",
     "graceful-fs": "^4.1.2",
-    "lodash.assign": "^3.2.0",
+    "lodash.assign": "^4.0.0",
     "lodash.isobject": "^3.0.2",
     "lodash.isundefined": "^3.0.1"
   },
