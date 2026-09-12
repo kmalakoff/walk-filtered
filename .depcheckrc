@@ -1,1 +1,1 @@
-ignores: ["node-version-use", "ts-dev-stack", "walk-filtered"]
+ignores: ["walk-filtered", "node-version-use", "ts-dev-stack"]
