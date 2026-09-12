@@ -39,7 +39,8 @@
   "homepage": "https://github.com/kmalakoff/walk-filtered",
   "dependencies": {
     "join-deep": "^1.1.0",
-    "queue-cb": "^1.0.1"
+    "queue-cb": "^1.0.1",
+    "stack-lifo": "^0.1.6"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
