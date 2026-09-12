@@ -28,12 +28,14 @@ function processKeep(keep, callback, stats) {
 }
 
 function processPath(fullPath, options, callback) {
-  options.processFilter(fullPath, options, function (err, keep, stats) {
-    if (err || !keep || !stats.isDirectory()) return callback();
+  try {
+    options.processFilter(fullPath, options, function (err, keep, stats) {
+      if (err) return callback(err);
 
-    // a directory, file or symlink
-    processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
-  });
+      if (!keep || !stats.isDirectory()) return callback(); // do not keep processing
+      processDirectory(fullPath, options, callback); // eslint-disable-line no-use-before-define
+    });
+  } catch (err) { callback(err); }
 }
 
 function processDirectory(fullPath, options, callback) {
@@ -57,7 +59,8 @@ function processFilterLazyStats(fullPath, options, callback) {
 
   var callbackWrapper = function (err, result) {
     if (err) return callback(err);
-    if (!getResult(result)) return callback(null, false);
+
+    if (!getResult(result)) return callback(null, false); // do not keep processing
     options.stat(fullPath, function (err2, stats) { err2 ? callback(err2) : callback(null, true, stats); });
   };
 
