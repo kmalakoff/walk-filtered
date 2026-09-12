@@ -1,8 +1,11 @@
 {
   "name": "walk-filtered",
   "version": "1.2.0",
-  "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk",
+  "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk. Supports Node 0.10 and above.",
   "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
   "scripts": {
     "test": "mocha . test/spec/**/*.test.js",
     "perf": "node test/perf/tests.js",

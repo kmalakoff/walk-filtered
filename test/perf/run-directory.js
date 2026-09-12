@@ -12,13 +12,16 @@ var asyncEachLimit = require('each-limit');
 function serialOptionsFn(fs1) { return { fs: fs1, each: asyncEach }; }
 function paralleOptionsFn(fs1) { return { fs: fs1, each: asyncEachParallel }; }
 function parallelLimitOptionsFn(fs1, limit) {
-  return { fs: fs1, each(array, fn, callback) { asyncEachLimit(array, limit, fn, callback); } };
+  return { fs: fs1, each: function (array, fn, callback) { asyncEachLimit(array, limit, fn, callback); } };
 }
 
 module.exports = function run(dir, callback) {
-  var relativeDir = dir.replace(`${sysPath.resolve(sysPath.join(__dirname, '..', '..'))}/`, '');
+  var relativeDir = dir.replace(sysPath.resolve(sysPath.join(__dirname, '..', '..')), '');
 
-  new Benchmark.Suite(`Walk ${relativeDir}`)
+  new Benchmark.Suite('Walk ' + relativeDir)
+    .add('Default options', function (deferred) {
+      walk(dir, function () {}, function (err) { err ? deferred.reject() : deferred.resolve(); });
+    }, { defer: true })
     .add('Default options', function (deferred) {
       walk(dir, function () {}, function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
@@ -54,10 +57,10 @@ module.exports = function run(dir, callback) {
       walk(dir, function () {}, parallelLimitOptionsFn(gfs, 100), function (err) { err ? deferred.reject() : deferred.resolve(); });
     }, { defer: true })
 
-    .on('start', function () { console.log(`Comparing ${this.name}`); })
+    .on('start', function () { console.log('Comparing ' + this.name); })
     .on('cycle', function (event) { console.log(String(event.target)); })
     .on('complete', function () {
-      console.log(`Fastest is ${this.filter('fastest')[0].name}`);
+      console.log('Fastest is ' + this.filter('fastest')[0].name);
       if (callback) callback();
     })
     .run({ async: true, maxTime: 1000 });
