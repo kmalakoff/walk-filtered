@@ -1,6 +1,5 @@
-var pathJoin = require('path').join;
-var relative = require('path').relative;
-var assign = require('object-assign');
+var sysPath = require('path');
+var assign = require('lodash.assign');
 var isUndefined = require('lodash.isundefined');
 var isObject = require('lodash.isobject');
 
@@ -13,7 +12,7 @@ var eachlimit = require('each-limit');
 function limitEachFn(limit) { return function(array, fn, callback) { eachlimit(array, limit, fn, callback); }; }
 
 function process(fullPath, options, callback) {
-  var path = relative(options.cwd, fullPath); // the path to the link, file, or directory
+  var path = sysPath.relative(options.cwd, fullPath); // the path to the link, file, or directory
   if (!options.stats && !options.filterIter(path)) return callback(); // filter before stats
 
   options.stat(fullPath, function(err, stats) {
@@ -31,7 +30,7 @@ function process(fullPath, options, callback) {
       options.fs.readdir(realPath, function(err, names) {
         if (err) return callback(err);
 
-        var fullPaths = names.map(function(name) { return pathJoin(realPath, name); });
+        var fullPaths = names.map(function(name) { return sysPath.join(realPath, name); });
         options.each(fullPaths, function(fullPath, callback) { process(fullPath, options, callback); }, callback);
       });
     });
