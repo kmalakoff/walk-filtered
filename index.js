@@ -6,6 +6,7 @@ var getResult = require('./lib/getResult');
 var getKeep = require('./lib/getKeep');
 
 var DEFAULT_CONCURRENCY = 50; // select default concurrency TODO: https://github.com/kmalakoff/readdirp-walk/issues/3
+var DEFAULT_STAT = 'lstat';
 
 function processFilter(fullPath, stat, options, callback) {
   var relativePath = path.relative(options.realCWD, fullPath); // the path to the link, file, or directory
@@ -27,7 +28,7 @@ function processFilter(fullPath, stat, options, callback) {
 
 function processPath(paths, options, callback) {
   var fullPath = paths.join(path.sep);
-  fs.lstat(fullPath, function(err, stat) {
+  fs[options.stat](fullPath, function(err, stat) {
     if (err || !stat) return callback(); // skip missing
 
     processFilter(fullPath, stat, options, function(err, keep) {
@@ -71,7 +72,7 @@ module.exports = function(cwd, filter, inputOptions, callback) {
   /* eslint-enable */
 
   var queue = new Queue(inputOptions.concurrency || DEFAULT_CONCURRENCY);
-  var options = { filter: filter, queue: queue, async: inputOptions.async, fs: inputOptions.fs || fs };
+  var options = { filter: filter, queue: queue, async: inputOptions.async, fs: inputOptions.fs || fs, stat: inputOptions.stat || DEFAULT_STAT };
 
   // resolve the realCWD and start processing
   queue.defer(function(callback) {
