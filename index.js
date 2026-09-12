@@ -2,7 +2,7 @@ var fs = require('fs');
 var pathJoin = require('path').join;
 var EventEmitter = require('events').EventEmitter;
 var assign = require('lodash.assign');
-var each = require('each-series');
+var eachSeries = require('async-each-series');
 
 function processPreStat(path, options, callback) {
   var fullPath = path ? pathJoin(options.cwd, path) : options.cwd;
@@ -19,7 +19,7 @@ function processPreStat(path, options, callback) {
         if (err) return callback(err);
 
         var paths = names.map(function(name) { return path ? pathJoin(path, name) : name; });
-        each(paths, function(path, callback) { processPreStat(path, options, callback); }, callback);
+        eachSeries(paths, function(path, callback) { processPreStat(path, options, callback); }, callback);
       });
     }
     else {
@@ -44,7 +44,7 @@ function processPostStat(path, options, callback) {
         var paths = names.map(function(name) { return path ? pathJoin(path, name) : name; });
         if (options.filter) paths = paths.filter(options.filter);
         if (!paths.length) return callback();
-        each(paths, function(path, callback) { processPostStat(path, options, callback); }, callback);
+        eachSeries(paths, function(path, callback) { processPostStat(path, options, callback); }, callback);
       });
     }
     else {
