@@ -13,3 +13,4 @@ npm-debug.log*
 data/
 *.heapsnapshot
 *.0x
+.archive/
