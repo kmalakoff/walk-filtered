@@ -1,6 +1,6 @@
 {
   "name": "walk-filtered",
-  "version": "0.9.3",
+  "version": "1.0.0",
   "description": "A simple, performant file system walker to provided fine-grained control over directories and files to walk",
   "main": "index.js",
   "scripts": {
