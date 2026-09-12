@@ -8,7 +8,7 @@
  * - Uses native startsWith on Node 4.0+ / ES2015+
  * - Falls back to indexOf on Node 0.8-3.x
  */
-var hasStartsWith = typeof String.prototype.startsWith === 'function';
+const hasStartsWith = typeof String.prototype.startsWith === 'function';
 
 export function stringStartsWith(str: string, search: string, position?: number): boolean {
   if (hasStartsWith) {
