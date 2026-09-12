@@ -5,7 +5,8 @@ var assert = chai.assert;
 var generate = require('fs-generate');
 var rimraf = require('rimraf');
 var sysPath = require('path');
-var fs = require('fs-extra');
+var fs = require('fs');
+var rimraf = require('rimraf');
 
 var walk = require('../..');
 var statsSpys = require('../utils').statsSpys;
@@ -78,7 +79,7 @@ describe('walk everything', function() {
         var stats = fs.lstatSync(sysPath.join(DIR, path));
         spys(stats, path);
 
-        if (path === 'dir2/file1') fs.removeSync(sysPath.join(DIR, 'dir2'));
+        if (path === 'dir2/file1') rimraf.sync(sysPath.join(DIR, 'dir2'));
         return true;
       },
       { concurrency: 1 },
